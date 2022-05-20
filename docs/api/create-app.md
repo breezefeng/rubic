@@ -10,10 +10,8 @@ function createApp(options: AppOptions): void
 
 ```ts
 type AppOptions = {
-  setup: () => {
-    context: Record<string, any>
-    [key: string]: any
-  }
+  plugins?: Plugin[]
+  setup: () => Record<string, any> | void
 }
 ```
 

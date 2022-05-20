@@ -10,27 +10,14 @@ export declare function definePage(options: PageOptions): void
 
 #### 参数：
 
-具有 `setupOptions` 和 `setup` 选项的对象，其他参数与小程序 [Page](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html) 函数的参数一致
+具有 `setup` 选项的对象，其他参数与小程序 [Page](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html) 函数的参数一致
 
-| Parameter    | Type                     | Description                            |
-| ------------ | ------------------------ | -------------------------------------- |
-| setupOptions | [SetupOptions]           | 页面额外配置                           |
-| setup        | (query, ctx) => bindings | query: 页面参数 <br> ctx: 页面实例对象 |
-| 其他         | -                        | 其他参数与小程序相同                   |
-
-#### setupOptions 页面额外配置
-
-- `enablePageScroll`: boolean
-
-  是否允许调用 onPageScroll，默认为 false
-
-- `enableShareAppMessage`: boolean
-
-  是否允许调用 onShareAppMessage，默认为 false
-
-- `enableShareTimeline`: boolean
-
-  是否允许调用 onShareTimeline，默认为 false
+| Parameter  | Type                                      | Description                     |
+| ---------- | ----------------------------------------- | ------------------------------- |
+| properties | string[]                                  | 页面参数                        |
+| setup      | (query: P, ctx: PageInstance) => Bindings | 组合式 API 入口                 |
+| options    | {styleIsolation}                          | 原小程序 Component -> options   |
+| behaviors  | string[]                                  | 原小程序 Component -> behaviors |
 
 #### setup
 
@@ -60,17 +47,8 @@ export declare function definePage(options: PageOptions): void
 import { definePage } from 'rubic'
 
 definePage({
-  queryProps: {
-    a: String,
-    b: String,
-  },
-  setupOptions: {
-    enablePageScroll: true,
-    enableShareAppMessage: true,
-    enableShareTimeline: true,
-  },
+  properties: ['paramA', 'paramB'],
   setup(query, ctx) {
-    const { a, b } = query
     return {}
   },
 })

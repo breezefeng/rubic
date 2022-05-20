@@ -14,10 +14,12 @@ export declare function defineComponent(options: ComponentOptions): void
 
 具有 `setup` 选项的对象，其他参数与小程序 [Component](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Component.html) 函数的参数一致
 
-| Parameter | Type                     | Description                                              |
-| --------- | ------------------------ | -------------------------------------------------------- |
-| setup     | (props, ctx) => bindings | props: 组件接收的参数, 响应式对象 <br> ctx: 页面实例对象 |
-| 其他      | -                        | 其他参数与小程序相同                                     |
+| Parameter  | Type                                      | Description                     |
+| ---------- | ----------------------------------------- | ------------------------------- |
+| properties | string[]                                  | 页面参数                        |
+| setup      | (query: P, ctx: PageInstance) => Bindings | 组合式 API 入口                 |
+| options    |                                           | 原小程序 Component -> options   |
+| behaviors  | string[]                                  | 原小程序 Component -> behaviors |
 
 #### setup
 
