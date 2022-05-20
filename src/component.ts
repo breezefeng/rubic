@@ -85,7 +85,7 @@ export function defineComponent(
     properties?: ComponentPropsOptions
   }
 ) {
-  const { setup, options } = usePlugin(componentOptions, 'Component')
+  const { setup, options } = usePlugin(componentOptions as any, 'Component')
 
   const {
     properties: propsOptions = {},

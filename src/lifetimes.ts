@@ -61,7 +61,7 @@ export function wrapLifetimeHooks<T extends readonly string[]>(
 }
 
 function getLifetimeHooks(lifetime: AllHook, scopes: InstanceType[], ins: Instance) {
-  const { type } = ins[CORE_KEY]
+  const type = ins[CORE_KEY].type as InstanceType
   const hooks: any = ins[CORE_KEY].hooks
   let key: AllHook = lifetime
   if (scopes.indexOf(type) === -1) {
