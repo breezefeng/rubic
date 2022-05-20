@@ -180,6 +180,10 @@ export default defineConfigWithTheme<ThemeConfig>({
         allow: ['../..'],
       },
     },
+    // @ts-ignore
+    ssr: {
+      external: [],
+    },
     build: {
       minify: 'terser',
       chunkSizeWarningLimit: Infinity,

@@ -6,7 +6,6 @@
     </h1>
     <p class="description">一款用于开发小程序，易学易用，性能出色且功能丰富的框架。</p>
     <p class="actions">
-      <vue-mastery-modal />
       <a class="get-started" href="/guide/introduction.html">
         快速开始
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24">
