@@ -9,11 +9,7 @@
 import { definePage, reactive, computed } from 'rubic'
 
 definePage({
-  queryProps:{
-    paramA:{
-      type: String
-    }
-  }
+  properties: ['queryA']
   setup(query, context) {
     const count = ref(0)
 
@@ -40,24 +36,17 @@ definePage({
 
 `setup` 函数是组合式 API 的核心，返回的数据和方法会被合并到页面实例上，可以直接在组件模版中使用。
 
-- **参数 `query`：** 当前页面参数，必须在 [queryProps](#queryProps) 中提前声明
+- **参数 `query`：** 当前页面参数，必须在 [properties](#properties) 中提前声明
 
   ```ts
   // page.js
   import { definePage } from 'rubic'
 
   definePage({
-    queryProps: {
-      wtag: {
-        type: String,
-      },
-      channel: {
-        type: String,
-      },
-    },
+    properties: ['channel', 'id'],
     setup(query, context) {
       // query 为打开当前页面路径中的参数
-      query.wtag
+      query.id
       query.channel
     },
   })
@@ -104,7 +93,7 @@ setup 对应的小程序组件 attached 生命周期。
 
 ## 页面参数
 
-页面中所用到的参数需要显式声明 `queryProps` 选项，这样页面才能正常获取到外部传入的 query 参数。
+页面中所用到的参数需要显式声明 `properties` 选项，这样页面才能正常获取到外部传入的 query 参数。
 
 当访问路径 /pages/index?paramA=A&parmaB=B&paramC=C
 
@@ -112,10 +101,7 @@ setup 对应的小程序组件 attached 生命周期。
 import { definePage } from 'rubic'
 
 definePage({
-  queryProps: {
-    paramA: String,
-    paramB: String,
-  },
+  properties: ['paramA', 'paramB'],
   setup(query, context) {
     console.log(query.paramA)
     // A
@@ -135,10 +121,7 @@ definePage({
 import { definePage, onLoad } from 'rubic'
 
 definePage({
-  queryProps: {
-    paramA: String,
-    paramB: String,
-  },
+  properties: ['paramA', 'paramB'],
   setup(query, context) {
     console.log(query)
     // { paramA: 'A', parmaB: 'B' }
@@ -190,48 +173,6 @@ definePage({
 
 在 `setup()` 内同步创建的侦听器和计算状态会在页面销毁时自动删除。
 
-### 需要开关的钩子函数
-
-为了避免造成不必要的性能损耗，`onPageScroll`、`onShareAppMessage`、`onShareTimeline` 三个生命周期钩子需要配置 `setupOptions` 选项来提前告知是否需要开启相应的能力。
-
-**setupOptions：**
-
-- enablePageScroll: boolean // 启用 onPageScroll 能力
-- enableShareAppMessage: boolean // 启用 onShareAppMessage 能力
-- enableShareTimeline: boolean // 启用 onShareTimeline 能力
-
-如未设置相应的 setupOptions 属性，调用将无效
-
-```ts
-// page.js
-import { definePage, onPageScroll, onShareAppMessage, onShareTimeline } from 'rubic'
-
-definePage({
-  setupOptions: {
-    enablePageScroll: true, // 默认为 false
-    enableShareAppMessage: true, // 默认为 false
-    enableShareTimeline: false, // 默认为 false
-  },
-  setup() {
-    // 有效
-    onPageScroll(({ scrollTop }) => {
-      console.log('scrollTop:', scrollTop)
-    })
-
-    // 有效
-    onShareAppMessage(() => ({
-      title: '自定义转发标题',
-      path: '/page/user?id=123',
-    }))
-
-    // 无效
-    onShareTimeline(() => {
-      return {}
-    })
-  },
-})
-```
-
 ### 钩子函数的返回值
 
 对应有返回值的钩子函数，将按照调用顺序使用最后一份返回值。
@@ -241,9 +182,6 @@ definePage({
 import { definePage, onPageScroll, onShareAppMessage, onShareTimeline } from 'rubic'
 
 definePage({
-  setupOptions: {
-    enableShareAppMessage: true,
-  },
   setup() {
     onShareAppMessage(() => ({
       title: '自定义转发标题1',
@@ -279,5 +217,5 @@ definePage({
 - `onShareTimeline` -> `onShareTimeline`
 
 ::: tip
-definePage 使用了 `behaviors` 能力将 setup 函数执行时机与 Component 统一为 attached 阶段，详情可参考小程序文档 [在页面中使用 behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/page.html#%E5%9C%A8%E9%A1%B5%E9%9D%A2%E4%B8%AD%E4%BD%BF%E7%94%A8-behaviors)。
+为了统一页面和组件的 setup 执行顺序，definePage 底层使用了 Component 来实现，具体详情可查看小程序官方文档: [使用 Component 构造器构造页面](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/component.html#%E4%BD%BF%E7%94%A8-Component-%E6%9E%84%E9%80%A0%E5%99%A8%E6%9E%84%E9%80%A0%E9%A1%B5%E9%9D%A2)
 :::
