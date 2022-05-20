@@ -145,6 +145,7 @@ export default defineConfigWithTheme<ThemeConfig>({
         // facetFilters: [''],
       },
     },
+    socialLinks: [{ icon: 'github', link: 'https://github.com/jaskang/rubic' }],
 
     editLink: {
       repo: 'jaskang/rubic',
@@ -170,15 +171,19 @@ export default defineConfigWithTheme<ThemeConfig>({
     define: {
       __VUE_OPTIONS_API__: false,
     },
+    optimizeDeps: {
+      // include: [],
+      // exclude: [],
+    },
+    // @ts-ignore
+    ssr: {
+      external: ['@vue/theme'],
+    },
     server: {
       host: true,
       fs: {
         allow: ['../..'],
       },
-    },
-    // @ts-ignore
-    ssr: {
-      external: [],
     },
     build: {
       minify: false,

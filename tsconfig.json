@@ -16,7 +16,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowJs": true,
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "sourceMap": true,
     "lib": ["ESNext", "DOM"],

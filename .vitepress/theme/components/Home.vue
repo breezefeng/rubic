@@ -1,48 +1,61 @@
 <script setup lang="ts"></script>
 <template>
-  <section id="hero">
-    <h1 class="tagline">
-      <span class="accent">Rubic</span>
-      <br />响应式小程序框架
-    </h1>
-    <p class="description">一款用于开发小程序，易学易用，性能出色且功能丰富的框架。</p>
-    <p class="actions">
-      <a class="get-started" href="/guide/introduction.html">
-        快速开始
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24">
-          <path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z" />
-        </svg>
-      </a>
-      <a class="setup" href="/guide/quick-start.html">安装</a>
-    </p>
-  </section>
+  <ClientOnly>
+    <div class="home">
+      <section id="hero">
+        <img class="logo" src="/images/logo.svg" alt="" />
+        <h1 class="tagline">
+          <span> Rubic </span>
+        </h1>
+        <p class="description">响应式小程序框架</p>
+        <p class="actions">
+          <a class="get-started" href="/guide/introduction.html">
+            快速开始
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24">
+              <path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z" />
+            </svg>
+          </a>
+          <a class="setup" href="/guide/quick-start.html">安装</a>
+        </p>
+      </section>
 
-  <section id="highlights" class="vt-box-container">
-    <div class="vt-box">
-      <h2>轻量级</h2>
-      <p>轻量的运行时库，专注于小程序 javascript 部分，不依赖任何编译步骤无构建依赖。</p>
+      <section id="highlights" class="vt-box-container">
+        <div class="vt-box">
+          <h2>轻量级</h2>
+          <p>轻量的运行时库，专注于小程序 javascript 部分，不依赖任何编译步骤无构建依赖。</p>
+        </div>
+        <div class="vt-box">
+          <h2>响应性/组合式</h2>
+          <p>与 Vue 一致的组合式 API & 响应性能力，专注于解决逻辑复用、复杂代码组织问题。</p>
+        </div>
+        <div class="vt-box">
+          <h2>功能丰富</h2>
+          <p>拥有丰富的、可渐进式集成的生态系统，可以根据规模在仅使用一个库和使用整套框架间切换自如。</p>
+        </div>
+      </section>
     </div>
-    <div class="vt-box">
-      <h2>响应性/组合式</h2>
-      <p>与 Vue 一致的组合式 API & 响应性能力，专注于解决逻辑复用、复杂代码组织问题。</p>
-    </div>
-    <div class="vt-box">
-      <h2>功能丰富</h2>
-      <p>拥有丰富的、可渐进式集成的生态系统，可以根据规模在仅使用一个库和使用整套框架间切换自如。</p>
-    </div>
-  </section>
+  </ClientOnly>
 </template>
 
 <style scoped>
+.home {
+  min-height: calc(100vh - var(--vt-nav-height) - 88px);
+}
 section {
-  padding: 42px 32px;
+  padding: 32px 32px;
 }
 
 #hero {
-  padding: 96px 32px;
+  padding: 64px 32px 0 32px;
   text-align: center;
 }
 
+.logo {
+  display: block;
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+}
 .tagline {
   font-size: 76px;
   line-height: 1.25;
@@ -52,9 +65,9 @@ section {
   margin: 0px auto;
 }
 
-html:not(.dark) .accent,
-.dark .tagline {
-  background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
+.tagline span {
+  /* color: #646cff; */
+  background: -webkit-linear-gradient(315deg, #63bbff 25%, #ac63ff);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
