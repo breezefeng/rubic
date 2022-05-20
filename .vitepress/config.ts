@@ -18,11 +18,6 @@ const nav = [
     link: '/api/create-app',
   },
   {
-    text: 'HOOKS',
-    activeMatch: `^/hooks/`,
-    link: '/hooks/request',
-  },
-  {
     text: pkg.version,
     activeMatch: `^/about/`,
     link: '/about/releases',
@@ -61,10 +56,6 @@ export const sidebar = {
           link: '/guide/reactivity',
         },
         {
-          text: '路由',
-          link: '/guide/router',
-        },
-        {
           text: '依赖注入',
           link: '/guide/provide-inject',
         },
@@ -78,21 +69,12 @@ export const sidebar = {
           link: '/guide/composition-api',
         },
         {
-          text: '中间件',
-          link: '/guide/middleware',
+          text: '插件',
+          link: '/guide/plugin',
         },
         {
           text: 'TS 与组合式 API',
           link: '/guide/typescript',
-        },
-      ],
-    },
-    {
-      text: '最佳实践',
-      items: [
-        {
-          text: '与生态系统的结合',
-          link: '/guide/best-practices/ecosystem',
         },
       ],
     },
@@ -141,21 +123,6 @@ export const sidebar = {
     {
       text: '进阶 APIs',
       items: [{ text: 'TypeScript 工具类', link: '/api/types' }],
-    },
-  ],
-  '/hooks/': [
-    {
-      text: '基础',
-      items: [
-        {
-          text: 'useRequestV2',
-          link: '/hooks/request',
-        },
-      ],
-    },
-    {
-      text: '业务',
-      items: [{ text: 'useEventTrack', link: '/hooks/event-track' }],
     },
   ],
 }

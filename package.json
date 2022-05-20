@@ -25,7 +25,7 @@
   },
   "scripts": {
     "dev": "vitepress dev",
-    "docs:build": "vitepress build",
+    "docs:build": "vitepress build --debug",
     "docs:serve": "vitepress serve --port 8080",
     "build": "tsup && npm run build:miniprogram",
     "build:miniprogram": "node scripts/mpBuild.js",
