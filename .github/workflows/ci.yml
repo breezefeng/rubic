@@ -30,9 +30,6 @@ jobs:
       - name: Install
         run: pnpm install
 
-      - name: Build
-        run: pnpm run build
-
       - name: Test Coverage
         run: pnpm run coverage
 
