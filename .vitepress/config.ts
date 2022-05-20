@@ -1,5 +1,3 @@
-import fs from 'fs'
-import path from 'path'
 import { defineConfigWithTheme } from 'vitepress'
 import type { Config as ThemeConfig } from '@vue/theme'
 import baseConfig from '@vue/theme/config'
@@ -129,14 +127,12 @@ export const sidebar = {
 
 export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
-
   lang: 'zh-CN',
   title: 'Rubic',
   description: 'Rubic - 响应式小程序框架',
   srcDir: 'docs',
   scrollOffset: 'header',
-  head: [['script', {}, fs.readFileSync(path.resolve(__dirname, './inlined-scripts/restorePreference.js'), 'utf-8')]],
-
+  // head: [['script', {}, fs.readFileSync(path.resolve(__dirname, './inlined-scripts/restorePreference.js'), 'utf-8')]],
   themeConfig: {
     nav,
     sidebar,
@@ -185,7 +181,7 @@ export default defineConfigWithTheme<ThemeConfig>({
       external: [],
     },
     build: {
-      minify: 'terser',
+      minify: false,
       chunkSizeWarningLimit: Infinity,
     },
     json: {

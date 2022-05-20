@@ -7,10 +7,5 @@ export default Object.assign({}, VPTheme, {
     // @ts-ignore
     return h(VPTheme.Layout, null, {})
   },
-  enhanceApp({ app }: { app: App }) {
-    // app.provide('prefer-composition', preferComposition)
-    // app.provide('prefer-sfc', preferSFC)
-    // app.provide('filter-headers', filterHeadersByPreference)
-    // app.component('VueSchoolLink', VueSchoolLink)
-  },
+  enhanceApp({ app }: { app: App }) {},
 })

@@ -1,3 +1,4 @@
+<script setup lang="ts"></script>
 <template>
   <section id="hero">
     <h1 class="tagline">

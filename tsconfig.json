@@ -22,7 +22,7 @@
     "lib": ["ESNext", "DOM"],
     "paths": {
       "rubic": ["./scr/index.ts"],
-      "/@theme/*": [".vitepress/theme/*"]
+      "/@theme/*": ["./.vitepress/theme/*"]
     },
     "types": ["node", "vitest", "miniprogram-api-typings"],
     "rootDir": ".",
