@@ -1,3 +1,17 @@
+
+
+## 0.0.3-beta.7 (2022-05-20)
+
+
+### Bug Fixes
+
+* type ([4497655](https://github.com/JasKang/rubic/commit/44976556404d163491c3a5651e26fe2bf848e28c))
+
+
+### Features
+
+* 初始化 ([5b141a1](https://github.com/JasKang/rubic/commit/5b141a187b2e4e1ab59fff1dbd7853eac59bbc1e))
+
 ## [0.0.3-beta.6](https://github.com/JasKang/rubic/compare/v0.0.3-beta.5...v0.0.3-beta.6) (2022-05-19)
 
 ### Bug Fixes
