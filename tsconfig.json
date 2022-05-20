@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "noImplicitThis": true,
+    "isolatedModules": true,
+    "preserveValueImports": false,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "lib": ["ESNext", "DOM"],
+    "paths": {
+      "rubic": ["./scr/index.ts"],
+      "/@theme/*": [".vitepress/theme/*"]
+    },
+    "types": ["node", "vitest", "miniprogram-api-typings"],
+    "rootDir": ".",
+    "outDir": "./dist",
+    "baseUrl": "."
+  },
+  "include": ["env.d.ts", "src/**/*", "tests/**/*", ".vitepress/**/*"]
+}

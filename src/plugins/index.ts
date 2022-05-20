@@ -1,0 +1,1 @@
+export { SharePlugin } from './share'
