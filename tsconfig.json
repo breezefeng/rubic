@@ -5,7 +5,7 @@
     "useDefineForClassFields": true,
     "noImplicitThis": true,
     "isolatedModules": true,
-    "preserveValueImports": false,
+    "preserveValueImports": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
@@ -21,13 +21,12 @@
     "sourceMap": true,
     "lib": ["ESNext", "DOM"],
     "paths": {
-      "rubic": ["./scr/index.ts"],
-      "/@theme/*": ["./.vitepress/theme/*"]
+      "rubic": ["./scr/index.ts"]
     },
     "types": ["node", "vitest", "miniprogram-api-typings"],
     "rootDir": ".",
     "outDir": "./dist",
     "baseUrl": "."
   },
-  "include": ["env.d.ts", "src/**/*", "tests/**/*", ".vitepress/**/*"]
+  "include": ["env.d.ts", "src/**/*", "tests/**/*"]
 }
