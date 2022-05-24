@@ -48,12 +48,12 @@ importers:
 
   docs:
     specifiers:
-      '@jaskang/theme': ^2.0.7
+      '@jaskang/theme': ^2.0.9
       sass: ^1.52.0
       vitepress: ^0.22.4
       vue: ^3.2.33
     dependencies:
-      '@jaskang/theme': 2.0.7_vue@3.2.36
+      '@jaskang/theme': 2.0.9_vue@3.2.36
       vitepress: 0.22.4_sass@1.52.1
       vue: 3.2.36
     devDependencies:
@@ -281,8 +281,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /@jaskang/theme/2.0.7_vue@3.2.36:
-    resolution: {integrity: sha512-auEggcExur42BP8nbPOBkBWna89NDAAQcJNLXe0rFQriujCYUw3Wl98MwClNps61SgJ8GsowASuNKjGHBZj0Aw==}
+  /@jaskang/theme/2.0.9_vue@3.2.36:
+    resolution: {integrity: sha512-ffBoRjvNqo+mpcTzg1KNL75Ju/tPZztl8z3KpUuehTJxwHF2wevGoTVytx1wwlsiz8FPJWboPHi1qBjbl4HqRQ==}
     dependencies:
       '@docsearch/css': 3.1.0
       '@docsearch/js': 3.1.0
