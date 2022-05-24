@@ -1,5 +1,7 @@
 
 
+## [0.0.3](https://github.com/JasKang/rubic/compare/0.0.3-beta.7...0.0.3) (2022-05-24)
+
 ## 0.0.3-beta.7 (2022-05-20)
 
 
