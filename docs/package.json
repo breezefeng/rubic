@@ -1,18 +1,14 @@
 {
   "name": "docs",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
     "serve": "vitepress serve"
   },
   "dependencies": {
-    "@docsearch/css": "^3.0.0-alpha.41",
-    "@docsearch/js": "^3.0.0-alpha.41",
-    "@vueuse/core": "^7.3.0",
-    "body-scroll-lock": "^3.1.5",
-    "normalize.css": "^8.0.1",
-    "shiki": "^0.9.15",
+    "@jaskang/theme": "^2.0.7",
     "vitepress": "^0.22.4",
     "vue": "^3.2.33"
   },

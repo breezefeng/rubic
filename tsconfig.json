@@ -6,6 +6,7 @@
     "noImplicitThis": true,
     "isolatedModules": true,
     "preserveValueImports": true,
+    "importsNotUsedAsValues": "error",
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,

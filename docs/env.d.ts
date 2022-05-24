@@ -6,6 +6,9 @@ declare module '@docsearch/js' {
   export default docsearch
 }
 
+declare module '@jaskang/theme'
+declare module '@jaskang/theme/config'
+
 declare module '*.vue' {
   import type { ComponentOptions } from 'vue'
   const Component: ComponentOptions

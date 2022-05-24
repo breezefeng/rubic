@@ -1,7 +1,6 @@
 import { defineConfigWithTheme } from 'vitepress'
+import baseConfig from '@jaskang/theme/config'
 import pkg from '../package.json'
-import type { Config as ThemeConfig } from './theme/vitepress'
-import baseConfig from './theme/vitepress/config/baseConfig'
 
 const nav = [
   {
@@ -124,7 +123,7 @@ export const sidebar = {
   ],
 }
 
-export default defineConfigWithTheme<ThemeConfig>({
+export default defineConfigWithTheme<any>({
   extends: baseConfig,
   lang: 'zh-CN',
   title: 'Rubic',
@@ -161,7 +160,6 @@ export default defineConfigWithTheme<ThemeConfig>({
   },
 
   vite: {
-    // root: path.join(__dirname, '../src'),
     define: {
       __VUE_OPTIONS_API__: false,
     },
