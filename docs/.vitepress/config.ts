@@ -1,6 +1,6 @@
 import { defineConfigWithTheme } from 'vitepress'
 import baseConfig from '@jaskang/theme/config'
-import pkg from '../package.json'
+import pkg from '../../package.json'
 
 const nav = [
   {
