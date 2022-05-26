@@ -1,5 +1,6 @@
 import type { Func } from './types'
 
+export const EMPTY_OBJ = {}
 export const NOOP = () => {}
 
 export const toTypeString = (value: unknown): string => Object.prototype.toString.call(value)

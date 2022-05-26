@@ -51,32 +51,18 @@ export function definePage<P extends string>(pageOptions: PageOptionsWithArrayPr
     behaviors: [
       ...behaviors,
       // setup behaviors 在最后执行可以使
-      setupBehavior({
-        properties,
-        setup,
-      }),
+      setupBehavior({ properties, setup }),
     ],
-    options: Object.assign(
-      {
-        multipleSlots: true,
-      },
-      innerOptions
-    ),
-    // externalClasses,
-    // relations,
-    // ...others,
+    options: Object.assign({ multipleSlots: true }, innerOptions),
     lifetimes: {
+      ...lifetimes,
       detached(this: Instance) {
         detached.call(this)
         this[CORE_KEY].scope.stop()
       },
-      ...lifetimes,
     },
     pageLifetimes,
-    methods: {
-      // ...methods,
-      ...methodsLifetimes,
-    },
+    methods: { ...methodsLifetimes },
   }
   if (__TEST__) {
     // @ts-ignore

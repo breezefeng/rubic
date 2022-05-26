@@ -1,8 +1,8 @@
 import type { ComponentInstance, Instance } from './instance'
 import type { ComponentObjectPropsOptions, ComponentPropsOptions, ExtractPropTypes } from './props'
-import type { Flat, AnyObject } from './types'
-import { CORE_KEY, COMPONENT_LIFETIMES, COMPONENT_PAGE_LIFETIMES, COMPONENT_METHOD_LIFETIMES } from './constants'
 import { convertProps } from './props'
+import type { AnyObject, Flat } from './types'
+import { COMPONENT_LIFETIMES, COMPONENT_METHOD_LIFETIMES, COMPONENT_PAGE_LIFETIMES, CORE_KEY } from './constants'
 import { keysToRecord } from './utils'
 import { setupBehavior } from './setup'
 import { wrapLifetimeHooks } from './lifetimes'
@@ -116,32 +116,22 @@ export function defineComponent(
     behaviors: [
       ...behaviors,
       // setup behaviors 在最后执行可以使
-      setupBehavior({
-        properties,
-        setup,
-      }),
+      setupBehavior({ properties, setup }),
     ],
-    options: Object.assign(
-      {
-        multipleSlots: true,
-      },
-      innerOptions
-    ),
+    options: Object.assign({ multipleSlots: true }, innerOptions),
     externalClasses,
     relations,
     observers,
     ...others,
     lifetimes: {
+      ...lifetimes,
       detached(this: Instance) {
         detached.call(this)
         this[CORE_KEY].scope.stop()
       },
-      ...lifetimes,
     },
     pageLifetimes,
-    methods: {
-      ...methodsLifetimes,
-    },
+    methods: { ...methodsLifetimes },
   }
   return Component(sourceOptions)
 }

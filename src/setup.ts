@@ -1,5 +1,5 @@
 import { readonly } from '@vue/reactivity'
-import { setCurrentInstance, createCore, type Instance } from './instance'
+import { createCore, type Instance, setCurrentInstance, unsetCurrentInstance } from './instance'
 import { CORE_KEY } from './constants'
 import type { Data } from './types'
 import { isFunction } from './utils'
@@ -52,12 +52,12 @@ export function getContextProxy(ctx: Instance) {
   return proxy
 }
 
-type setupBehaviorOptions = {
+type SetupOptions = {
   properties: Record<string, any>
   setup?: (...args: any[]) => any
 }
 
-export const setupBehavior = ({ properties = {}, setup }: setupBehaviorOptions) => {
+export const setupBehavior = ({ properties = {}, setup }: SetupOptions) => {
   return Behavior({
     properties,
     lifetimes: {
@@ -75,18 +75,19 @@ export const setupBehavior = ({ properties = {}, setup }: setupBehaviorOptions) 
         setCurrentInstance(ctx)
         const props = readonly(core.props) as Data
         let bindings: Record<string, any> = {}
-        core.scope.run(() => {
-          bindings = setup ? setup(props, getContextProxy(ctx)) || {} : {}
-        })
-        core.bindings = bindings
 
+        bindings = setup ? setup(props, getContextProxy(ctx)) || {} : {}
+        core.bindings = bindings
         if (bindings) {
+          const bindingData = Object.create(null)
           Object.keys(bindings).forEach((key: string) => {
             const value = bindings[key]
             if (isFunction(value)) {
               // @ts-ignore
               ctx[key] = value
               return
+            } else {
+              bindingData[key] = value
             }
             try {
               ctx.setData({ [key]: bindingToData(value, key) })
@@ -96,8 +97,8 @@ export const setupBehavior = ({ properties = {}, setup }: setupBehaviorOptions) 
             watchBinding.call(ctx, key, value)
           })
         }
-        watchRender.call(ctx)
-        setCurrentInstance(null)
+        // watchRender.call(ctx)
+        unsetCurrentInstance()
       },
     },
   })

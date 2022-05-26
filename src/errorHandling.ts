@@ -1,69 +1,39 @@
 import { pauseTracking, resetTracking } from '@vue/reactivity'
-import { isArray, isPromise } from './utils'
+import { isFunction, isPromise } from './utils'
 import type { Instance } from './instance'
-import type { Func } from './types'
+import { getCurrentInstance } from '.'
 
-export const enum ErrorTypes {
-  setup_function = 'setup function',
-  render_function = 'render function',
-  watch_getter = 'watcher getter',
-  watch_callback = 'watcher callback',
-  watch_cleanup = 'watcher cleanup function',
-  native_event_handler = 'native event handler',
-  component_event_handler = 'component event handler',
-  vnode_hook = 'vnode hook',
-  directive_hook = 'directive hook',
-  transition_hook = 'transition hook',
-  app_error_handler = 'app errorHandler',
-  app_warn_handler = 'app warnHandler',
-  function_ref = 'ref function',
-  async_component_loader = 'async component loader',
-  scheduler = 'scheduler flush',
+export const enum ErrorCodes {
+  SETUP_FUNCTION,
+  RENDER_FUNCTION,
+  WATCH_GETTER,
+  WATCH_CALLBACK,
+  WATCH_CLEANUP,
+  NATIVE_EVENT_HANDLER,
+  COMPONENT_EVENT_HANDLER,
+  APP_ERROR_HANDLER,
+  APP_WARN_HANDLER,
+  FUNCTION_REF,
+  SCHEDULER,
 }
 
-export function callWithErrorHandling(fn: Function, instance: Instance | null, type: ErrorTypes, args?: unknown[]) {
-  let res
-  try {
-    res = args ? fn(...args) : fn()
-  } catch (err: unknown) {
-    handleError(err as Error, instance, type)
-  }
-  return res
+export const ErrorTypeStrings: Record<number | string, string> = {
+  [ErrorCodes.SETUP_FUNCTION]: 'setup function',
+  [ErrorCodes.RENDER_FUNCTION]: 'render function',
+  [ErrorCodes.WATCH_GETTER]: 'watcher getter',
+  [ErrorCodes.WATCH_CALLBACK]: 'watcher callback',
+  [ErrorCodes.WATCH_CLEANUP]: 'watcher cleanup function',
+  [ErrorCodes.NATIVE_EVENT_HANDLER]: 'native event handler',
+  [ErrorCodes.COMPONENT_EVENT_HANDLER]: 'component event handler',
+  [ErrorCodes.APP_ERROR_HANDLER]: 'app errorHandler',
+  [ErrorCodes.APP_WARN_HANDLER]: 'app warnHandler',
+  [ErrorCodes.FUNCTION_REF]: 'ref function',
+  [ErrorCodes.SCHEDULER]:
+    'scheduler flush. This is likely a Vue internals bug. ' +
+    'Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/core',
 }
 
-export function callWithAsyncErrorHandling(
-  fn: Func[] | Func,
-  instance: Instance | null,
-  type: ErrorTypes,
-  args?: unknown[]
-): any[] {
-  if (isArray(fn)) {
-    const values: any[] = []
-    for (let i = 0; i < fn.length; i++) {
-      values.push(callWithAsyncErrorHandling(fn[i], instance, type, args))
-    }
-    return values
-  }
-
-  const res = callWithErrorHandling(fn, instance, type, args)
-  if (res && isPromise(res)) {
-    res.catch((err: Error) => {
-      handleError(err, instance, type)
-    })
-  }
-  return res
-}
-
-export function handleError(err: Error, instance: Instance | null, type: ErrorTypes) {
-  if (instance) {
-    // app-level handling
-    // TODO: appErrorHandler
-    // const appErrorHandler = instance.appContext.config.errorHandler
-  }
-  error(err, instance, type)
-}
-
-export function error(err: Error, instance?: Instance | null, type?: ErrorTypes) {
+export function error(err: Error, instance?: Instance | null, type?: ErrorCodes) {
   if (type) {
     warn(`未处理的错误 ${type}`, instance)
   }
@@ -78,16 +48,71 @@ export function error(err: Error, instance?: Instance | null, type?: ErrorTypes)
   }
 }
 
-export function warn(msg: string, instance?: Instance | null) {
-  // avoid props formatting or warn handler tracking deps that might be mutated
-  // during patch, leading to infinite recursion.
+export function warn(msg: string, ...args: any[]) {
   pauseTracking()
-
-  let message = `[core]: ${msg}`
+  const warnArgs = [`[core warn]: ${msg}`, ...args]
+  const instance = getCurrentInstance()
   if (instance) {
-    message += ` | instance: ${instance.is}`
+    warnArgs.push(`\n`, instance.is)
   }
-  console.warn(message)
-
+  console.warn(...warnArgs)
   resetTracking()
+}
+
+export function callWithErrorHandling(fn: Function, instance: Instance | null, type: ErrorCodes, args?: unknown[]) {
+  let res
+  try {
+    res = args ? fn(...args) : fn()
+  } catch (err) {
+    handleError(err, instance, type)
+  }
+  return res
+}
+
+export function callWithAsyncErrorHandling(
+  fn: Function | Function[],
+  instance: Instance | null,
+  type: ErrorCodes,
+  args?: unknown[]
+): any[] {
+  if (isFunction(fn)) {
+    const res = callWithErrorHandling(fn, instance, type, args)
+    if (res && isPromise(res)) {
+      res.catch(err => {
+        handleError(err, instance, type)
+      })
+    }
+    return res
+  }
+
+  const values: any[] = []
+  for (let i = 0; i < fn.length; i++) {
+    values.push(callWithAsyncErrorHandling(fn[i], instance, type, args))
+  }
+  return values
+}
+
+export function handleError(err: unknown, instance: Instance | null, type: ErrorCodes, throwInDev = true) {
+  if (instance) {
+    const errorInfo = ErrorTypeStrings[type]
+    // app-level handling
+    // @ts-ignore
+    const appErrorHandler = instance.errorHandler
+    if (appErrorHandler) {
+      callWithErrorHandling(appErrorHandler, null, ErrorCodes.APP_ERROR_HANDLER, [err, instance.is, errorInfo])
+      return
+    }
+  }
+  logError(err, type, instance, throwInDev)
+}
+
+function logError(err: unknown, type: ErrorCodes, instance: Instance | null, throwInDev = true) {
+  const info = ErrorTypeStrings[type]
+  warn(`Unhandled error${info ? ` during execution of ${info}` : ``}`)
+  // crash in dev by default so it's more noticeable
+  if (throwInDev) {
+    throw err
+  } else {
+    console.error(err)
+  }
 }

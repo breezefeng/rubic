@@ -1,14 +1,13 @@
 import type { ShallowReactive } from '@vue/reactivity'
-import { reactive, shallowReactive, EffectScope } from '@vue/reactivity'
+import { EffectScope, shallowReactive } from '@vue/reactivity'
 import type { HookType } from './constants'
 import {
-  CORE_KEY,
   APP_LIFETIMES,
   COMPONENT_LIFETIMES,
-  COMPONENT_PAGE_LIFETIMES,
   COMPONENT_METHOD_LIFETIMES,
+  COMPONENT_PAGE_LIFETIMES,
+  CORE_KEY,
 } from './constants'
-import { createRender } from './renderer'
 
 import type { Data, Flat, Func } from './types'
 import { keysToRecord } from './utils'
@@ -36,11 +35,6 @@ export type Core<T extends InstanceType = 'Page'> = {
       }
   scope: EffectScope
   bindings: Record<string, any>
-  renderQueue: {
-    effects: Array<() => void>
-    keys: string[]
-    render: () => Promise<void>
-  }
   nextTick: NextTick
   initHooks(type: InstanceType): Core
 }
@@ -63,17 +57,19 @@ export type Instance = PageInstance | ComponentInstance
 
 let currentInstance: Instance | null = null
 
-export function setCurrentInstance(instance: Instance | null) {
+export function setCurrentInstance(instance: Instance) {
   if (instance) {
     // @ts-ignore
     instance[CORE_KEY].scope.on()
-  } else {
-    if (currentInstance) {
-      // @ts-ignore
-      currentInstance[CORE_KEY].scope.off()
-    }
+    currentInstance = instance
   }
-  currentInstance = instance
+}
+export function unsetCurrentInstance() {
+  if (currentInstance) {
+    // @ts-ignore
+    currentInstance[CORE_KEY].scope.off()
+    currentInstance = null
+  }
 }
 
 export function getCurrentInstance() {
@@ -89,17 +85,7 @@ export function createCore(instance: any): Core {
     // @ts-ignore
     hooks: {},
     bindings: {},
-    renderQueue: {
-      effects: [],
-      keys: reactive<string[]>([]),
-      render: createRender(instance),
-    },
-    nextTick(fn: (this: Instance) => void) {
-      const { effects } = instance[CORE_KEY].renderQueue
-      if (effects.indexOf(fn) === -1) {
-        effects.push(fn)
-      }
-    },
+    nextTick(fn: (this: Instance) => void) {},
     initHooks(this: any, type: InstanceType) {
       this.type = type
       this.hooks =

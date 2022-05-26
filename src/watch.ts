@@ -1,11 +1,29 @@
-import type { Ref, ComputedRef, EffectScheduler, DebuggerOptions } from '@vue/reactivity'
-import { isRef, isShallow, ReactiveEffect, isReactive } from '@vue/reactivity'
-import type { SchedulerJob } from './scheduler'
-import { queuePostFlushCb, queuePreFlushCb } from './scheduler'
-import { ErrorTypes, callWithErrorHandling, callWithAsyncErrorHandling, warn } from './errorHandling'
-import { hasChanged, isArray, isFunction, isMap, isObject, isPlainObject, isSet, NOOP, remove } from './utils'
+import {
+  type ComputedRef,
+  type DebuggerOptions,
+  type EffectScheduler,
+  isReactive,
+  isRef,
+  isShallow,
+  ReactiveEffect,
+  type Ref,
+} from '@vue/reactivity'
+import { queuePostFlushCb, queuePreFlushCb, type SchedulerJob } from './scheduler'
 import { getCurrentInstance } from './instance'
-import { CORE_KEY } from '.'
+import { callWithAsyncErrorHandling, callWithErrorHandling, ErrorCodes, warn } from './errorHandling'
+import {
+  EMPTY_OBJ,
+  hasChanged,
+  isArray,
+  isFunction,
+  isMap,
+  isObject,
+  isPlainObject,
+  isSet,
+  NOOP,
+  remove,
+} from './utils'
+import { CORE_KEY } from './constants'
 
 export type WatchEffect = (onCleanup: OnCleanup) => void
 
@@ -44,11 +62,11 @@ export function watchEffect(effect: WatchEffect, options?: WatchOptionsBase): Wa
 }
 
 export function watchPostEffect(effect: WatchEffect, options?: DebuggerOptions) {
-  return doWatch(effect, null, Object.assign(options || {}, { flush: 'post' }) as WatchOptionsBase)
+  return doWatch(effect, null, { ...options, flush: 'post' })
 }
 
 export function watchSyncEffect(effect: WatchEffect, options?: DebuggerOptions) {
-  return doWatch(effect, null, Object.assign(options || {}, { flush: 'sync' }) as WatchOptionsBase)
+  return doWatch(effect, null, { ...options, flush: 'sync' } as WatchOptionsBase)
 }
 
 // initial value for watchers to trigger on undefined initial values
@@ -105,7 +123,7 @@ export function watch<T = any, Immediate extends Readonly<boolean> = false>(
 function doWatch(
   source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
-  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = {}
+  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = EMPTY_OBJ
 ): WatchStopHandle {
   if (!cb) {
     if (immediate !== undefined) {
@@ -120,10 +138,9 @@ function doWatch(
 
   const warnInvalidSource = (s: unknown) => {
     warn(
-      `Invalid watch source: ` +
-        s +
-        `A watch source can only be a getter/effect function, a ref, ` +
-        `a reactive object, or an array of these types.`
+      `Invalid watch source: `,
+      s,
+      `A watch source can only be a getter/effect function, a ref, ` + `a reactive object, or an array of these types.`
     )
   }
 
@@ -140,7 +157,7 @@ function doWatch(
     deep = true
   } else if (isArray(source)) {
     isMultiSource = true
-    forceTrigger = source.some(isReactive)
+    forceTrigger = source.some(s => isReactive(s) || isShallow(s))
     getter = () =>
       source.map(s => {
         if (isRef(s)) {
@@ -148,7 +165,7 @@ function doWatch(
         } else if (isReactive(s)) {
           return traverse(s)
         } else if (isFunction(s)) {
-          return callWithErrorHandling(s, instance, ErrorTypes.watch_getter)
+          return callWithErrorHandling(s, instance, ErrorCodes.WATCH_GETTER)
         } else {
           warnInvalidSource(s)
         }
@@ -156,7 +173,7 @@ function doWatch(
   } else if (isFunction(source)) {
     if (cb) {
       // getter with cb
-      getter = () => callWithErrorHandling(source, instance, ErrorTypes.watch_getter)
+      getter = () => callWithErrorHandling(source, instance, ErrorCodes.WATCH_GETTER)
     } else {
       // no cb -> simple effect
       getter = () => {
@@ -166,7 +183,7 @@ function doWatch(
         if (cleanup) {
           cleanup()
         }
-        return callWithAsyncErrorHandling(source, instance, ErrorTypes.watch_callback, [onCleanup])
+        return callWithAsyncErrorHandling(source, instance, ErrorCodes.WATCH_CALLBACK, [onCleanup])
       }
     }
   } else {
@@ -182,7 +199,7 @@ function doWatch(
   let cleanup: () => void
   const onCleanup: OnCleanup = (fn: () => void) => {
     cleanup = effect.onStop = () => {
-      callWithErrorHandling(fn, instance, ErrorTypes.watch_cleanup)
+      callWithErrorHandling(fn, instance, ErrorCodes.WATCH_CLEANUP)
     }
   }
 
@@ -205,7 +222,7 @@ function doWatch(
         if (cleanup) {
           cleanup()
         }
-        callWithAsyncErrorHandling(cb, instance, ErrorTypes.watch_callback, [
+        callWithAsyncErrorHandling(cb, instance, ErrorCodes.WATCH_CALLBACK, [
           newValue,
           // pass undefined as the old value when it's changed for the first time
           oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
@@ -230,25 +247,12 @@ function doWatch(
     scheduler = () => queuePostFlushCb(job)
   } else {
     // default: 'pre'
-    scheduler = () => {
-      // 这里注意
-      queuePreFlushCb(job)
-      // if (!instance) {
-      //   queuePreFlushCb(job)
-      // } else {
-      //   // with 'pre' option, the first call must happen before
-      //   // the component is mounted so it is called synchronously.
-      //   job()
-      // }
-    }
+    scheduler = () => queuePreFlushCb(job)
   }
 
   const effect = new ReactiveEffect(getter, scheduler)
-
-  // if (__DEV__) {
   effect.onTrack = onTrack
   effect.onTrigger = onTrigger
-  // }
 
   // initial run
   if (cb) {
@@ -265,23 +269,23 @@ function doWatch(
 
   return () => {
     effect.stop()
-    if (instance) {
+    if (instance && instance[CORE_KEY].scope) {
       // @ts-ignore
       remove(instance[CORE_KEY].scope.effects!, effect)
     }
   }
 }
 
-// export function createPathGetter(ctx: any, path: string) {
-//   const segments = path.split('.')
-//   return () => {
-//     let cur = ctx
-//     for (let i = 0; i < segments.length && cur; i++) {
-//       cur = cur[segments[i]]
-//     }
-//     return cur
-//   }
-// }
+export function createPathGetter(ctx: any, path: string) {
+  const segments = path.split('.')
+  return () => {
+    let cur = ctx
+    for (let i = 0; i < segments.length && cur; i++) {
+      cur = cur[segments[i]]
+    }
+    return cur
+  }
+}
 
 export function traverse(value: unknown, seen?: Set<unknown>) {
   if (!isObject(value) || (value as any)['__v_skip']) {

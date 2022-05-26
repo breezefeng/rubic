@@ -18,7 +18,7 @@ export default defineConfig(() => {
     platform: 'browser',
     splitting: false,
     // legacyOutput: true,
-    minify: true,
+    minify: false,
     sourcemap: true,
     clean: true,
     dts: {
@@ -27,6 +27,7 @@ export default defineConfig(() => {
     define: {
       'process.env.NODE_ENV': '"production"',
       __TEST__: 'false',
+      __DEV__: 'false',
     },
     external: depsFilter(Object.keys(deps), []),
     banner: {

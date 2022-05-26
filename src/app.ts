@@ -1,8 +1,8 @@
 import type { AppCustomContext, Instance } from './instance'
-import { createCore, setCurrentInstance } from './instance'
+import { createCore, setCurrentInstance, unsetCurrentInstance } from './instance'
 import { wrapLifetimeHooks } from './lifetimes'
 import { APP_LIFETIMES, CORE_KEY } from './constants'
-import { registerPlugins, type Plugin } from './plugin'
+import { type Plugin, registerPlugins } from './plugin'
 import { SharePlugin } from './plugins'
 
 export type AppOptions = {
@@ -32,7 +32,7 @@ export function createApp(options: AppOptions) {
     core.scope.run(() => {
       return setup()
     }) || {}
-  setCurrentInstance(null)
+  unsetCurrentInstance()
 
   Object.assign(app, { ...core.bindings })
 
