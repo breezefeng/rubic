@@ -1,3 +1,13 @@
+
+
+## [0.0.4](https://github.com/JasKang/rubic/compare/0.0.3...0.0.4) (2022-05-26)
+
+
+### Bug Fixes
+
+* test ([0905187](https://github.com/JasKang/rubic/commit/090518700423bf3ab5092016a015839fcc1b2bc1))
+* watch ([4f3e9df](https://github.com/JasKang/rubic/commit/4f3e9df9931797766f83eb8baee10533d14b6c04))
+
 ## [0.0.3](https://github.com/JasKang/rubic/compare/0.0.3-beta.7...0.0.3) (2022-05-24)
 
 ## 0.0.3-beta.7 (2022-05-20)
