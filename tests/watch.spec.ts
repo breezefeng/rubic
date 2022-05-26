@@ -211,14 +211,18 @@ describe('api: watch', () => {
     // @ts-ignore
     watch(1, () => {})
     expect(console.warn).toHaveBeenLastCalledWith(
-      `[core]: Invalid watch source: 1A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
+      '[core warn]: Invalid watch source: ',
+      1,
+      'A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.'
     )
   })
 
   test('warn invalid watch source: multiple sources', () => {
     watch([1], () => {})
     expect(console.warn).toHaveBeenLastCalledWith(
-      `[core]: Invalid watch source: 1A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
+      '[core warn]: Invalid watch source: ',
+      1,
+      'A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.'
     )
   })
 
@@ -568,7 +572,7 @@ describe('api: watch', () => {
     )
     expect(dummy).toBe(0)
     expect(console.warn).toHaveBeenLastCalledWith(
-      `[core]: watch() "immediate" option is only respected when using the watch(source, callback, options?) signature.`
+      `[core warn]: watch() "immediate" option is only respected when using the watch(source, callback, options?) signature.`
     )
 
     count.value++
@@ -592,7 +596,7 @@ describe('api: watch', () => {
     await nextTick()
     expect(spy).toHaveBeenCalledTimes(1)
     expect(console.warn).toHaveBeenLastCalledWith(
-      `[core]: watch() "deep" option is only respected when using the watch(source, callback, options?) signature.`
+      `[core warn]: watch() "deep" option is only respected when using the watch(source, callback, options?) signature.`
     )
   })
 
@@ -782,6 +786,6 @@ describe('api: watch', () => {
     )
     // should not record watcher in detached scope and only the instance's
     // own update effect
-    expect(instance![CORE_KEY].scope.effects.length).toBe(2)
+    expect(instance![CORE_KEY].scope.effects.length).toBe(1)
   })
 })

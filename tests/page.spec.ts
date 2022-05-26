@@ -156,7 +156,7 @@ describe('page', async () => {
       })
     )
 
-    expect(page.instance[CORE_KEY].scope.effects.length).toBe(4)
+    expect(page.instance[CORE_KEY].scope.effects.length).toBe(3)
 
     page.instance.increment()
     page.instance.onUnload()
@@ -186,7 +186,7 @@ describe('page', async () => {
         },
       })
     )
-    expect(page.instance[CORE_KEY].scope.effects.length).toBe(3)
+    expect(page.instance[CORE_KEY].scope.effects.length).toBe(2)
 
     await nextTick()
     expect(dummy!).toBe(0)
@@ -203,7 +203,7 @@ describe('page', async () => {
     await nextTick()
     expect(dummy!).toBe(1)
     expect(page.data.count).toBe(2)
-    expect(page.instance[CORE_KEY].scope.effects.length).toBe(2)
+    expect(page.instance[CORE_KEY].scope.effects.length).toBe(1)
   })
 
   test('watch/watchEffect', async () => {
@@ -235,7 +235,7 @@ describe('page', async () => {
     expect(dummy).toBe(0)
     expect(tempCount).toBe(0)
     expect(page.data.count).toBe(0)
-    expect(core.scope.effects.length).toBe(4)
+    expect(core.scope.effects.length).toBe(3)
 
     page.instance.increment()
     await sleep(10)
@@ -250,7 +250,7 @@ describe('page', async () => {
     expect(dummy).toBe(1)
     expect(tempCount).toBe(2)
     expect(page.data.count).toBe(2)
-    expect(core.scope.effects.length).toBe(3)
+    expect(core.scope.effects.length).toBe(2)
   })
 
   test('lifetimes', async () => {

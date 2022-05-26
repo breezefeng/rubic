@@ -128,7 +128,7 @@ describe('component', () => {
     expect(dummy).toBe(0)
     expect(tempCount).toBe(0)
     expect(comp.data.count).toBe(0)
-    expect(core.scope.effects.length).toBe(4)
+    expect(core.scope.effects.length).toBe(3)
 
     comp.instance.increment()
     await sleep(10)
@@ -143,7 +143,7 @@ describe('component', () => {
     expect(dummy).toBe(1)
     expect(tempCount).toBe(2)
     expect(comp.data.count).toBe(2)
-    expect(core.scope.effects.length).toBe(3)
+    expect(core.scope.effects.length).toBe(2)
   })
 
   test('properties', async () => {

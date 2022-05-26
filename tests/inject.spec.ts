@@ -127,7 +127,7 @@ describe('provide/inject', () => {
     const foo = inject(Symbol('foo'))
     expect(foo).toBeUndefined()
 
-    expect(console.warn).toHaveBeenLastCalledWith(`[core]: injection "Symbol(foo)" not found.`)
+    expect(console.warn).toHaveBeenLastCalledWith(`[core warn]: injection "Symbol(foo)" not found.`)
   })
 
   test('should not warn when default value is undefined', () => {

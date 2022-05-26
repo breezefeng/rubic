@@ -496,7 +496,9 @@ describe('scheduler', () => {
       expect(e).toBe(err)
     }
 
-    expect(console.warn).toHaveBeenLastCalledWith(`[core]: 未处理的错误 scheduler flush`)
+    expect(console.warn).toHaveBeenLastCalledWith(
+      `[core warn]: Unhandled error during execution of scheduler flush. This is likely a Rubic internals bug. `
+    )
     resetConsole()
     // this one should no longer error
     await nextTick()
