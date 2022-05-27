@@ -1,5 +1,12 @@
 
 
+## [0.0.5](https://github.com/JasKang/rubic/compare/0.0.4...0.0.5) (2022-05-27)
+
+
+### Bug Fixes
+
+* type 导出的问题 ([de516c0](https://github.com/JasKang/rubic/commit/de516c082cd6c9ececd1823b68cdf73cab14c253))
+
 ## [0.0.4](https://github.com/JasKang/rubic/compare/0.0.3...0.0.4) (2022-05-26)
 
 
