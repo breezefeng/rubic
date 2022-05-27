@@ -5,7 +5,7 @@ import type { Data } from './types'
 import { isFunction } from './utils'
 import { error } from './errorHandling'
 import { bindingToData } from './bindings'
-import { watchBinding, watchRender } from './renderer'
+import { watchBinding } from './renderer'
 
 const ctxIgnoreKeys: Array<string | symbol> = [
   // 'animate',
