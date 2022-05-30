@@ -1,10 +1,16 @@
 # 创建小程序
 
-## 应用实例
+## 注册小程序 createApp
 
-在小程序 app.js 文件中使用 `createApp()` 函数替换原生的 `App()`
+注册小程序。在小程序 app.js 文件中使用 `createApp()` 函数替换小程序原生的 `App()`
 
-```js
+```ts
+function createApp(options: AppOptions): void
+```
+
+示例：
+
+```ts
 // app.js
 import { createApp } from 'rubic'
 
@@ -15,9 +21,21 @@ createApp({
 })
 ```
 
+## 参数 AppOptions
+
+`createApp()` 所接收的参数
+
+| Name    | Type                              | Description     |
+| ------- | --------------------------------- | --------------- |
+| setup   | () => Record<string, any> \| void | 组合式 API 入口 |
+| plugins | Plugin[]                          | 插件            |
+
+- **setup**：组合式 API 入口
+- **plugins**：全局作用域于的页面和组件插件，详情见[插件](./plugin.md)
+
 ## setup
 
-`createApp` 接收一个 `setup` 选项，`setup` 会在小程序启动的第一时间执行，返回的对象将会被原样合并到小程序实例上。
+`setup` 函数会在小程序启动的第一时间执行，返回的对象将会被原样合并到小程序实例上。
 
 ```js
 createApp({
@@ -62,11 +80,18 @@ createApp({
 
 ### 生命周期对应关系
 
-- `原生代码` -> `使用框架`
-- `onLaunch` -> `onAppLaunch`
-- `onShow` -> `onAppShow`
-- `onHide` -> `onAppHide`
-- `onError` -> `onAppError`
-- `onPageNotFound` -> `onAppPageNotFound`
-- `onUnhandledRejection` -> `onAppUnhandledRejection`
-- `onThemeChange` -> `onAppThemeChange`
+小程序 App 生命周期全部以 `onAppXXX` 的形式导出。
+
+| `原生代码`             | `使用框架`                |
+| ---------------------- | ------------------------- |
+| `onLaunch`             | `onAppLaunch`             |
+| `onShow`               | `onAppShow`               |
+| `onHide`               | `onAppHide`               |
+| `onError`              | `onAppError`              |
+| `onPageNotFound`       | `onAppPageNotFound`       |
+| `onUnhandledRejection` | `onAppUnhandledRejection` |
+| `onThemeChange`        | `onAppThemeChange`        |
+
+:::tip
+加上 `onXXX` 改为 `onAppXXX` 是为了明确 App 与 Component 的区别。如 `onShow`、`onHide` 同时存在于 App 和 Component 但他们的参数并不相同，不利于 Typescript 类型推断。
+:::
