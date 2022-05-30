@@ -2,15 +2,7 @@
 
 根据你的使用场景选择不同的接入流程方式
 
-## 使用脚手架（新小程序）
-
-我们提供了小程序脚手架 `@rubic/create`，它为小程序工作流程提供了功能齐备的设。
-
-```shell
-npm create rubic
-```
-
-## NPM 安装（独立小程序）
+## NPM 安装
 
 - 1. 在小程序代码根目录使用 npm 安装
 
@@ -33,6 +25,10 @@ npm install rubic
 ```ts
 import { definePage, ... } from 'rubic'
 ```
+
+## 脚手架（WIP）
+
+开发中
 
 ## 框架更新
 
