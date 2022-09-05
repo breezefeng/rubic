@@ -1,6 +1,10 @@
 import { callWithErrorHandling, ErrorCodes, warn } from './errorHandling'
 import { isArray } from './utils'
 import type { Instance } from './instance'
+// import { ErrorCodes, callWithErrorHandling } from './errorHandling'
+// import { isArray, NOOP } from '@vue/shared'
+// import { ComponentInternalInstance, getComponentName } from './component'
+// import { warn } from './warning'
 
 export interface SchedulerJob extends Function {
   id?: number
@@ -133,15 +137,13 @@ export function queuePostFlushCb(cb: SchedulerJobs) {
   queueCb(cb, activePostFlushCbs, pendingPostFlushCbs, postFlushIndex)
 }
 
-export function flushPreFlushCbs(seen?: CountMap, parentJob: SchedulerJob | null = null) {
+export function flushPreFlushCbs(seen: CountMap = new Map(), parentJob: SchedulerJob | null = null) {
   if (pendingPreFlushCbs.length) {
     currentPreFlushParentJob = parentJob
     activePreFlushCbs = [...new Set(pendingPreFlushCbs)]
     pendingPreFlushCbs.length = 0
-    seen = seen || new Map()
-
     for (preFlushIndex = 0; preFlushIndex < activePreFlushCbs.length; preFlushIndex++) {
-      if (checkRecursiveUpdates(seen!, activePreFlushCbs[preFlushIndex])) {
+      if (checkRecursiveUpdates(seen, activePreFlushCbs[preFlushIndex])) {
         continue
       }
       activePreFlushCbs[preFlushIndex]()
@@ -154,7 +156,7 @@ export function flushPreFlushCbs(seen?: CountMap, parentJob: SchedulerJob | null
   }
 }
 
-export function flushPostFlushCbs(seen?: CountMap) {
+export function flushPostFlushCbs(seen: CountMap = new Map()) {
   // flush any pre cbs queued during the flush (e.g. pre watchers)
   flushPreFlushCbs()
   if (pendingPostFlushCbs.length) {
@@ -168,12 +170,11 @@ export function flushPostFlushCbs(seen?: CountMap) {
     }
 
     activePostFlushCbs = deduped
-    seen = seen || new Map()
 
     activePostFlushCbs.sort((a, b) => getId(a) - getId(b))
 
     for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-      if (checkRecursiveUpdates(seen!, activePostFlushCbs[postFlushIndex])) {
+      if (checkRecursiveUpdates(seen, activePostFlushCbs[postFlushIndex])) {
         continue
       }
       activePostFlushCbs[postFlushIndex]()
@@ -185,10 +186,9 @@ export function flushPostFlushCbs(seen?: CountMap) {
 
 const getId = (job: SchedulerJob): number => (job.id == null ? Infinity : job.id)
 
-function flushJobs(seen?: CountMap) {
+function flushJobs(seen: CountMap = new Map()) {
   isFlushPending = false
   isFlushing = true
-  seen = seen || new Map()
 
   flushPreFlushCbs(seen)
 
@@ -206,7 +206,7 @@ function flushJobs(seen?: CountMap) {
   // inside try-catch. This can leave all warning code unshaked. Although
   // they would get eventually shaken by a minifier like terser, some minifiers
   // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
-  const check = (job: SchedulerJob) => checkRecursiveUpdates(seen!, job)
+  const check = (job: SchedulerJob) => checkRecursiveUpdates(seen, job)
 
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {

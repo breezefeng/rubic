@@ -1,4 +1,4 @@
-export const CORE_KEY = '__j_core__'
+export const CORE_KEY = '$$core'
 
 export const APP_LIFETIMES = [
   'onLaunch',
@@ -10,11 +10,11 @@ export const APP_LIFETIMES = [
   'onThemeChange',
 ] as const
 
-export const COMPONENT_LIFETIMES = ['ready', 'moved', 'detached', 'error'] as const
-export const COMPONENT_PAGE_LIFETIMES = ['show', 'hide', 'resize'] as const
-export const COMPONENT_METHOD_LIFETIMES = [
+export const PAGE_LIFETIMES = [
   'onLoad',
+  'onShow',
   'onReady',
+  'onHide',
   'onUnload',
   'onPullDownRefresh',
   'onReachBottom',
@@ -22,13 +22,12 @@ export const COMPONENT_METHOD_LIFETIMES = [
   'onShareTimeline',
   'onAddToFavorites',
   'onPageScroll',
+  'onResize',
   'onTabItemTap',
   'onSaveExitState',
 ] as const
 
-export type HookType = {
-  App: typeof APP_LIFETIMES[number]
-  Component: typeof COMPONENT_LIFETIMES[number]
-  ComponentPage: typeof COMPONENT_PAGE_LIFETIMES[number]
-  ComponentMethods: typeof COMPONENT_METHOD_LIFETIMES[number]
-}
+export const COMPONENT_LIFETIMES = {
+  LIFETIMES: ['attached', 'ready', 'moved', 'detached', 'error'],
+  PAGELIFETIMES: ['show', 'hide', 'resize'],
+} as const

@@ -1,42 +1,33 @@
-import type { AppCustomContext, Instance } from './instance'
-import { createCore, setCurrentInstance, unsetCurrentInstance } from './instance'
-import { wrapLifetimeHooks } from './lifetimes'
+import { readonly } from '@vue/reactivity'
+import { createCore, setCurrentInstance, unsetCurrentInstance, type Instance, type AppCustomContext } from './instance'
+import type { Bindings } from './types'
 import { APP_LIFETIMES, CORE_KEY } from './constants'
-import { type Plugin, registerPlugins } from './plugin'
+import { wrapLifetimeHooks } from './lifetimes'
+import { loadPlugin, registerPlugins } from './plugin'
 import { SharePlugin } from './plugins'
 
+export type AppSetup = (this: void) => Bindings | void
+
 export type AppOptions = {
-  plugins?: Plugin[]
-  setup: () => Record<string, any> | void
-}
-
-const app: Record<string, any> = {}
-
-export function useApp<T = any>() {
-  return app as AppCustomContext & T
+  setup: AppSetup
+  middlewares?: any[]
+  errorHandler?: (err: unknown, instance: Instance | null, info: string) => void
 }
 
 export function createApp(options: AppOptions) {
-  const { setup, plugins = [] } = options
+  const { setup, middlewares = [], errorHandler } = options
+  registerPlugins([...middlewares, SharePlugin])
 
-  registerPlugins([...plugins, SharePlugin])
-
-  const lifetimes = wrapLifetimeHooks(APP_LIFETIMES, null)
-
-  const core = createCore(app).initHooks('App')
-
-  Object.assign(app, { [CORE_KEY]: core, ...lifetimes })
-
-  setCurrentInstance(app as unknown as Instance)
-  core.bindings =
-    core.scope.run(() => {
-      return setup()
-    }) || {}
+  const lifetimes = wrapLifetimeHooks(APP_LIFETIMES)
+  const core = createCore({ type: 'App' }).initHooks()
+  setCurrentInstance({ [CORE_KEY]: core } as unknown as Instance)
+  const bindings = setup() || {}
   unsetCurrentInstance()
 
-  Object.assign(app, { ...core.bindings })
-
-  App(app)
-
-  return app
+  return App({
+    [CORE_KEY]: core,
+    errorHandler,
+    ...lifetimes,
+    ...bindings,
+  })
 }

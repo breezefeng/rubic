@@ -497,7 +497,7 @@ describe('scheduler', () => {
     }
 
     expect(console.warn).toHaveBeenLastCalledWith(
-      `[core warn]: Unhandled error during execution of scheduler flush. This is likely a Rubic internals bug. `
+      `[core warn]: Unhandled error during execution of scheduler flush. This is likely a internals bug. `
     )
     resetConsole()
     // this one should no longer error

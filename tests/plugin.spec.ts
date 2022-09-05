@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { registerPlugins, usePlugin } from '../src/plugin'
+import { registerPlugins, loadPlugin } from '../src/plugin'
 
 const middlewareArray: string[] = []
 registerPlugins([
@@ -41,7 +41,7 @@ registerPlugins([
 
 describe('middleware', () => {
   test('string keys', () => {
-    const { setup: pageSetup } = usePlugin(
+    const { setup: pageSetup } = loadPlugin(
       {
         setup() {
           middlewareArray.push('page')
@@ -65,7 +65,7 @@ describe('middleware', () => {
       'a end',
     ])
 
-    const { setup: componentSetup } = usePlugin(
+    const { setup: componentSetup } = loadPlugin(
       {
         setup() {
           middlewareArray.push('Component')

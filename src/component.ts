@@ -2,22 +2,18 @@ import type { ComponentInstance, Instance } from './instance'
 import type { ComponentObjectPropsOptions, ComponentPropsOptions, ExtractPropTypes } from './props'
 import { convertProps } from './props'
 import type { AnyObject, Flat } from './types'
-import { COMPONENT_LIFETIMES, COMPONENT_METHOD_LIFETIMES, COMPONENT_PAGE_LIFETIMES, CORE_KEY } from './constants'
+import { COMPONENT_LIFETIMES, CORE_KEY } from './constants'
 import { keysToRecord } from './utils'
-import { setupBehavior } from './setup'
+import { createSetupHook } from './setup'
 import { wrapLifetimeHooks } from './lifetimes'
-import { usePlugin } from './plugin'
+import { loadPlugin } from './plugin'
 
 export type StyleIsolation = 'isolated' | 'apply-shared' | 'shared'
 
 export type RelationOption = {
-  /** 目标组件的相对关系 */
   type: 'parent' | 'child' | 'ancestor' | 'descendant'
-  /** 关系生命周期函数，当关系被建立在页面节点树中时触发，触发时机在组件attached生命周期之后 */
   linked?(target: any): void
-  /** 关系生命周期函数，当关系在页面节点树中发生改变时触发，触发时机在组件moved生命周期之后 */
   linkChanged?(target: any): void
-  /** 关系生命周期函数，当关系脱离页面节点树时触发，触发时机在组件detached生命周期之后 */
   unlinked?(target: any): void
   /** 如果这一项被设置，则它表示关联的目标节点所应具有的behavior，所有拥有这一behavior的组件节点都会被关联 */
   target?: string | undefined
@@ -40,19 +36,9 @@ export type ComponentInnerOptions = {
 
 export type ComponentBaseOptions<P = {}> = {
   behaviors?: string[]
-  /**
-   * 组件接受的外部样式类
-   */
+  observers?: Record<string, (...args: any[]) => any>
   externalClasses?: string[]
-  /**
-   * 组件间关系定义
-   */
-  relations?: {
-    [key: string]: RelationOption
-  }
-  /**
-   * 一些选项
-   */
+  relations?: { [key: string]: RelationOption }
   options?: ComponentInnerOptions
   setup: (this: void, props: P, ctx: ComponentInstance) => AnyObject | void
 }
@@ -85,12 +71,13 @@ export function defineComponent(
     properties?: ComponentPropsOptions
   }
 ) {
-  const { setup, options } = usePlugin(componentOptions as any, 'Component')
+  const { setup, options } = loadPlugin(componentOptions, 'Component')
 
   const {
+    behaviors = [],
+    observers = {},
     properties: propsOptions = {},
     options: innerOptions,
-    behaviors = [],
     externalClasses,
     relations,
     ...others
@@ -98,40 +85,53 @@ export function defineComponent(
 
   const properties = convertProps(propsOptions)
   const propNames = Object.keys(properties)
+  const { detached, ...lifetimes } = wrapLifetimeHooks(COMPONENT_LIFETIMES.LIFETIMES)
+  const pageLifetimes = wrapLifetimeHooks(COMPONENT_LIFETIMES.PAGELIFETIMES)
 
-  const { detached, ...lifetimes } = wrapLifetimeHooks(COMPONENT_LIFETIMES, 'lifetimes')
-  const pageLifetimes = wrapLifetimeHooks(COMPONENT_PAGE_LIFETIMES, 'pageLifetimes')
-  const methodsLifetimes = wrapLifetimeHooks(COMPONENT_METHOD_LIFETIMES, 'methods', {})
-
-  const observers = keysToRecord(propNames, propName => {
-    return function (this: ComponentInstance, value: unknown) {
+  const propsObservers = keysToRecord(propNames, propName => {
+    return function (this: ComponentInstance, ...args: unknown[]) {
       const _props = this[CORE_KEY].props
-      if (_props[propName] !== value) {
-        _props[propName] = value
+      if (_props[propName] !== args[0]) {
+        _props[propName] = args[0]
+      }
+      if (observers[propName]) {
+        observers[propName](...args)
       }
     }
   })
 
+  const { created, attached } = createSetupHook({ type: 'Component', properties, setup })
   const sourceOptions = {
-    behaviors: [
-      ...behaviors,
-      // setup behaviors 在最后执行可以使
-      setupBehavior({ properties, setup }),
-    ],
+    properties,
+    behaviors: behaviors,
     options: Object.assign({ multipleSlots: true }, innerOptions),
     externalClasses,
     relations,
-    observers,
     ...others,
+    observers: {
+      ...observers,
+      ...propsObservers,
+    },
     lifetimes: {
       ...lifetimes,
+      created(this: Instance) {
+        created.call(this)
+        // @ts-ignore
+        lifetimes.created && lifetimes.created.call(this)
+      },
+      attached(this: Instance) {
+        // @ts-ignore
+        attached.call(this)
+        lifetimes.attached && lifetimes.attached.call(this)
+      },
       detached(this: Instance) {
         detached.call(this)
+        this[CORE_KEY].isUnmounted = true
         this[CORE_KEY].scope.stop()
       },
     },
     pageLifetimes,
-    methods: { ...methodsLifetimes },
+    methods: {},
   }
   return Component(sourceOptions)
 }

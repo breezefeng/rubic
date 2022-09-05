@@ -138,9 +138,8 @@ function doWatch(
 
   const warnInvalidSource = (s: unknown) => {
     warn(
-      `Invalid watch source: `,
-      s,
-      `A watch source can only be a getter/effect function, a ref, ` + `a reactive object, or an array of these types.`
+      `Invalid watch source: ${s} 
+      A watch source can only be a getter/effect function, a ref, ` + `a reactive object, or an array of these types.`
     )
   }
 
@@ -273,17 +272,6 @@ function doWatch(
       // @ts-ignore
       remove(instance[CORE_KEY].scope.effects!, effect)
     }
-  }
-}
-
-export function createPathGetter(ctx: any, path: string) {
-  const segments = path.split('.')
-  return () => {
-    let cur = ctx
-    for (let i = 0; i < segments.length && cur; i++) {
-      cur = cur[segments[i]]
-    }
-    return cur
   }
 }
 

@@ -63,23 +63,17 @@
 
 监听用户滑动页面事件。
 
-- 需设置 `setupOptions.enablePageScroll` 为 `true`
-
 参数：接收一个函数，该函数与 [Page -> onPageScroll](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onPageScroll-Object-object) 一致
 
 ## onShareAppMessage
 
 监听用户点击页面内转发按钮（button 组件 open-type="share"）或右上角菜单“转发”按钮的行为，并自定义转发内容。
 
-- 需设置 `setupOptions.enableShareAppMessage` 为 `true`
-
 参数：接收一个函数，该函数与 [Page -> onShareAppMessage](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onShareAppMessage-Object-object) 一致
 
 ## onShareTimeline
 
 监听右上角菜单“分享到朋友圈”按钮的行为，并自定义分享内容。
-
-- 需设置 `setupOptions.enableShareTimeline` 为 `true`
 
 参数：接收一个函数，该函数与 [Page -> onShareTimeline](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onShareTimeline) 一致
 

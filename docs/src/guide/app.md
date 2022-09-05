@@ -59,17 +59,17 @@ console.log(app.context) // {}
 使用示例：
 
 ```js
-import { createApp, onAppLaunch, onAppShow, onAppError } from 'rubic'
+import { createApp, onLaunch, onAppShow, onError } from 'rubic'
 
 createApp({
   setup() {
-    onAppLaunch(options => {
+    onLaunch(options => {
       console.log('onLaunch options:', options)
     })
     onAppShow(options => {
       console.log('onShow options:', options)
     })
-    onAppError(err => {
+    onError(err => {
       console.log('error:', err)
     })
   },
@@ -82,15 +82,15 @@ createApp({
 
 小程序 App 生命周期全部以 `onAppXXX` 的形式导出。
 
-| `原生代码`             | `使用框架`                |
-| ---------------------- | ------------------------- |
-| `onLaunch`             | `onAppLaunch`             |
-| `onShow`               | `onAppShow`               |
-| `onHide`               | `onAppHide`               |
-| `onError`              | `onAppError`              |
-| `onPageNotFound`       | `onAppPageNotFound`       |
-| `onUnhandledRejection` | `onAppUnhandledRejection` |
-| `onThemeChange`        | `onAppThemeChange`        |
+| `原生代码`             | `使用框架`             |
+| ---------------------- | ---------------------- |
+| `onLaunch`             | `onLaunch`             |
+| `onShow`               | `onAppShow`            |
+| `onHide`               | `onAppHide`            |
+| `onError`              | `onError`              |
+| `onPageNotFound`       | `onPageNotFound`       |
+| `onUnhandledRejection` | `onUnhandledRejection` |
+| `onThemeChange`        | `onThemeChange`        |
 
 :::tip
 加上 `onXXX` 改为 `onAppXXX` 是为了明确 App 与 Component 的区别。如 `onShow`、`onHide` 同时存在于 App 和 Component 但他们的参数并不相同，不利于 Typescript 类型推断。

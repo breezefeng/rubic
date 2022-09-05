@@ -1,11 +1,16 @@
 import type { Instance, PageInstance } from './instance'
-import type { AnyObject } from './types'
-import { convertProps } from './props'
+import type { AnyObject, Flat } from './types'
+import {
+  convertProps,
+  type ComponentObjectPropsOptions,
+  type ComponentPropsOptions,
+  type ExtractPropTypes,
+} from './props'
 import { wrapLifetimeHooks } from './lifetimes'
-import { setupBehavior } from './setup'
-import { usePlugin } from './plugin'
+import { createSetupHook } from './setup'
+import { loadPlugin } from './plugin'
 import type { StyleIsolation } from './component'
-import { COMPONENT_LIFETIMES, COMPONENT_METHOD_LIFETIMES, COMPONENT_PAGE_LIFETIMES, CORE_KEY } from './constants'
+import { PAGE_LIFETIMES, CORE_KEY } from './constants'
 
 export type PageStyleIsolation = StyleIsolation | 'page-isolated' | 'page-apply-shared' | 'page-shared'
 
@@ -18,6 +23,7 @@ export type PageInnerOptions = {
 
 export type PageBaseOptions<P = {}> = {
   behaviors?: string[]
+  observers?: Record<string, (...args: any[]) => any>
   /**
    * 一些选项
    */
@@ -25,48 +31,61 @@ export type PageBaseOptions<P = {}> = {
   setup: (props: P, ctx: PageInstance) => AnyObject | void
 }
 
-export type PageOptionsWithArrayProps<
+type PageOptionsWithoutProps<P = {}> = PageBaseOptions<P> & {
+  properties?: undefined
+}
+
+type PageOptionsWithArrayProps<
   PropNames extends string = string,
   P = Readonly<{ [key in PropNames]?: string }>
 > = PageBaseOptions<P> & {
-  properties?: PropNames[]
+  properties: PropNames[]
 }
 
-export function definePage<P extends string>(pageOptions: PageOptionsWithArrayProps<P>): string {
-  const { setup, options } = usePlugin(pageOptions as any, 'Component')
+type PageOptionsWithObjectProps<
+  PropsOptions = ComponentObjectPropsOptions,
+  P = Readonly<Flat<ExtractPropTypes<PropsOptions>>>
+> = PageBaseOptions<P> & {
+  properties: PropsOptions
+}
 
-  const {
-    properties: propsOptions = {},
-    options: innerOptions,
-    behaviors = [],
-  } = options as PageOptionsWithArrayProps<P>
+export function definePage<P = {}>(options: PageOptionsWithoutProps<P>): void
+export function definePage<P extends string>(options: PageOptionsWithArrayProps<P>): void
+export function definePage<P extends Readonly<ComponentPropsOptions>>(options: PageOptionsWithObjectProps<P>): void
+export function definePage(
+  pageOptions: PageBaseOptions<any> & {
+    properties?: ComponentPropsOptions
+  }
+) {
+  const { setup, options } = loadPlugin(pageOptions, 'Page')
+  const { behaviors = [], observers = {}, properties: propsOptions = {}, options: innerOptions, ...others } = options
 
   const properties = convertProps(propsOptions)
 
-  const { detached, ...lifetimes } = wrapLifetimeHooks(COMPONENT_LIFETIMES, 'lifetimes')
-  const pageLifetimes = wrapLifetimeHooks(COMPONENT_PAGE_LIFETIMES, 'pageLifetimes')
-  const methodsLifetimes = wrapLifetimeHooks(COMPONENT_METHOD_LIFETIMES, 'methods', {})
+  const { onUnload, ...lifetimes } = wrapLifetimeHooks(PAGE_LIFETIMES)
 
+  const { created, attached } = createSetupHook({ type: 'Page', properties, setup })
   const sourceOptions = {
+    properties,
     behaviors: [
       ...behaviors,
       // setup behaviors 在最后执行可以使
-      setupBehavior({ properties, setup }),
+      Behavior({
+        lifetimes: { created, attached },
+      }),
     ],
-    options: Object.assign({ multipleSlots: true }, innerOptions),
-    lifetimes: {
-      ...lifetimes,
-      detached(this: Instance) {
-        detached.call(this)
-        this[CORE_KEY].scope.stop()
-      },
+    options,
+    ...others,
+    ...lifetimes,
+    onUnload(this: Instance) {
+      onUnload.call(this)
+      this[CORE_KEY].isUnmounted = true
+      this[CORE_KEY].scope.stop()
     },
-    pageLifetimes,
-    methods: { ...methodsLifetimes },
   }
   if (__TEST__) {
     // @ts-ignore
     sourceOptions.__IS_PAGE__ = true
   }
-  return Component(sourceOptions)
+  return Page(sourceOptions)
 }

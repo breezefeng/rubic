@@ -1,14 +1,17 @@
 import type { ComponentBaseOptions } from './component'
 import type { Bindings } from './types'
-import { warn } from './errorHandling'
 import type { Instance } from './instance'
 import type { PageBaseOptions } from './page'
+import { warn } from './errorHandling'
+
+export type PluginConfig = (options: ComponentBaseOptions) => void
 
 export type PluginOptions = (options: ComponentBaseOptions) => void
 
-type PluginSetupA = (props: Record<string, any>, ctx: Instance) => void | Bindings
-type PluginSetupB = (props: Record<string, any>, ctx: Instance, next: () => void | Bindings) => void | Bindings
-export type PluginSetup = PluginSetupB | PluginSetupA
+export type NormalSetup = (props: Record<string, any>, ctx: Instance) => void | Bindings
+export type ComposeSetup = (props: Record<string, any>, ctx: Instance, next: () => void | Bindings) => void | Bindings
+
+export type PluginSetup = NormalSetup | ComposeSetup
 
 export type Plugin = {
   name: string
@@ -22,11 +25,11 @@ export type Plugin = {
  */
 const globalPlugins = new Set<Plugin>()
 
-function isSerialSetup(setup: PluginSetup): setup is PluginSetupA {
+function isSerialSetup(setup: PluginSetup): setup is NormalSetup {
   return setup.length <= 2
 }
 export function compose(setupGroup: PluginSetup[], props: Record<string, any>, ctx: any) {
-  return function (next: PluginSetupA): void | AnyObject {
+  return function (next: NormalSetup): void | AnyObject {
     let index = -1
 
     function dispatch(i: number): void | AnyObject {
@@ -68,8 +71,8 @@ export function registerPlugins(plugins: Plugin[]) {
   }
 }
 
-export function usePlugin<T extends ComponentBaseOptions | PageBaseOptions>(
-  originOptions: T & { properties: any },
+export function loadPlugin<T extends ComponentBaseOptions | PageBaseOptions>(
+  originOptions: T & { properties?: any },
   type: 'Page' | 'Component'
 ) {
   const { setup: originSetup } = originOptions
@@ -94,11 +97,11 @@ export function usePlugin<T extends ComponentBaseOptions | PageBaseOptions>(
 
   function setup(props: any, ctx: any) {
     const setup = compose(setupGroup, props, ctx)
-    return setup(originSetup as PluginSetupA)
+    return setup(originSetup as NormalSetup)
   }
 
   return {
-    options: originOptions as T,
+    options: originOptions as Omit<T, 'setup'>,
     setup,
   }
 }

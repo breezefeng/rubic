@@ -1,68 +1,35 @@
-export {
-  // Core
-  reactive,
-  ref,
-  readonly,
-  shallowRef,
-  triggerRef,
-  // Utilities
-  unref,
-  isRef,
-  toRef,
-  toRefs,
-  isProxy,
-  isReactive,
-  isReadonly,
-  effectScope,
-  EffectScope,
-  ITERATE_KEY,
-  // Advanced
-  markRaw,
-  toRaw,
-  computed,
-  // type
-  ReactiveEffect,
-} from '@vue/reactivity'
-export type {
-  ReactiveEffectOptions,
-  DebuggerEvent,
-  Ref,
-  ComputedRef,
-  WritableComputedRef,
-  UnwrapRef,
-  ShallowUnwrapRef,
-  WritableComputedOptions,
-  ToRefs,
-  DeepReadonly,
-} from '@vue/reactivity'
+// Public API ------------------------------------------------------------------
+
+export { CORE_KEY } from './constants'
 
 export { watch, watchEffect, watchPostEffect, watchSyncEffect } from './watch'
-export { nextTick } from './scheduler'
-export { CORE_KEY } from './constants'
-export { provide, inject } from './inject'
-export type { InjectionKey } from './inject'
-export { getCurrentInstance } from './instance'
+export type { WatchEffect, WatchSource, WatchCallback } from './watch'
 
-export { createApp, useApp } from './app'
+export { nextTick } from './scheduler'
+
+export { getCurrentInstance } from './instance'
+export type { Instance, AppCustomContext, PageCustomContext, ComponentCustomContext } from './instance'
+
+export { createApp } from './app'
+export type { AppSetup, AppOptions } from './app'
+
+export { registerPlugins, loadPlugin } from './plugin'
+export type { Plugin, PluginSetup, PluginConfig } from './plugin'
+
 export { definePage } from './page'
 export { defineComponent } from './component'
 
+export { defineStore, storeToRefs } from './store'
 export {
-  // app
-  onAppLaunch,
+  onLaunch,
   onAppShow,
   onAppHide,
-  onAppPageNotFound,
-  onAppUnhandledRejection,
-  onAppThemeChange,
-  onAppError,
-  // page
+  onPageNotFound,
+  onUnhandledRejection,
+  onThemeChange,
+  onError,
   onLoad,
   onUnload,
-  onShow,
-  onHide,
-  onResize,
-  onReady,
   onPullDownRefresh,
   onReachBottom,
   onAddToFavorites,
@@ -71,21 +38,47 @@ export {
   onShareAppMessage,
   onShareTimeline,
   onPageScroll,
-  // component
   onMoved,
   onDetached,
-  onError,
+  onReady,
+  onShow,
+  onHide,
+  onResize,
 } from './lifetimes'
 
+export {
+  computed,
+  customRef,
+  isProxy,
+  isReactive,
+  isReadonly,
+  isRef,
+  isShallow,
+  markRaw,
+  reactive,
+  readonly,
+  ref,
+  shallowReactive,
+  shallowReadonly,
+  shallowRef,
+  triggerRef,
+  toRaw,
+  toRef,
+  toRefs,
+  unref,
+  ITERATE_KEY,
+} from '@vue/reactivity'
 export type {
-  Core,
-  Instance,
-  PageInstance,
-  ComponentInstance,
-  InstanceType,
-  AppCustomContext,
-  PageCustomContext,
-  ComponentCustomContext,
-} from './instance'
-export type { AppOptions } from './app'
-export type { Plugin, PluginOptions, PluginSetup } from './plugin'
+  DebuggerEvent,
+  ComputedGetter,
+  ComputedRef,
+  CustomRefFactory,
+  ComputedSetter,
+  Ref,
+  ShallowReactive,
+  ShallowUnwrapRef,
+  ToRef,
+  ToRefs,
+  UnwrapNestedRefs,
+  UnwrapRef,
+} from '@vue/reactivity'

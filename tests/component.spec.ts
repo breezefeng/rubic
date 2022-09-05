@@ -47,10 +47,9 @@ describe('component', () => {
   })
 
   test('lifetime outside setup', () => {
-    const resetConsole = mockConsole()
-    onShow(() => {})
-    expect(console.error).toBeCalledWith('[core]: 当前没有实例 无法创建 onShow 钩子.')
-    resetConsole()
+    expect(() => {
+      onShow(() => {})
+    }).toThrowError('当前没有实例 无法调用 onShow 钩子.')
   })
 
   test('reactive binding', async () => {
@@ -94,7 +93,7 @@ describe('component', () => {
     )
     await sleep(10)
     expect(console.error).toBeCalledWith(
-      '[core]: 错误的数据类型 sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array) | instance: id'
+      '[core error]: 错误的数据类型 sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array) | instance: id'
     )
     resetConsole()
   })

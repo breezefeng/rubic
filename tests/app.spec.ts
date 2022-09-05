@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createApp, ref, computed, watchEffect, nextTick, onAppLaunch, onAppShow } from '../src'
+import { createApp, ref, computed, watchEffect, nextTick, onLaunch, onAppShow } from '../src'
 import { launchApp, mockConsole } from './mock'
 
 const launchOptions: WechatMiniprogram.App.LaunchShowOption = {
@@ -65,10 +65,10 @@ describe('app', () => {
     const app = await launchApp(() =>
       createApp({
         setup() {
-          onAppLaunch(options => {
+          onLaunch(options => {
             calledKeys.push(`onLaunch0:${options.path}`)
           })
-          onAppLaunch(options => {
+          onLaunch(options => {
             calledKeys.push(`onLaunch1:${options.path}`)
           })
           onAppShow(options => {
@@ -87,9 +87,8 @@ describe('app', () => {
     expect(calledKeys[3]).toBe('onAppShow1:/pages/test')
   })
   test('lifetime outside setup', async () => {
-    const resetConsole = mockConsole()
-    onAppShow(() => {})
-    expect(console.error).toHaveBeenLastCalledWith('[core]: 当前没有实例 无法创建 onShow 钩子.')
-    resetConsole()
+    expect(() => {
+      onAppShow(() => {})
+    }).toThrowError('当前没有实例 无法调用 onShow 钩子.')
   })
 })

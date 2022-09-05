@@ -1,6 +1,7 @@
 import { pauseTracking, resetTracking } from '@vue/reactivity'
 import { isFunction, isPromise } from './utils'
 import type { Instance } from './instance'
+import type { Method } from './types'
 import { getCurrentInstance } from '.'
 
 export const enum ErrorCodes {
@@ -28,32 +29,28 @@ export const ErrorTypeStrings: Record<number | string, string> = {
   [ErrorCodes.APP_ERROR_HANDLER]: 'app errorHandler',
   [ErrorCodes.APP_WARN_HANDLER]: 'app warnHandler',
   [ErrorCodes.FUNCTION_REF]: 'ref function',
-  [ErrorCodes.SCHEDULER]: 'scheduler flush. This is likely a Rubic internals bug. ',
+  [ErrorCodes.SCHEDULER]: 'scheduler flush. This is likely a internals bug. ',
 }
 
 export function error(err: Error, instance?: Instance | null, type?: ErrorCodes) {
   if (type) {
-    warn(`未处理的错误 ${type}`, instance)
+    warn(`未处理的错误 ${type} ${instance ? ' [at: ' + instance.is + ']' : ''} `)
   }
-  err.message = `[core]: ${err.message}`
+  err.message = `[core error]: ${err.message}`
   if (instance) {
-    err.message += ` | instance: ${instance.is}`
+    err.message += ` [at: ${instance.is}]`
   }
-  if (__TEST__) {
-    console.error(err.message)
-  } else {
-    throw err
-  }
+  console.error(err.message)
 }
 
-export function warn(msg: string, ...args: any[]) {
+export function warn(msg: string) {
   pauseTracking()
-  const warnArgs = [`[core warn]: ${msg}`, ...args]
+  let warnMsg = `[core warn]: ${msg}`
   const instance = getCurrentInstance()
   if (instance) {
-    warnArgs.push(`\n`, instance.is)
+    warnMsg = warnMsg + ` [at: ${instance.is}]`
   }
-  console.warn(...warnArgs)
+  console.warn(warnMsg)
   resetTracking()
 }
 
@@ -68,7 +65,7 @@ export function callWithErrorHandling(fn: Function, instance: Instance | null, t
 }
 
 export function callWithAsyncErrorHandling(
-  fn: Function | Function[],
+  fn: Method | Method[],
   instance: Instance | null,
   type: ErrorCodes,
   args?: unknown[]
@@ -90,27 +87,22 @@ export function callWithAsyncErrorHandling(
   return values
 }
 
-export function handleError(err: unknown, instance: Instance | null, type: ErrorCodes, throwInDev = true) {
+export function handleError(err: unknown, instance: Instance | null, type: ErrorCodes) {
   if (instance) {
     const errorInfo = ErrorTypeStrings[type]
-    // app-level handling
     // @ts-ignore
-    const appErrorHandler = instance.errorHandler
+    const appErrorHandler = app.errorHandler
     if (appErrorHandler) {
       callWithErrorHandling(appErrorHandler, null, ErrorCodes.APP_ERROR_HANDLER, [err, instance.is, errorInfo])
       return
     }
   }
-  logError(err, type, instance, throwInDev)
+  logError(err, type, instance)
 }
 
-function logError(err: unknown, type: ErrorCodes, instance: Instance | null, throwInDev = true) {
+function logError(err: unknown, type: ErrorCodes, instance: Instance | null) {
   const info = ErrorTypeStrings[type]
   warn(`Unhandled error${info ? ` during execution of ${info}` : ``}`)
   // crash in dev by default so it's more noticeable
-  if (throwInDev) {
-    throw err
-  } else {
-    console.error(err)
-  }
+  console.error(err)
 }

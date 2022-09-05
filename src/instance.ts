@@ -1,61 +1,63 @@
-import type { ShallowReactive } from '@vue/reactivity'
-import { EffectScope, shallowReactive } from '@vue/reactivity'
-import type { HookType } from './constants'
-import {
-  APP_LIFETIMES,
-  COMPONENT_LIFETIMES,
-  COMPONENT_METHOD_LIFETIMES,
-  COMPONENT_PAGE_LIFETIMES,
-  CORE_KEY,
-} from './constants'
-
-import type { Data, Flat, Func } from './types'
+import { EffectScope, shallowReactive, type ShallowReactive } from '@vue/reactivity'
+import { APP_LIFETIMES, CORE_KEY, PAGE_LIFETIMES, COMPONENT_LIFETIMES } from './constants'
+import type { Data, Flat, Method } from './types'
 import { keysToRecord } from './utils'
-
-export type NextTick = (fn: () => void) => void
 
 export type InstanceType = 'App' | 'Page' | 'Component'
 
-export type Core<T extends InstanceType = 'Page'> = {
+export type AppLifetimeKey = typeof APP_LIFETIMES[number]
+export type PageLifetimeKey = typeof PAGE_LIFETIMES[number]
+
+export type ComponentPageLifetimeKey = typeof COMPONENT_LIFETIMES.PAGELIFETIMES[number]
+export type ComponentLifetimeKey =
+  | typeof COMPONENT_LIFETIMES.LIFETIMES[number]
+  | typeof COMPONENT_LIFETIMES.PAGELIFETIMES[number]
+
+export type AppHooks = { [key in AppLifetimeKey]?: Method[] }
+export type PageHooks = { [key in PageLifetimeKey]?: Method[] }
+export type ComponentHooks = { [key in ComponentLifetimeKey]?: Method[] }
+
+export type Core = {
+  type: InstanceType
   props: ShallowReactive<Record<string, any>>
-  type: T
+  hooks: AppHooks & PageHooks & ComponentHooks
   isUnmounted: boolean
-  hooks: T extends 'App'
-    ? { [key in HookType['App']]?: Func[] }
-    : {
-        lifetimes: {
-          [key in HookType['Component']]: Func[]
-        }
-        pageLifetimes: {
-          [key in HookType['ComponentPage']]: Func[]
-        }
-        methods: {
-          [key in HookType['ComponentMethods']]: Func[]
-        }
-      }
   scope: EffectScope
   bindings: Record<string, any>
-  nextTick: NextTick
-  initHooks(type: InstanceType): Core
+  initHooks(): Core
+  toJSON(): string
 }
+
+type InstanceCore = {
+  [CORE_KEY]: Core
+}
+
+type BaseInstance<D extends Record<string, any>, C, P extends boolean = false> = Flat<
+  WechatMiniprogram.Component.Instance<
+    D,
+    {},
+    {},
+    InstanceCore &
+      C & {
+        route?: string
+      },
+    P
+  >
+>
 
 export interface AppCustomContext {}
 export interface PageCustomContext {}
 export interface ComponentCustomContext {}
 
-export type InstanceCore = { [CORE_KEY]: Core; nextTick: NextTick; route: string }
-
-type BaseInstance<D, C, P extends boolean = false> = Flat<
-  WechatMiniprogram.Component.Instance<D, {}, {}, InstanceCore & C, P>
->
+export type AppInstance = WechatMiniprogram.App.Instance<InstanceCore & AppCustomContext>
 
 export type PageInstance = BaseInstance<Data, PageCustomContext, true>
 
 export type ComponentInstance = BaseInstance<Data, ComponentCustomContext, false>
 
-export type Instance = PageInstance | ComponentInstance
+let currentInstance: PageInstance | ComponentInstance | null = null
 
-let currentInstance: Instance | null = null
+export type Instance = PageInstance | ComponentInstance
 
 export function setCurrentInstance(instance: Instance) {
   if (instance) {
@@ -76,27 +78,30 @@ export function getCurrentInstance() {
   return currentInstance
 }
 
-export function createCore(instance: any): Core {
+export function createCore(type: InstanceType): Core {
   const core: Core = {
+    type: type,
     props: shallowReactive<Record<string, any>>({}),
-    scope: new EffectScope(),
-    type: 'Page',
-    isUnmounted: false,
-    // @ts-ignore
     hooks: {},
+    isUnmounted: false,
+    scope: new EffectScope(),
     bindings: {},
-    nextTick(fn: (this: Instance) => void) {},
-    initHooks(this: any, type: InstanceType) {
-      this.type = type
-      this.hooks =
-        type === 'App'
-          ? keysToRecord(APP_LIFETIMES, () => [])
-          : {
-              lifetimes: keysToRecord(COMPONENT_LIFETIMES, () => []),
-              pageLifetimes: keysToRecord(COMPONENT_PAGE_LIFETIMES, () => []),
-              methods: keysToRecord(COMPONENT_METHOD_LIFETIMES, () => []),
-            }
+    initHooks() {
+      switch (this.type) {
+        case 'App':
+          this.hooks = keysToRecord(APP_LIFETIMES, () => [])
+          break
+        case 'Page':
+          this.hooks = keysToRecord(PAGE_LIFETIMES, () => [])
+          break
+        default:
+          this.hooks = keysToRecord([...COMPONENT_LIFETIMES.LIFETIMES, ...COMPONENT_LIFETIMES.PAGELIFETIMES], () => [])
+          break
+      }
       return this
+    },
+    toJSON() {
+      return 'core'
     },
   }
 

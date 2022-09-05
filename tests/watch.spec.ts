@@ -211,18 +211,16 @@ describe('api: watch', () => {
     // @ts-ignore
     watch(1, () => {})
     expect(console.warn).toHaveBeenLastCalledWith(
-      '[core warn]: Invalid watch source: ',
-      1,
-      'A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.'
+      `[core warn]: Invalid watch source: 1 
+      A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
     )
   })
 
   test('warn invalid watch source: multiple sources', () => {
     watch([1], () => {})
     expect(console.warn).toHaveBeenLastCalledWith(
-      '[core warn]: Invalid watch source: ',
-      1,
-      'A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.'
+      `[core warn]: Invalid watch source: 1 
+      A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
     )
   })
 
