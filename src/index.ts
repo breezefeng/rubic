@@ -21,7 +21,6 @@ export { defineComponent } from './component'
 
 export { defineStore, storeToRefs } from './store'
 export {
-  onLaunch,
   onAppShow,
   onAppHide,
   onPageNotFound,

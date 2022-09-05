@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createApp, ref, computed, watchEffect, nextTick, onLaunch, onAppShow } from '../src'
+import { createApp, ref, computed, watchEffect, nextTick, onAppShow } from '../src'
 import { launchApp, mockConsole } from './mock'
 
 const launchOptions: WechatMiniprogram.App.LaunchShowOption = {
@@ -65,12 +65,6 @@ describe('app', () => {
     const app = await launchApp(() =>
       createApp({
         setup() {
-          onLaunch(options => {
-            calledKeys.push(`onLaunch0:${options.path}`)
-          })
-          onLaunch(options => {
-            calledKeys.push(`onLaunch1:${options.path}`)
-          })
           onAppShow(options => {
             calledKeys.push(`onAppShow0:${options.path}`)
           })
@@ -80,11 +74,9 @@ describe('app', () => {
         },
       })
     )
-    expect(calledKeys[0]).toBe('onLaunch0:/pages/test')
-    expect(calledKeys[1]).toBe('onLaunch1:/pages/test')
     app.onShow(launchOptions)
-    expect(calledKeys[2]).toBe('onAppShow0:/pages/test')
-    expect(calledKeys[3]).toBe('onAppShow1:/pages/test')
+    expect(calledKeys[0]).toBe('onAppShow0:/pages/test')
+    expect(calledKeys[1]).toBe('onAppShow1:/pages/test')
   })
   test('lifetime outside setup', async () => {
     expect(() => {

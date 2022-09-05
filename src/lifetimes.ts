@@ -99,7 +99,6 @@ function createHook<T extends Method>(
  * ====== App Lifetime ====
  */
 type IAppLt = Required<WechatMiniprogram.App.Option>
-export const onLaunch = createHook<IAppLt['onLaunch']>({ App: 'onLaunch' })
 export const onAppShow = createHook<IAppLt['onShow']>({ App: 'onShow' })
 export const onAppHide = createHook<IAppLt['onHide']>({ App: 'onHide' })
 export const onPageNotFound = createHook<IAppLt['onPageNotFound']>({ App: 'onPageNotFound' })

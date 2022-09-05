@@ -3,31 +3,35 @@ import { createCore, setCurrentInstance, unsetCurrentInstance, type Instance, ty
 import type { Bindings } from './types'
 import { APP_LIFETIMES, CORE_KEY } from './constants'
 import { wrapLifetimeHooks } from './lifetimes'
-import { loadPlugin, registerPlugins } from './plugin'
+import { registerPlugins, type Plugin } from './plugin'
 import { SharePlugin } from './plugins'
 
 export type AppSetup = (this: void) => Bindings | void
 
 export type AppOptions = {
   setup: AppSetup
-  middlewares?: any[]
+  plugins?: Plugin[]
   errorHandler?: (err: unknown, instance: Instance | null, info: string) => void
 }
 
 export function createApp(options: AppOptions) {
-  const { setup, middlewares = [], errorHandler } = options
-  registerPlugins([...middlewares, SharePlugin])
+  const { setup, plugins = [], errorHandler } = options
+  registerPlugins([...plugins, SharePlugin])
 
   const lifetimes = wrapLifetimeHooks(APP_LIFETIMES)
-  const core = createCore({ type: 'App' }).initHooks()
-  setCurrentInstance({ [CORE_KEY]: core } as unknown as Instance)
-  const bindings = setup() || {}
-  unsetCurrentInstance()
+  const core = createCore('App').initHooks()
 
   return App({
     [CORE_KEY]: core,
     errorHandler,
     ...lifetimes,
-    ...bindings,
+    onLaunch(options) {
+      setCurrentInstance({ [CORE_KEY]: core } as unknown as Instance)
+      const bindings = setup() || {}
+      unsetCurrentInstance()
+      for (const key of Object.keys(bindings)) {
+        this[key] = bindings[key]
+      }
+    },
   })
 }

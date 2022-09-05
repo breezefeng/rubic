@@ -1,7 +1,6 @@
 export const CORE_KEY = '$$core'
 
 export const APP_LIFETIMES = [
-  'onLaunch',
   'onShow',
   'onHide',
   'onError',
