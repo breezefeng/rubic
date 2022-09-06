@@ -15,8 +15,7 @@ export default defineConfig({
     include: ['tests/**/*.{test,spec}.{ts,js}'],
     globals: true,
     watch: false,
-    // globalSetup: ['./tests/mock/setup.ts'],
-    setupFiles: ['tests/mock/setup.ts'],
+    // setupFiles: ['tests/mock/setup.ts'],
     coverage: {
       include: ['src/**/*.ts'],
       reporter: process.env.CI ? 'lcov' : 'text',

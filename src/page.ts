@@ -49,9 +49,9 @@ type PageOptionsWithObjectProps<
   properties: PropsOptions
 }
 
-export function definePage<P = {}>(options: PageOptionsWithoutProps<P>): void
-export function definePage<P extends string>(options: PageOptionsWithArrayProps<P>): void
-export function definePage<P extends Readonly<ComponentPropsOptions>>(options: PageOptionsWithObjectProps<P>): void
+export function definePage<P = {}>(options: PageOptionsWithoutProps<P>): string
+export function definePage<P extends string>(options: PageOptionsWithArrayProps<P>): string
+export function definePage<P extends Readonly<ComponentPropsOptions>>(options: PageOptionsWithObjectProps<P>): string
 export function definePage(
   pageOptions: PageBaseOptions<any> & {
     properties?: ComponentPropsOptions
@@ -66,12 +66,15 @@ export function definePage(
 
   const { created, attached } = createSetupHook({ type: 'Page', properties, setup })
   const sourceOptions = {
-    properties,
     behaviors: [
+      Behavior({
+        properties,
+        lifetimes: { created },
+      }),
       ...behaviors,
       // setup behaviors 在最后执行可以使
       Behavior({
-        lifetimes: { created, attached },
+        lifetimes: { attached },
       }),
     ],
     options,
@@ -83,9 +86,5 @@ export function definePage(
       this[CORE_KEY].scope.stop()
     },
   }
-  if (__TEST__) {
-    // @ts-ignore
-    sourceOptions.__IS_PAGE__ = true
-  }
-  return Page(sourceOptions)
+  return Page(sourceOptions) as unknown as string
 }

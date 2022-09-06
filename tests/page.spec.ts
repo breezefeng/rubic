@@ -1,6 +1,7 @@
 import { describe, expect, test, vi } from 'vitest'
-import type { Core } from '../src'
+import { register, render, sleep } from 'miniprogram-test-util'
 import {
+  registerPlugins,
   onTabItemTap,
   onAddToFavorites,
   onShareTimeline,
@@ -26,31 +27,30 @@ import {
   CORE_KEY,
   watch,
 } from '../src'
-import { mockConsole, renderPage, sleep } from './mock'
 
 describe('page', async () => {
   test('reactive binding', async () => {
-    const page = await renderPage(
+    const page = render(
+      definePage({
+        setup() {
+          const state: { count: number; countX2: number } = reactive({
+            count: 1,
+            countX2: computed(() => state.count * 2),
+          })
+          const numRef = ref(0)
+          const tap = () => {
+            numRef.value++
+            state.count++
+          }
+          return { state, numRef, tap }
+        },
+      }),
       {
         template:
           '<div id="text" bind:tap="tap">count:{{state.count}} countX2:{{state.countX2}} numRef:{{numRef}}</div>',
-      },
-      () =>
-        definePage({
-          setup() {
-            const state: { count: number; countX2: number } = reactive({
-              count: 1,
-              countX2: computed(() => state.count * 2),
-            })
-            const numRef = ref(0)
-            const tap = () => {
-              numRef.value++
-              state.count++
-            }
-            return { state, numRef, tap }
-          },
-        })
+      }
     )
+
     await sleep(10)
     expect(page.dom!.innerHTML).toBe('<div>count:1 countX2:2 numRef:0</div>')
     page.querySelector('#text')?.dispatchEvent('tap')
@@ -59,24 +59,25 @@ describe('page', async () => {
   })
 
   test('error binding', async () => {
-    const resetConsole = mockConsole()
-    await renderPage({ id: 'id', template: '<div></div>' }, () =>
+    const page = render(
       definePage({
         setup() {
+          const arr = [1, 2, 3]
+          const num = 123
           const sym = Symbol('sym')
-          return { sym: sym }
+          return { arr, num, sym }
         },
-      })
+      }),
+      {
+        template: `arr:{{arr}}, num:{{num}}, sym:{{sym}}`,
+      }
     )
-    await sleep(10)
-    expect(console.error).toBeCalledWith(
-      `[core]: 错误的数据类型 sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array) | instance: id`
-    )
-    resetConsole()
+    await sleep()
+    expect(page.dom?.innerHTML).toBe('arr:1,2,3, num:123, sym:')
   })
 
   test('readonly binding', async () => {
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           const state = readonly({ count: 0 })
@@ -89,7 +90,7 @@ describe('page', async () => {
   })
 
   test('array binding', async () => {
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           const count = ref(0)
@@ -113,7 +114,7 @@ describe('page', async () => {
   })
 
   test('object binding', async () => {
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           const count = ref(0)
@@ -138,7 +139,7 @@ describe('page', async () => {
   })
 
   test('unbundling', async () => {
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           const count = ref(0)
@@ -155,12 +156,14 @@ describe('page', async () => {
         },
       })
     )
-
     expect(page.instance[CORE_KEY].scope.effects.length).toBe(3)
-
     page.instance.increment()
+    await sleep(0)
+    expect(page.data.count).toBe(1)
+    expect(page.data.double).toBe(2)
     page.instance.onUnload()
-    await nextTick()
+    page.instance.increment()
+    await sleep(0)
     expect(page.data.count).toBe(1)
     expect(page.data.double).toBe(2)
   })
@@ -168,7 +171,7 @@ describe('page', async () => {
   test('watch', async () => {
     let dummy: number
     let stopper: () => void
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           const count = ref(0)
@@ -186,6 +189,7 @@ describe('page', async () => {
         },
       })
     )
+
     expect(page.instance[CORE_KEY].scope.effects.length).toBe(2)
 
     await nextTick()
@@ -210,7 +214,7 @@ describe('page', async () => {
     let dummy = 0
     let tempCount = 0
     let stopper = () => {}
-    const page = await renderPage({ template: '<div></div>' }, () =>
+    const page = render(
       definePage({
         setup() {
           const count = ref(0)
@@ -228,8 +232,10 @@ describe('page', async () => {
             increment,
           }
         },
-      })
+      }),
+      { template: '<div></div>' }
     )
+
     sleep(10)
     const core = page.instance[CORE_KEY] as unknown as Core
     expect(dummy).toBe(0)
@@ -254,21 +260,11 @@ describe('page', async () => {
   })
 
   test('lifetimes', async () => {
-    const resetConsole = mockConsole()
     const calledKeys: string[] = []
-    const page = await renderPage({ template: '<div id="text" bind:tap="tap">data: {{text}}</div>' }, () => {
+    const page = render(
       definePage({
         setup() {
           calledKeys.push('onAttach')
-          onShow(() => {
-            calledKeys.push('onShow')
-          })
-          onMoved(() => {
-            calledKeys.push('onMoved')
-          })
-          onDetached(() => {
-            calledKeys.push('onDetached')
-          })
           onLoad(() => {
             calledKeys.push('onLoad')
           })
@@ -277,43 +273,35 @@ describe('page', async () => {
           })
           return {}
         },
-      })
-    })
-    expect(calledKeys).toEqual(['onAttach', 'onLoad', 'onLoad 2', 'onShow'])
-    // expect(console.error).toBeCalledWith(`[core]: Page 不存在 moved 钩子.`)
-    // expect(console.error).toBeCalledWith(`[core]: Page 不存在 detached 钩子.`)
-    resetConsole()
+      }),
+      { template: '<div id="text" bind:tap="tap">data: {{text}}</div>' }
+    )
+
+    expect(calledKeys).toEqual(['onAttach', 'onLoad', 'onLoad 2'])
   })
 
   test('lifecycle outside', async () => {
-    const resetConsole = mockConsole()
-    onShow(() => {})
-
-    expect(console.error).toHaveBeenLastCalledWith('[core]: 当前没有实例 无法创建 onShow 钩子.')
-    resetConsole()
+    expect(() => onShow(() => {})).toThrowError('当前没有实例 无法调用 onShow 钩子.')
   })
   test('onLoad', async () => {
     const params = { query: 1 }
     const onLoadFn = vi.fn()
-    const setup = vi.fn((query, context) => {
-      onLoad(onLoadFn)
-      expect(context.is).toBe('')
-      expect(context.getOpenerEventChannel).toBeInstanceOf(Function)
-    })
-    const page = await renderPage({ props: params }, () =>
+    const page = render(
       definePage({
-        setup,
-      })
+        setup() {
+          onLoad(onLoadFn)
+        },
+      }),
+      { props: params }
     )
-
+    await sleep(0)
     expect(onLoadFn).toBeCalledWith(params)
-    expect(setup).toBeCalledTimes(1)
   })
 
   test('onReady', async () => {
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onReady(() => {
@@ -323,6 +311,8 @@ describe('page', async () => {
         },
       })
     )
+    await sleep(0)
+    page.instance.onReady()
     expect(injectedFn1).toBeCalledTimes(1)
     expect(injectedFn2).toBeCalledTimes(1)
   })
@@ -330,7 +320,7 @@ describe('page', async () => {
   test('onShow', async () => {
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onShow(injectedFn1)
@@ -338,6 +328,9 @@ describe('page', async () => {
         },
       })
     )
+
+    await sleep(0)
+    page.instance.onShow()
     expect(injectedFn1).toBeCalledTimes(1)
     expect(injectedFn2).toBeCalledTimes(1)
   })
@@ -345,7 +338,7 @@ describe('page', async () => {
   test('onHide', async () => {
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         properties: ['query1'],
         setup(query) {
@@ -355,7 +348,8 @@ describe('page', async () => {
       })
     )
 
-    page.triggerPageLifeTime('hide')
+    await sleep(0)
+    page.instance.onHide()
     expect(injectedFn1).toBeCalledTimes(1)
     expect(injectedFn2).toBeCalledTimes(1)
   })
@@ -363,7 +357,7 @@ describe('page', async () => {
   test('onUnload', async () => {
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onUnload(injectedFn1)
@@ -372,6 +366,7 @@ describe('page', async () => {
       })
     )
 
+    await sleep(0)
     page.instance.onUnload()
     expect(injectedFn1).toBeCalledTimes(1)
     expect(injectedFn2).toBeCalledTimes(1)
@@ -380,7 +375,7 @@ describe('page', async () => {
   test('onPullDownRefresh', async () => {
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onPullDownRefresh(injectedFn1)
@@ -397,7 +392,7 @@ describe('page', async () => {
   test('onReachBottom', async () => {
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onReachBottom(injectedFn1)
@@ -405,7 +400,7 @@ describe('page', async () => {
         },
       })
     )
-
+    await sleep(0)
     page.instance.onReachBottom()
     expect(injectedFn1).toBeCalledTimes(1)
     expect(injectedFn2).toBeCalledTimes(1)
@@ -416,7 +411,7 @@ describe('page', async () => {
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
 
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onResize(injectedFn1)
@@ -424,8 +419,8 @@ describe('page', async () => {
         },
       })
     )
-
-    page.triggerPageLifeTime('resize', arg)
+    await sleep(0)
+    page.instance.onResize(arg)
     expect(injectedFn1).toBeCalledWith(arg)
     expect(injectedFn2).toBeCalledWith(arg)
   })
@@ -434,7 +429,7 @@ describe('page', async () => {
     const arg = {}
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onTabItemTap(injectedFn1)
@@ -452,7 +447,7 @@ describe('page', async () => {
     const arg = {}
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onPageScroll(injectedFn1)
@@ -472,7 +467,7 @@ describe('page', async () => {
   test('onShareAppMessage', async () => {
     const arg = {}
     const fn = vi.fn(() => ({ title: 'test' }))
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onShareAppMessage(() => ({}))
@@ -489,7 +484,7 @@ describe('page', async () => {
   test('onShareTimeline', async () => {
     let title = 0
     const fn = vi.fn(() => ({ title: `${title++}` }))
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onShareTimeline(fn)
@@ -506,7 +501,7 @@ describe('page', async () => {
   test('onAddToFavorites', async () => {
     const arg = {}
     const fn = vi.fn(() => ({ title: 'test' }))
-    const page = await renderPage(() =>
+    const page = render(
       definePage({
         setup() {
           onAddToFavorites(fn)
@@ -520,54 +515,26 @@ describe('page', async () => {
   })
 
   test('properties', async () => {
-    const resetConsole = mockConsole()
     let query: Record<string, any> = {}
-    const page = await renderPage(
+    const page = render(
+      definePage({
+        properties: ['a', 'b'],
+        setup(props) {
+          query = props
+        },
+      }),
       {
         props: {
           a: 'aaa',
           b: '123',
         },
-        path: '/test/test/page',
-      },
-      () =>
-        definePage({
-          properties: ['a', 'b'],
-          setup(props) {
-            query = props
-          },
-        })
+        url: '/test/test/page',
+      }
     )
+
     expect(query.a).toBe('aaa')
     expect(query.b).toBe('123')
     expect(query.c).toBe(undefined)
     query.c = 'c'
-    resetConsole()
-  })
-
-  test('queryProps', async () => {
-    const resetConsole = mockConsole()
-    let query: Record<string, any> = {}
-    const page = await renderPage(
-      {
-        props: {
-          a: 'aaa',
-          b: '123',
-        },
-        path: '/test/test/page',
-      },
-      () =>
-        definePage({
-          properties: ['a', 'b'],
-          setup(props) {
-            // @ts-ignore
-            query = props
-          },
-        })
-    )
-    expect(query.a).toBe('aaa')
-    expect(query.b).toBe('123')
-    expect(query.c).toBe(undefined)
-    resetConsole()
   })
 })

@@ -2,6 +2,8 @@ import { describe, expect, test } from 'vitest'
 import { createApp, ref, computed, watchEffect, nextTick, onAppShow } from '../src'
 import { launchApp, mockConsole } from './mock'
 
+// console.log(process.env)
+
 const launchOptions: WechatMiniprogram.App.LaunchShowOption = {
   path: '/pages/test',
   query: { a: 'a' },
