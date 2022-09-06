@@ -1,5 +1,5 @@
 import { CORE_KEY, APP_LIFETIMES, COMPONENT_LIFETIMES, PAGE_LIFETIMES } from './constants'
-import { error, warn } from './errorHandling'
+import { error } from './errorHandling'
 import type {
   AppHooks,
   AppLifetimeKey,

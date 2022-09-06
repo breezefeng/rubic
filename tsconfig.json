@@ -24,7 +24,7 @@
     "paths": {
       "rubic": ["./scr/index.ts"]
     },
-    "types": ["node", "vitest", "miniprogram-api-typings"],
+    "types": ["node", "miniprogram-api-typings"],
     "rootDir": ".",
     "outDir": "./dist",
     "baseUrl": "."

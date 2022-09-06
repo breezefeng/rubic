@@ -11,7 +11,6 @@ import {
   type ToRefs,
   type UnwrapRef,
 } from '@vue/reactivity'
-import { getCurrentInstance } from '../instance'
 import type { Flat, Method } from '../types'
 
 const STORE_EFFECT_SCOPE: EffectScope = effectScope(true)
@@ -115,7 +114,7 @@ export function defineStore<Id extends string, SS>(
   _ExtractActionsFromSetupStore<SS>
 > {
   const useStore = () => {
-    const currentInstance = getCurrentInstance()
+    // const currentInstance = getCurrentInstance()
     if (!STORE_MAP.has(id)) {
       createSetupStore(id, storeSetup)
     }

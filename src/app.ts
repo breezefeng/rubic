@@ -1,5 +1,4 @@
-import { readonly } from '@vue/reactivity'
-import { createCore, setCurrentInstance, unsetCurrentInstance, type Instance, type AppCustomContext } from './instance'
+import { createCore, setCurrentInstance, unsetCurrentInstance, type Instance } from './instance'
 import type { Bindings } from './types'
 import { APP_LIFETIMES, CORE_KEY } from './constants'
 import { wrapLifetimeHooks } from './lifetimes'
