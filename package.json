@@ -21,11 +21,12 @@
     "url": "https://github.com/JasKang/rubic/issues"
   },
   "scripts": {
-    "start": "pnpm --filter docs run dev",
-    "docs:build": "pnpm --filter docs run build",
-    "docs:serve": "pnpm --filter docs run serve",
+    "start": "pnpm docs:dev",
     "build": "tsup && npm run build:miniprogram",
     "build:miniprogram": "node scripts/mpBuild.js",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
     "release": "release-it",
     "release:beta": "release-it --preRelease=beta",
     "test": "vitest",
@@ -44,27 +45,18 @@
     "eslint": "^8.23.0",
     "eslint-config-jaskang": "^0.1.3",
     "fs-extra": "^10.1.0",
-    "jsdom": "^20.0.0",
-    "lint-staged": "^13.0.3",
     "minimist": "^1.2.6",
     "miniprogram-api-typings": "^3.5.0",
     "miniprogram-test-util": "^0.0.9",
     "picocolors": "^1.0.0",
     "prettier": "^2.7.1",
     "release-it": "^15.4.1",
-    "simple-git-hooks": "^2.8.0",
     "taze": "^0.8.0",
     "tsup": "^6.2.3",
     "typescript": "^4.8.2",
-    "vitest": "^0.23.0"
-  },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx,vue,md}": [
-      "prettier --write"
-    ]
+    "vitepress": "1.0.0-alpha.13",
+    "vitest": "^0.23.0",
+    "vue": "^3.2.38"
   },
   "pnpm": {
     "peerDependencyRules": {

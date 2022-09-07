@@ -18,7 +18,7 @@ export default defineConfig(() => {
     platform: 'browser',
     splitting: false,
     // legacyOutput: true,
-    minify: false,
+    minify: true,
     sourcemap: true,
     clean: true,
     dts: {

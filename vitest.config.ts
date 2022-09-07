@@ -11,7 +11,7 @@ export default defineConfig({
     __TEST__: true,
   },
   test: {
-    environment: 'jsdom',
+    environment: 'happy-dom',
     include: ['tests/**/*.{test,spec}.{ts,js}'],
     globals: true,
     watch: false,
