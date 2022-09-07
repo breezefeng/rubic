@@ -10,29 +10,25 @@ on:
       - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [15]
     steps:
       - uses: actions/checkout@v2
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2.2.2
         with:
           version: 7
-
-      - name: Setup Node
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
-      - name: Install
+      - name: Install dependencies
         run: pnpm install
-
       - name: Test Coverage
         run: pnpm run coverage
-
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
