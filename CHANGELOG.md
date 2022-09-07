@@ -1,19 +1,22 @@
+## [0.0.6](https://github.com/JasKang/rubic/compare/0.0.5...0.0.6) (2022-09-07)
 
+### Features
+
+- 调整生命周期
+- 重构单元测试框架
 
 ## [0.0.5](https://github.com/JasKang/rubic/compare/0.0.4...0.0.5) (2022-05-27)
 
-
 ### Bug Fixes
 
-* type 导出的问题 ([de516c0](https://github.com/JasKang/rubic/commit/de516c082cd6c9ececd1823b68cdf73cab14c253))
+- type 导出的问题 ([de516c0](https://github.com/JasKang/rubic/commit/de516c082cd6c9ececd1823b68cdf73cab14c253))
 
 ## [0.0.4](https://github.com/JasKang/rubic/compare/0.0.3...0.0.4) (2022-05-26)
 
-
 ### Bug Fixes
 
-* test ([0905187](https://github.com/JasKang/rubic/commit/090518700423bf3ab5092016a015839fcc1b2bc1))
-* watch ([4f3e9df](https://github.com/JasKang/rubic/commit/4f3e9df9931797766f83eb8baee10533d14b6c04))
+- test ([0905187](https://github.com/JasKang/rubic/commit/090518700423bf3ab5092016a015839fcc1b2bc1))
+- watch ([4f3e9df](https://github.com/JasKang/rubic/commit/4f3e9df9931797766f83eb8baee10533d14b6c04))
 
 ## [0.0.3](https://github.com/JasKang/rubic/compare/0.0.3-beta.7...0.0.3) (2022-05-24)
 
