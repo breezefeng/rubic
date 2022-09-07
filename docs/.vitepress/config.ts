@@ -7,12 +7,24 @@ export default defineConfig({
   description: 'Rubic & 响应式小程序框架',
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+    ['meta', { name: 'author', content: `jaskang` }],
+    ['meta', { name: 'keywords', content: '小程序, miniprogram, vue, reactivity, Composition API, weapp, wechatapp' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Rubic' }],
     ['meta', { property: 'og:description', content: 'Rubic & 响应式小程序框架' }],
   ],
+  lastUpdated: true,
   themeConfig: {
     logo: '/logo.svg',
+    editLink: {
+      pattern: 'https://github.com/jaskang/rubic/tree/main/docs/:path',
+      text: '为此页提供修改建议',
+    },
+    socialLinks: [{ icon: 'github', link: 'https://github.com/jaskang/rubic' }],
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2021-PRESENT Jaskang',
+    },
     algolia: {
       appId: 'C0YGLUN59H',
       apiKey: '7eb55d1722df59642ff7c7c8bec14e41',
@@ -29,7 +41,12 @@ export default defineConfig({
       },
       {
         text: `v${version}`,
-        link: 'https://github.com/JasKang/rubic/blob/main/CHANGELOG.md',
+        items: [
+          {
+            text: '版本发布',
+            link: 'https://github.com/JasKang/rubic/releases',
+          },
+        ],
       },
     ],
     sidebar: {
