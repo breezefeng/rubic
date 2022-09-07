@@ -12,9 +12,9 @@ lerna-debug.log*
 # deps
 node_modules/
 
+# Tests
+coverage/
+
 # build output
-.vuepress/dist
-.cache
-.temp
-temp
+.docs/vitepress/dist
 dist
