@@ -5,16 +5,13 @@ import { wrapLifetimeHooks } from './lifetimes'
 import { registerPlugins, type Plugin } from './plugin'
 import { SharePlugin } from './plugins'
 
-export type AppSetup = (this: void) => Bindings | void
-
 export type AppOptions = {
-  setup: AppSetup
+  setup: (options: WechatMiniprogram.App.LaunchShowOption) => Bindings | void
   plugins?: Plugin[]
-  errorHandler?: (err: unknown, instance: Instance | null, info: string) => void
 }
 
 export function createApp(options: AppOptions) {
-  const { setup, plugins = [], errorHandler } = options
+  const { setup, plugins = [] } = options
   registerPlugins([...plugins, SharePlugin])
 
   const lifetimes = wrapLifetimeHooks(APP_LIFETIMES)
@@ -22,11 +19,10 @@ export function createApp(options: AppOptions) {
 
   return App({
     [CORE_KEY]: core,
-    errorHandler,
     ...lifetimes,
-    onLaunch(options) {
+    onLaunch(...args) {
       setCurrentInstance({ [CORE_KEY]: core } as unknown as Instance)
-      const bindings = setup() || {}
+      const bindings = setup(...args) || {}
       unsetCurrentInstance()
       for (const key of Object.keys(bindings)) {
         this[key] = bindings[key]

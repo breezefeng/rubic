@@ -13,16 +13,6 @@ outline: deep
 **示例:**
 
 ```ts
-definePage({
-  setup() {
-    const count = ref(0)
-    // 返回值会暴露给模板
-    return {
-      count,
-    }
-  },
-})
-// or
 defineComponent({
   setup() {
     const count = ref(0)
@@ -37,7 +27,7 @@ defineComponent({
 <view>{{count}}</view>
 ```
 
-请注意在模板中访问从 `setup` 返回的 `ref` 时，它会自动浅层解包，因此你无须再在模板中为它写 .value。
+请注意在模板中访问从 `setup` 返回的 `ref` 时，它会自动浅层解包，因此你无须再在模板中为它写 `.value`。
 
 ## App
 
@@ -45,7 +35,7 @@ defineComponent({
 
 ### createApp
 
-创建一个应用实例
+创建一个应用实例, `setup()` 对应 `onLaunch` 生命周期。
 
 - **类型:**
 
@@ -56,16 +46,36 @@ defineComponent({
   ```ts
   type AppOptions = {
     plugins?: Plugin[]
-    setup: AppSetup
+    setup: (options: LaunchShowOption) => Bindings | void
   }
   ```
 
 - **详细信息:**
 
-  参数 `options` 是一个组件选项对象，setup
+  参数 `options` 是一个选项对象，包括以下属性：
 
-  #### plugins 插件
+  - **plugins**
 
-  #### setup
+    插件数组，详情见[页面和组件插件](/guide/plugin)
+
+  - **setup** :pushpin:
+
+    app 入口函数，对应 `onLaunch` 生命周期，参数与其一致。返回的数据将会被绑定到 `app` 实例
 
 - **示例:**
+
+  ```ts
+  createApp({
+    plugins: [],
+    setup(options) {
+      return {
+        globalData: {},
+      }
+    },
+  })
+  ```
+
+  ```ts
+  // pages/xxxx.js
+  const { globalData } = getApp()
+  ```
