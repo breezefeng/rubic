@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest'
+import { launchApp } from 'miniprogram-test-util'
 import { createApp, ref, computed, watchEffect, nextTick, onAppShow } from '../src'
-import { launchApp, mockConsole } from './mock'
-
 // console.log(process.env)
 
 const launchOptions: WechatMiniprogram.App.LaunchShowOption = {
@@ -13,7 +12,7 @@ const launchOptions: WechatMiniprogram.App.LaunchShowOption = {
 
 describe('app', () => {
   test('create', async () => {
-    const app = await launchApp(() =>
+    const app = launchApp(() =>
       createApp({
         setup() {},
       })
@@ -22,7 +21,7 @@ describe('app', () => {
   })
 
   test('bindings', async () => {
-    const app = await launchApp(() =>
+    const app = launchApp(() =>
       createApp({
         setup() {
           const num = 0
@@ -64,7 +63,7 @@ describe('app', () => {
 
   test('lifetimes', async () => {
     const calledKeys: string[] = []
-    const app = await launchApp(() =>
+    const app = launchApp(() =>
       createApp({
         setup() {
           onAppShow(options => {

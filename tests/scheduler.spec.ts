@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import {
   queueJob,
   nextTick,
@@ -8,9 +8,11 @@ import {
   flushPreFlushCbs,
   flushPostFlushCbs,
 } from '../src/scheduler'
-import { mockConsole, resetConsole } from './mock'
 
 describe('scheduler', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
   test('nextTick', async () => {
     const calls: string[] = []
     const dummyThen = Promise.resolve().then()
@@ -485,7 +487,7 @@ describe('scheduler', () => {
   })
 
   test('nextTick should capture scheduler flush errors', async () => {
-    mockConsole()
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const err = new Error('test')
     queueJob(() => {
       throw err
@@ -496,10 +498,9 @@ describe('scheduler', () => {
       expect(e).toBe(err)
     }
 
-    expect(console.warn).toHaveBeenLastCalledWith(
+    expect(warn).toHaveBeenLastCalledWith(
       `[core warn]: Unhandled error during execution of scheduler flush. This is likely a internals bug. `
     )
-    resetConsole()
     // this one should no longer error
     await nextTick()
   })

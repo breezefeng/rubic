@@ -1,4 +1,5 @@
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest'
+import { render, sleep } from 'miniprogram-test-util'
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 import {
   CORE_KEY,
   type DebuggerEvent,
@@ -17,18 +18,13 @@ import {
   watch,
   getCurrentInstance,
 } from '../src'
-import { mockConsole, renderComponent, resetConsole, sleep } from './mock'
-
-beforeAll(() => {
-  mockConsole()
-})
-afterAll(() => {
-  resetConsole()
-})
 
 // reference: https://vue-composition-api-rfc.netlify.com/api.html#watch
 
 describe('api: watch', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
   test('effect', async () => {
     const state = reactive({ count: 0 })
     let dummy
@@ -208,17 +204,19 @@ describe('api: watch', () => {
   })
 
   test('warn invalid watch source', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     // @ts-ignore
     watch(1, () => {})
-    expect(console.warn).toHaveBeenLastCalledWith(
+    expect(warn).toHaveBeenLastCalledWith(
       `[core warn]: Invalid watch source: 1 
       A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
     )
   })
 
   test('warn invalid watch source: multiple sources', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     watch([1], () => {})
-    expect(console.warn).toHaveBeenLastCalledWith(
+    expect(warn).toHaveBeenLastCalledWith(
       `[core warn]: Invalid watch source: 1 
       A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
     )
@@ -308,25 +306,24 @@ describe('api: watch', () => {
 
     const assertion = vi.fn((countVal, count2Val) => {})
 
-    const Comp = await renderComponent(
+    const comp = render(
+      defineComponent({
+        setup() {
+          watchEffect(() => {
+            assertion(count.value, count2.value)
+          })
+          return { count: count }
+        },
+      }),
       {
         template: '<div>{{count}}</div>',
-      },
-      () =>
-        defineComponent({
-          setup() {
-            watchEffect(() => {
-              assertion(count.value, count2.value)
-            })
-            return { count: count }
-          },
-        })
+      }
     )
-    await sleep(10)
+    await sleep(0)
     expect(assertion).toHaveBeenCalledTimes(1)
     expect(count.value).toBe(0)
     expect(count2.value).toBe(0)
-    expect(Comp.dom?.innerHTML).toBe(`<div>${count.value}</div>`)
+    expect(comp.dom?.innerHTML).toBe(`<div>${count.value}</div>`)
 
     count.value++
     count2.value++
@@ -336,7 +333,7 @@ describe('api: watch', () => {
     expect(count2.value).toBe(1)
     expect(assertion).toHaveBeenCalledTimes(2)
     await sleep(10)
-    expect(Comp.dom?.innerHTML).toBe(`<div>${count.value}</div>`)
+    expect(comp.dom?.innerHTML).toBe(`<div>${count.value}</div>`)
   })
 
   test('flush timing: post', async () => {
@@ -346,24 +343,23 @@ describe('api: watch', () => {
       callCount++
     })
 
-    const Comp = await renderComponent(
+    const comp = render(
+      defineComponent({
+        setup() {
+          watchEffect(
+            () => {
+              assertion(count.value)
+            },
+            { flush: 'post' }
+          )
+          return { count }
+        },
+      }),
       {
         template: '{{count}}',
-      },
-      () =>
-        defineComponent({
-          setup() {
-            watchEffect(
-              () => {
-                assertion(count.value)
-              },
-              { flush: 'post' }
-            )
-            return { count }
-          },
-        })
+      }
     )
-
+    await sleep(0)
     expect(count.value).toBe(0)
     expect(callCount).toBe(1)
 
@@ -379,7 +375,7 @@ describe('api: watch', () => {
 
     const assertion = vi.fn(count => {})
 
-    const Comp = await renderComponent(() =>
+    const comp = render(
       defineComponent({
         setup() {
           watchPostEffect(() => {
@@ -389,14 +385,16 @@ describe('api: watch', () => {
         },
       })
     )
+    await sleep()
     expect(assertion).toHaveBeenCalledTimes(1)
     expect(count.value).toBe(0)
 
     count.value++
-    expect(count.value).toBe(1)
     expect(assertion).toHaveBeenCalledTimes(1)
-    await nextTick()
+    await sleep()
     expect(assertion).toHaveBeenCalledTimes(2)
+    expect(count.value).toBe(1)
+    await nextTick()
   })
 
   test('flush timing: sync', async () => {
@@ -404,8 +402,7 @@ describe('api: watch', () => {
     const count2 = ref(0)
 
     const assertion = vi.fn((count, count2) => {})
-
-    const Comp = await renderComponent(() =>
+    const comp = render(
       defineComponent({
         setup() {
           watchEffect(
@@ -439,7 +436,7 @@ describe('api: watch', () => {
 
     const assertion = vi.fn((count, count2) => {})
 
-    const Comp = await renderComponent(() =>
+    const comp = render(
       defineComponent({
         setup() {
           watchSyncEffect(() => {
@@ -559,6 +556,7 @@ describe('api: watch', () => {
   })
 
   test('warn immediate option when using effect', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const count = ref(0)
     let dummy
     watchEffect(
@@ -569,9 +567,9 @@ describe('api: watch', () => {
       { immediate: false }
     )
     expect(dummy).toBe(0)
-    expect(console.warn).toHaveBeenLastCalledWith(
-      `[core warn]: watch() "immediate" option is only respected when using the watch(source, callback, options?) signature.`
-    )
+    expect(warn.mock.lastCall).toEqual([
+      `[core warn]: watch() "immediate" option is only respected when using the watch(source, callback, options?) signature.`,
+    ])
 
     count.value++
     await nextTick()
@@ -579,6 +577,7 @@ describe('api: watch', () => {
   })
 
   test('warn and not respect deep option when using effect', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const arr = ref([1, [2]])
     const spy = vi.fn()
     watchEffect(
@@ -593,9 +592,9 @@ describe('api: watch', () => {
     ;(arr.value[1] as Array<number>)[0] = 3
     await nextTick()
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenLastCalledWith(
-      `[core warn]: watch() "deep" option is only respected when using the watch(source, callback, options?) signature.`
-    )
+    expect(warn.mock.lastCall).toEqual([
+      `[core warn]: watch() "deep" option is only respected when using the watch(source, callback, options?) signature.`,
+    ])
   })
 
   test('onTrack', async () => {
@@ -770,7 +769,7 @@ describe('api: watch', () => {
   // #4158
   test('watch should not register in owner component if created inside detached scope', async () => {
     let instance: Instance
-    const comp = await renderComponent(() =>
+    const comp = render(
       defineComponent({
         setup() {
           instance = getCurrentInstance()!

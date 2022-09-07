@@ -48,7 +48,7 @@
     "lint-staged": "^13.0.3",
     "minimist": "^1.2.6",
     "miniprogram-api-typings": "^3.5.0",
-    "miniprogram-test-util": "^0.0.7",
+    "miniprogram-test-util": "^0.0.9",
     "picocolors": "^1.0.0",
     "prettier": "^2.7.1",
     "release-it": "^15.4.1",

@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest'
+import { render, sleep } from 'miniprogram-test-util'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import {
   onDetached,
   onMoved,
@@ -13,12 +14,14 @@ import {
   defineComponent,
 } from '../src'
 import type { Core } from '../src/instance'
-import { mockConsole, renderComponent, sleep } from './mock'
 
 describe('component', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
   test('lifetimes', async () => {
     const calledKeys: string[] = []
-    const comp = await renderComponent({ template: '<div id="text" bind:tap="tap">data: {{text}}</div>' }, () => {
+    const comp = render(
       defineComponent({
         setup() {
           calledKeys.push('onAttach')
@@ -36,8 +39,9 @@ describe('component', () => {
           })
           return {}
         },
-      })
-    })
+      }),
+      { template: '<div id="text" bind:tap="tap">data: {{text}}</div>' }
+    )
 
     expect(calledKeys).toEqual(['onAttach', 'onReady', 'onReady 2'])
     comp.triggerLifeTime('moved')
@@ -53,26 +57,25 @@ describe('component', () => {
   })
 
   test('reactive binding', async () => {
-    const comp = await renderComponent(
+    const comp = render(
+      defineComponent({
+        setup() {
+          const state: { count: number; countX2: number } = reactive({
+            count: 1,
+            countX2: computed(() => state.count * 2),
+          })
+          const numRef = ref(0)
+          const tap = () => {
+            numRef.value++
+            state.count++
+          }
+          return { state, numRef, tap }
+        },
+      }),
       {
         template:
           '<div id="text" bind:tap="tap">count:{{state.count}} countX2:{{state.countX2}} numRef:{{numRef}}</div>',
-      },
-      () =>
-        defineComponent({
-          setup() {
-            const state: { count: number; countX2: number } = reactive({
-              count: 1,
-              countX2: computed(() => state.count * 2),
-            })
-            const numRef = ref(0)
-            const tap = () => {
-              numRef.value++
-              state.count++
-            }
-            return { state, numRef, tap }
-          },
-        })
+      }
     )
     await sleep(10)
     expect(comp.dom!.innerHTML).toBe('<div>count:1 countX2:2 numRef:0</div>')
@@ -82,27 +85,27 @@ describe('component', () => {
   })
 
   test('error binding', async () => {
-    const resetConsole = mockConsole()
-    const comp = await renderComponent({ id: 'id', template: '<div></div>' }, () =>
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const comp = render(
       defineComponent({
         setup() {
           const sym = Symbol('sym')
           return { sym: sym }
         },
-      })
+      }),
+      { id: 'id', template: '<div></div>' }
     )
-    await sleep(10)
-    expect(console.error).toBeCalledWith(
-      '[core error]: 错误的数据类型 sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array) | instance: id'
-    )
-    resetConsole()
+    await sleep(0)
+    expect(spy.mock.lastCall).toEqual([
+      '[core error]: 错误的数据类型 sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array)',
+    ])
   })
 
   test('watch/watchEffect', async () => {
     let dummy = 0
     let tempCount = 0
     let stopper: () => void
-    const comp = await renderComponent({ template: '<div></div>' }, () =>
+    const comp = render(
       defineComponent({
         setup() {
           const count = ref(0)
@@ -120,7 +123,8 @@ describe('component', () => {
             increment,
           }
         },
-      })
+      }),
+      { template: '<div></div>' }
     )
     sleep(10)
     const core = comp.instance[CORE_KEY] as unknown as Core
@@ -146,34 +150,33 @@ describe('component', () => {
   })
 
   test('properties', async () => {
-    const comp = await renderComponent(
+    const comp = render(
+      defineComponent({
+        properties: {
+          title: String,
+          desc: {
+            type: String,
+            value: '无描述',
+          },
+          value: {
+            type: [String, Number],
+            value: 10,
+          },
+        },
+        setup(props) {
+          const text = computed(() => props.title + props.desc)
+          return { text }
+        },
+      }),
       {
         template: '<div id="text">text:{{text}} value:{{value}}</div>',
         props: {
           title: '标题',
           value: 1,
         },
-      },
-      () =>
-        defineComponent({
-          properties: {
-            title: String,
-            desc: {
-              type: String,
-              value: '无描述',
-            },
-            value: {
-              type: [String, Number],
-              value: 10,
-            },
-          },
-          setup(props) {
-            const text = computed(() => props.title + props.desc)
-            return { text }
-          },
-        })
+      }
     )
-    await sleep(10)
+    await sleep()
     expect(comp.dom!.innerHTML).toBe('<div>text:标题无描述 value:1</div>')
   })
 })
