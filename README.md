@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://rubic.vercel.app" target="_blank" rel="noopener noreferrer">
-    <img width="180" src="https://rubic.vercel.app/images/logo.svg" alt="Rubic logo">
+    <img width="180" src="https://rubic.vercel.app/logo.svg" alt="Rubic logo">
   </a>
 </p>
 
@@ -12,21 +12,13 @@
 
 # Rubic
 
-> 基于 Vue3 的小程序开发框架
+> 响应式小程序框架
+
+[官方文档](https://rubic.vercel.app)
 
 # 特性
 
 - 响应性：基于 @vue/reactivity 的响应式能力
 - 组合式：与 vue3 一致的 Composition API
-- 类型化：丰富的 Typescript 类型提示
-- 轻量级：不依赖编译，原生小程序可直接接入
-
-## FAQ
-
-## Roadmap / Ideas
-
-## Packages
-
-| Package                | Version (click for changelogs)                                                     |
-| ---------------------- | :--------------------------------------------------------------------------------- |
-| [rubic](packages/core) | [![rubic version](https://img.shields.io/npm/v/rubic.svg?label=%20)](CHANGELOG.md) |
+- 类型化：灵活的 API 和完整的 TypeScript 类型。
+- 轻量级：仅 30KB 的体积，无编译依赖，现有小程序可轻松接入。
