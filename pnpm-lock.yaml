@@ -14,7 +14,7 @@ specifiers:
   lint-staged: ^13.0.3
   minimist: ^1.2.6
   miniprogram-api-typings: ^3.5.0
-  miniprogram-test-util: ^0.0.5
+  miniprogram-test-util: ^0.0.7
   picocolors: ^1.0.0
   prettier: ^2.7.1
   release-it: ^15.4.1
@@ -38,7 +38,7 @@ devDependencies:
   lint-staged: 13.0.3
   minimist: 1.2.6
   miniprogram-api-typings: 3.5.0
-  miniprogram-test-util: 0.0.5
+  miniprogram-test-util: 0.0.7
   picocolors: 1.0.0
   prettier: 2.7.1
   release-it: 15.4.1
@@ -4122,11 +4122,11 @@ packages:
     dev: true
 
   /miniprogram-exparser/2.15.0:
-    resolution: {integrity: sha1-iJOiUN/tdogCwGGxP/muGVixIjw=, tarball: miniprogram-exparser/download/miniprogram-exparser-2.15.0.tgz}
+    resolution: {integrity: sha512-W6aS1R3oVTwYw5hPguRqICFqx3wk2dtPAcwT6269WeWRjuQslbVPZRW/nlN16bg0NM5eQFmfU49PM6/PQ5DE8w==}
     dev: true
 
-  /miniprogram-test-util/0.0.5:
-    resolution: {integrity: sha512-c0vZWroLKefUSB8kID6D8HQJA7qmtq7uHpIDG6jJFJCM2folKKgfSw6BvthaN6SSlp1Pin6goleiBXAQAr+8rA==}
+  /miniprogram-test-util/0.0.7:
+    resolution: {integrity: sha512-ANg28hzy0xf0cVPTaw/aIfYJEHgwIil/mhIzFkpXNqMmX9Nn5xMVWDi/K8nRfotIqJxZXCnlZ2B+Kzx9X7OIBw==}
     dependencies:
       j-component: 1.4.6
     dev: true

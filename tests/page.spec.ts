@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import { register, render, sleep } from 'miniprogram-test-util'
 import {
   registerPlugins,
@@ -27,8 +27,12 @@ import {
   CORE_KEY,
   watch,
 } from '../src'
+import type { Core } from '../src/instance'
 
 describe('page', async () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
   test('reactive binding', async () => {
     const page = render(
       definePage({
@@ -59,6 +63,8 @@ describe('page', async () => {
   })
 
   test('error binding', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     const page = render(
       definePage({
         setup() {
@@ -74,6 +80,10 @@ describe('page', async () => {
     )
     await sleep()
     expect(page.dom?.innerHTML).toBe('arr:1,2,3, num:123, sym:')
+
+    expect(spy.mock.lastCall).toEqual([
+      `[core error]: 错误的数据类型 sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array)`,
+    ])
   })
 
   test('readonly binding', async () => {
@@ -156,6 +166,7 @@ describe('page', async () => {
         },
       })
     )
+
     expect(page.instance[CORE_KEY].scope.effects.length).toBe(3)
     page.instance.increment()
     await sleep(0)
@@ -534,7 +545,11 @@ describe('page', async () => {
 
     expect(query.a).toBe('aaa')
     expect(query.b).toBe('123')
-    expect(query.c).toBe(undefined)
-    query.c = 'c'
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    // spy.mock.lastCall
+    const c = query.c
+    expect(spy.mock.lastCall).toEqual(['[core warn]: 参数 c 未在 `properties` 中定义'])
+    const d = query.d
+    expect(spy.mock.lastCall).toEqual(['[core warn]: 参数 d 未在 `properties` 中定义'])
   })
 })
