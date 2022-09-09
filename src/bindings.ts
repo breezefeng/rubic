@@ -1,4 +1,4 @@
-import { isProxy, isReactive, isRef, toRaw, type Ref } from '@vue/reactivity'
+import { isReactive, isRef, toRaw, type Ref } from '@vue/reactivity'
 import { error } from './errorHandling'
 import { isArray, isFunction, isBaseType, isPlainObject, getType } from './utils'
 

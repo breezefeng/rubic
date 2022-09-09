@@ -1,9 +1,9 @@
-import { isRef, reactive, readonly, shallowReactive, shallowReadonly } from '@vue/reactivity'
+import { reactive, shallowReactive, shallowReadonly } from '@vue/reactivity'
 import { createCore, type Instance, setCurrentInstance, unsetCurrentInstance } from './instance'
 import { CORE_KEY } from './constants'
 import type { Data } from './types'
-import { isEqual, isFunction, isObject } from './utils'
-import { error, warn } from './errorHandling'
+import { isEqual, isFunction } from './utils'
+import { error, ErrorCodes, warn } from './errorHandling'
 import { toDataRaw } from './bindings'
 import { watch } from './watch'
 
@@ -12,19 +12,6 @@ type CoreSetupOptions = {
   properties: Record<string, any>
   setup?: (...args: any[]) => any
 }
-
-// export function watchBinding(this: Instance, key: string, value: unknown): void {
-//   if (!isObject(value)) {
-//     return
-//   }
-//   watch(
-//     isRef(value) ? value : () => value,
-//     () => {
-//       this.setData({ [key]: toDataRaw(value, key) }, () => {})
-//     },
-//     { deep: true }
-//   )
-// }
 
 function getQueryProxy(params: string[], data: Record<string, any>) {
   const queryData = params.reduce((prev, param) => {
@@ -51,6 +38,9 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
       const ctx = this as Instance
       const core = ctx[CORE_KEY]
 
+      ctx.$nextTick = fn => {
+        ctx[CORE_KEY].renderCbs.push(fn)
+      }
       if (core.type === 'Page') {
         core.props = getQueryProxy(Object.keys(ctx.properties), ctx.data)
       } else {
@@ -90,7 +80,15 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
               }
             }
             // console.log('data patch', patchObj)
-            ctx.setData(patchObj)
+            ctx.setData(patchObj, () => {
+              try {
+                const ticks = [...ctx[CORE_KEY].renderCbs]
+                ctx[CORE_KEY].renderCbs = []
+                ticks.forEach(fn => fn())
+              } catch (err) {
+                error(err, ctx, ErrorCodes.NEXT_TICK_FUNCTION)
+              }
+            })
           },
           {
             deep: true,

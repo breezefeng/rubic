@@ -1,5 +1,4 @@
-export * from './clone'
-export * from './equal'
+export * from './object'
 export * from './type'
 
 export const EMPTY_OBJ = {}

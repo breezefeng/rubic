@@ -24,6 +24,7 @@ export type Core = {
   isUnmounted: boolean
   scope: EffectScope
   bindings: Record<string, any>
+  renderCbs: Array<() => void>
   initHooks(): Core
   toJSON(): string
 }
@@ -37,10 +38,10 @@ type BaseInstance<D extends Record<string, any>, C, P extends boolean = false> =
     D,
     {},
     {},
-    InstanceCore &
-      C & {
-        route?: string
-      },
+    InstanceCore & {
+      $nextTick: (fn: () => void) => void
+      route?: string
+    } & C,
     P
   >
 >
@@ -86,6 +87,7 @@ export function createCore(type: InstanceType): Core {
     isUnmounted: false,
     scope: new EffectScope(),
     bindings: {},
+    renderCbs: [],
     initHooks() {
       switch (this.type) {
         case 'App':

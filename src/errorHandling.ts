@@ -16,6 +16,7 @@ export const enum ErrorCodes {
   APP_WARN_HANDLER,
   FUNCTION_REF,
   SCHEDULER,
+  NEXT_TICK_FUNCTION,
 }
 
 export const ErrorTypeStrings: Record<number | string, string> = {

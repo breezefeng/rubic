@@ -16,6 +16,7 @@ import {
   EMPTY_OBJ,
   hasChanged,
   isArray,
+  isEqual,
   isFunction,
   isMap,
   isObject,
@@ -216,7 +217,11 @@ function doWatch(
       if (
         deep ||
         forceTrigger ||
-        (isMultiSource
+        (raw
+          ? isMultiSource
+            ? (newValue as any[]).some((v, i) => isEqual(v, (oldValue as any[])[i]))
+            : isEqual(newValue, oldValue)
+          : isMultiSource
           ? (newValue as any[]).some((v, i) => hasChanged(v, (oldValue as any[])[i]))
           : hasChanged(newValue, oldValue))
       ) {
