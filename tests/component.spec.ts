@@ -97,7 +97,7 @@ describe('component', () => {
     )
     await sleep(0)
     expect(spy.mock.lastCall).toEqual([
-      '[core error]: 错误的数据类型 sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array)',
+      '[core error]: 错误的数据类型 data.sym:[object Symbol], 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array)',
     ])
   })
 

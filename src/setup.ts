@@ -4,7 +4,7 @@ import { CORE_KEY } from './constants'
 import type { Data } from './types'
 import { isEqual, isFunction, isObject } from './utils'
 import { error, warn } from './errorHandling'
-import { bindingToData, toDataRaw } from './bindings'
+import { toDataRaw } from './bindings'
 import { watch } from './watch'
 
 type CoreSetupOptions = {
@@ -13,18 +13,18 @@ type CoreSetupOptions = {
   setup?: (...args: any[]) => any
 }
 
-export function watchBinding(this: Instance, key: string, value: unknown): void {
-  if (!isObject(value)) {
-    return
-  }
-  watch(
-    isRef(value) ? value : () => value,
-    () => {
-      this.setData({ [key]: bindingToData(value, key) }, () => {})
-    },
-    { deep: true }
-  )
-}
+// export function watchBinding(this: Instance, key: string, value: unknown): void {
+//   if (!isObject(value)) {
+//     return
+//   }
+//   watch(
+//     isRef(value) ? value : () => value,
+//     () => {
+//       this.setData({ [key]: toDataRaw(value, key) }, () => {})
+//     },
+//     { deep: true }
+//   )
+// }
 
 function getQueryProxy(params: string[], data: Record<string, any>) {
   const queryData = params.reduce((prev, param) => {
@@ -77,16 +77,16 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
             bindingData[key] = value
           }
         }
-        ctx.setData(toDataRaw(bindingData, ''))
+        ctx.setData(toDataRaw(bindingData, 'data'))
         watch(
           bindingData,
-          // @ts-ignore
           (val, oldVal) => {
             // console.log('data diff', val, oldVal)
             const patchObj = {}
             for (const key of Object.keys(oldVal)) {
               if (!isEqual(oldVal[key], val[key])) {
-                patchObj[key] = toDataRaw(val[key], key)
+                // 注意：这里需要使用 bindingData ，因为 raw 模式下 val 和 oldVal 已经转化为普通对象了
+                patchObj[key] = toDataRaw(bindingData[key], key)
               }
             }
             // console.log('data patch', patchObj)

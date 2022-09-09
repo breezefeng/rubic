@@ -1,4 +1,4 @@
-import { isProxy, isRef, toRaw, type Ref } from '@vue/reactivity'
+import { isProxy, isReactive, isRef, toRaw, type Ref } from '@vue/reactivity'
 import { error } from './errorHandling'
 import { isArray, isFunction, isBaseType, isPlainObject, getType } from './utils'
 
@@ -9,7 +9,7 @@ export function toDataRaw(x: any, key?: string): any {
   if (isRef(x)) {
     return toDataRaw((x as Ref<any>).value, key)
   }
-  if (isProxy(x)) {
+  if (isReactive(x)) {
     return toDataRaw(toRaw(x), key)
   }
   if (isArray(x)) {

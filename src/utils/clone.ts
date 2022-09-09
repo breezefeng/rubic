@@ -12,11 +12,11 @@ export function clone(target: any) {
     return out
   }
   if (isPlainObject(target)) {
-    if (isReactive(target)) {
-      return clone(toRaw(target))
-    }
     if (isRef(target)) {
       return clone({ value: target.value })
+    }
+    if (isReactive(target)) {
+      return clone(toRaw(target))
     }
     const out = {} // null
     for (const k in target) {
