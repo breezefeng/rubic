@@ -31,6 +31,7 @@ describe('setData', () => {
     )
     expect(fn).toBeCalledTimes(1)
     comp.instance[CORE_KEY].bindings.list.value[2].id = 4
+    comp.instance[CORE_KEY].bindings.info.text = 'hello world'
     await sleep()
     expect(fn).toBeCalledTimes(2)
   })

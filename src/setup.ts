@@ -82,15 +82,14 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
           bindingData,
           // @ts-ignore
           (val, oldVal) => {
-            console.log('data diff', val, oldVal)
-
+            // console.log('data diff', val, oldVal)
             const patchObj = {}
             for (const key of Object.keys(oldVal)) {
               if (!isEqual(oldVal[key], val[key])) {
                 patchObj[key] = toDataRaw(val[key], key)
               }
             }
-            console.log('data patch', patchObj)
+            // console.log('data patch', patchObj)
             ctx.setData(patchObj)
           },
           {
