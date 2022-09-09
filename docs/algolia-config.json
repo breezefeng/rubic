@@ -1,0 +1,14 @@
+{
+  "index_name": "rubic",
+  "start_urls": ["https://rubic.vercel.app"],
+  "selectors": {
+    "lvl0": ".VPDoc .content h1",
+    "lvl1": ".VPDoc .content h2",
+    "lvl2": ".VPDoc .content h3",
+    "lvl3": ".VPDoc .content h4",
+    "lvl4": ".VPDoc .content h5",
+    "lvl5": ".VPDoc .content h6",
+    "text": ".VPDoc .content p, .VPDoc .content li"
+  },
+  "strip_chars": " .,;:#"
+}
