@@ -1,5 +1,12 @@
 
 
+## [0.0.8](https://github.com/JasKang/rubic/compare/0.0.7...0.0.8) (2022-09-09)
+
+
+### Features
+
+* xinzeng $nexttick ([aaa07bb](https://github.com/JasKang/rubic/commit/aaa07bb24637600ebff6544c3db026893f3241be))
+
 ## [0.0.7](https://github.com/JasKang/rubic/compare/0.0.6...0.0.7) (2022-09-09)
 
 
