@@ -7,11 +7,13 @@ import {
   isShallow,
   ReactiveEffect,
   type Ref,
+  toRaw,
 } from '@vue/reactivity'
 import { queuePostFlushCb, queuePreFlushCb, type SchedulerJob } from './scheduler'
 import { getCurrentInstance } from './instance'
 import { callWithAsyncErrorHandling, callWithErrorHandling, ErrorCodes, warn } from './errorHandling'
 import {
+  clone,
   EMPTY_OBJ,
   hasChanged,
   isArray,
@@ -203,6 +205,7 @@ function doWatch(
   }
 
   let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE
+  let oldSourceValue = isMultiSource ? [] : {}
   const job: SchedulerJob = () => {
     if (!effect.active) {
       return
@@ -226,8 +229,10 @@ function doWatch(
           // pass undefined as the old value when it's changed for the first time
           oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
           onCleanup,
+          oldSourceValue,
         ])
         oldValue = newValue
+        oldSourceValue = clone(newValue)
       }
     } else {
       // watchEffect
@@ -259,6 +264,7 @@ function doWatch(
       job()
     } else {
       oldValue = effect.run()
+      oldSourceValue = clone(oldValue)
     }
   } else if (flush === 'post') {
     queuePostFlushCb(effect.run.bind(effect))

@@ -145,7 +145,7 @@ describe('component', () => {
     await sleep(10)
     expect(dummy).toBe(1)
     expect(tempCount).toBe(2)
-    expect(comp.data.count).toBe(2)
+    expect(comp.data.count).toEqual(2)
     expect(core.scope.effects.length).toBe(2)
   })
 

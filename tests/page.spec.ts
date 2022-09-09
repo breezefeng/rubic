@@ -167,7 +167,7 @@ describe('page', async () => {
       })
     )
 
-    expect(page.instance[CORE_KEY].scope.effects.length).toBe(3)
+    expect(page.instance[CORE_KEY].scope.effects.length).toBe(2)
     page.instance.increment()
     await sleep(0)
     expect(page.data.count).toBe(1)

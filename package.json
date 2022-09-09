@@ -29,7 +29,7 @@
     "docs:serve": "vitepress serve docs",
     "release": "release-it",
     "release:beta": "release-it --preRelease=beta",
-    "test": "vitest",
+    "test": "vitest run",
     "test-dts": "tsc -p ./tests-dts/tsconfig.json",
     "coverage": "vitest --coverage",
     "lint": "eslint ."

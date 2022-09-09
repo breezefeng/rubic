@@ -1,5 +1,5 @@
 import { render, sleep } from 'miniprogram-test-util'
-import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import {
   CORE_KEY,
   type DebuggerEvent,
@@ -80,7 +80,7 @@ describe('api: watch', () => {
     array.push(1)
     await nextTick()
     expect(spy).toBeCalledTimes(1)
-    expect(spy).toBeCalledWith([1], expect.anything(), expect.anything())
+    expect(spy).toBeCalledWith([1], expect.anything(), expect.anything(), [])
   })
 
   test('should not fire if watched getter result did not change', async () => {
@@ -783,6 +783,6 @@ describe('api: watch', () => {
     )
     // should not record watcher in detached scope and only the instance's
     // own update effect
-    expect(instance![CORE_KEY].scope.effects.length).toBe(1)
+    expect(instance![CORE_KEY].scope.effects.length).toBe(2)
   })
 })

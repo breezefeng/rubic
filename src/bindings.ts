@@ -1,6 +1,6 @@
 import { isProxy, isRef, toRaw, type Ref } from '@vue/reactivity'
 import { error } from './errorHandling'
-import { isArray, isFunction, isBaseType, isPlainObject, toTypeString } from './utils'
+import { isArray, isFunction, isBaseType, isPlainObject, getType } from './utils'
 
 export function bindingToData(x: any, key: string): any {
   if (isBaseType(x) || isFunction(x)) {
@@ -24,7 +24,7 @@ export function bindingToData(x: any, key: string): any {
   }
   error(
     new Error(
-      `错误的数据类型 ${key}:${toTypeString(
+      `错误的数据类型 ${key}:${getType(
         x
       )}, 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array)`
     )

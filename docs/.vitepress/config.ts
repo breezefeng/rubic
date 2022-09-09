@@ -14,6 +14,11 @@ export default defineConfig({
     ['meta', { property: 'og:description', content: 'Rubic & 响应式小程序框架' }],
   ],
   lastUpdated: true,
+  vite: {
+    server: {
+      port: 3000,
+    },
+  },
   themeConfig: {
     logo: '/logo.svg',
     editLink: {

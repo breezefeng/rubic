@@ -487,20 +487,25 @@ describe('scheduler', () => {
   })
 
   test('nextTick should capture scheduler flush errors', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const err = new Error('test')
-    queueJob(() => {
-      throw err
-    })
-    try {
-      await nextTick()
-    } catch (e: any) {
-      expect(e).toBe(err)
-    }
 
+    try {
+      queueJob(() => {
+        throw err
+      })
+      await nextTick()
+    } catch (error) {
+      expect(error).toBe(err)
+    }
+    // expect(async () => {
+
+    // }).toThrowError('test')
     expect(warn).toHaveBeenLastCalledWith(
       `[core warn]: Unhandled error during execution of scheduler flush. This is likely a internals bug. `
     )
+    expect(error).toHaveBeenLastCalledWith(err)
     // this one should no longer error
     await nextTick()
   })

@@ -2,7 +2,7 @@ import { isRef, reactive, readonly, shallowReactive, shallowReadonly } from '@vu
 import { createCore, type Instance, setCurrentInstance, unsetCurrentInstance } from './instance'
 import { CORE_KEY } from './constants'
 import type { Data } from './types'
-import { isFunction, isObject } from './utils'
+import { isEqual, isFunction, isObject } from './utils'
 import { error, warn } from './errorHandling'
 import { bindingToData } from './bindings'
 import { watch } from './watch'
@@ -67,7 +67,7 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
       core.bindings = bindings
 
       if (bindings) {
-        const bindingData = Object.create(null)
+        const bindingData = reactive({})
         Object.keys(bindings).forEach((key: string) => {
           const value = bindings[key]
           if (isFunction(value)) {
@@ -82,8 +82,24 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
           } catch (err) {
             error(err as Error, ctx)
           }
-          watchBinding.call(ctx, key, value)
+          // watchBinding.call(ctx, key, value)
         })
+        watch(
+          bindingData,
+          // @ts-ignore
+          (val, _, onCleanup, oldVal) => {
+            const patchObj = {}
+            for (const key of Object.keys(oldVal)) {
+              if (!isEqual(oldVal[key], val[key])) {
+                patchObj[key] = bindingToData(val[key], key)
+              }
+            }
+            ctx.setData(patchObj)
+          },
+          {
+            deep: true,
+          }
+        )
       }
       unsetCurrentInstance()
     },
