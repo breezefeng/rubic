@@ -77,4 +77,53 @@ describe('setData', () => {
       list: [{ id: 1 }, { id: 2 }, { id: 4 }],
     })
   })
+
+  test('set data nexttick', async () => {
+    const fn = vi.fn()
+    let html
+    const comp = render(
+      defineComponent({
+        setup(props, ctx) {
+          const originSetData = ctx.setData as any
+          ctx.setData = (data, cb) => {
+            return originSetData(data, () => {
+              if (cb) {
+                setTimeout(() => {
+                  cb()
+                }, 0)
+              }
+            })
+          }
+          const name = ref('jaskang')
+          const info = reactive({})
+          const list = ref([{ id: 1 }, { id: 2 }, { id: 3 }])
+          const change = () => {
+            list.value[1].id++
+            ctx.$nextTick(() => {
+              fn()
+              html = comp.dom?.innerHTML
+            })
+          }
+          return {
+            name,
+            info,
+            list,
+            change,
+          }
+        },
+      }),
+      {
+        template: `{{list[1].id}}`,
+      }
+    )
+    await sleep()
+    expect(fn).toBeCalledTimes(0)
+    comp.instance.change()
+    await sleep()
+    expect(fn).toBeCalledTimes(0)
+    expect(html).toBe(undefined)
+    await sleep(0)
+    expect(fn).toBeCalledTimes(1)
+    expect(html).toBe('3')
+  })
 })
