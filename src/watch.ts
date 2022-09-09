@@ -7,7 +7,6 @@ import {
   isShallow,
   ReactiveEffect,
   type Ref,
-  toRaw,
 } from '@vue/reactivity'
 import { queuePostFlushCb, queuePreFlushCb, type SchedulerJob } from './scheduler'
 import { getCurrentInstance } from './instance'

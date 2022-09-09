@@ -11,7 +11,7 @@ export { getCurrentInstance } from './instance'
 export type { Instance, AppCustomContext, PageCustomContext, ComponentCustomContext } from './instance'
 
 export { createApp } from './app'
-export type { AppSetup, AppOptions } from './app'
+export type { AppOptions } from './app'
 
 export { registerPlugins, loadPlugin } from './plugin'
 export type { Plugin, PluginSetup, PluginConfig } from './plugin'
