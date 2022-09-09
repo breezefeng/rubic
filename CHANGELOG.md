@@ -1,3 +1,19 @@
+
+
+## [0.0.7](https://github.com/JasKang/rubic/compare/0.0.6...0.0.7) (2022-09-09)
+
+
+### Bug Fixes
+
+* setData bindingData ([2a56f8f](https://github.com/JasKang/rubic/commit/2a56f8fa8aee97b21f9ecef54fad866de631f83d))
+* 为 watch 添加 raw 模式 ([a08bc66](https://github.com/JasKang/rubic/commit/a08bc660d211767ff0d86d2f181ee256ac99e13d))
+
+
+### Features
+
+* 合并 setData ([9bd9044](https://github.com/JasKang/rubic/commit/9bd90440c308d0f762150afb6b06f86de415dde5))
+* 文档 ([9a0307e](https://github.com/JasKang/rubic/commit/9a0307e91a6352abf9bee8688d3c1be5552793cb))
+
 ## [0.0.6](https://github.com/JasKang/rubic/compare/0.0.5...0.0.6) (2022-09-07)
 
 ### Features
