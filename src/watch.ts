@@ -54,6 +54,7 @@ export interface WatchOptionsBase extends DebuggerOptions {
 export interface WatchOptions<Immediate = boolean> extends WatchOptionsBase {
   immediate?: Immediate
   deep?: boolean
+  raw?: boolean
 }
 
 export type WatchStopHandle = () => void
@@ -125,7 +126,7 @@ export function watch<T = any, Immediate extends Readonly<boolean> = false>(
 function doWatch(
   source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
-  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = EMPTY_OBJ
+  { immediate, deep, flush, raw, onTrack, onTrigger }: WatchOptions = EMPTY_OBJ
 ): WatchStopHandle {
   if (!cb) {
     if (immediate !== undefined) {
@@ -205,14 +206,14 @@ function doWatch(
   }
 
   let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE
-  let oldSourceValue = isMultiSource ? [] : {}
+
   const job: SchedulerJob = () => {
     if (!effect.active) {
       return
     }
     if (cb) {
       // watch(source, cb)
-      const newValue = effect.run()
+      const newValue = raw ? clone(effect.run()) : effect.run()
       if (
         deep ||
         forceTrigger ||
@@ -229,10 +230,8 @@ function doWatch(
           // pass undefined as the old value when it's changed for the first time
           oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
           onCleanup,
-          oldSourceValue,
         ])
         oldValue = newValue
-        oldSourceValue = clone(newValue)
       }
     } else {
       // watchEffect
@@ -263,8 +262,7 @@ function doWatch(
     if (immediate) {
       job()
     } else {
-      oldValue = effect.run()
-      oldSourceValue = clone(oldValue)
+      oldValue = raw ? clone(effect.run()) : effect.run()
     }
   } else if (flush === 'post') {
     queuePostFlushCb(effect.run.bind(effect))

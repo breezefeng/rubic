@@ -1,39 +1,39 @@
 import { describe, expect, test } from 'vitest'
 import { registerPlugins, loadPlugin } from '../src/plugin'
 
-const middlewareArray: string[] = []
+const plugins: string[] = []
 registerPlugins([
   {
     name: '1',
     setup(props, ctx, next) {
-      middlewareArray.push('a start')
+      plugins.push('a start')
       const nextRet = next ? next() : {}
-      middlewareArray.push('a end')
+      plugins.push('a end')
       return { ...nextRet, a: 'a' }
     },
   },
   {
     name: '2',
     setup(props, ctx, next) {
-      middlewareArray.push('b start')
+      plugins.push('b start')
       const nextRet = next ? next() : {}
-      middlewareArray.push('b end')
+      plugins.push('b end')
       return { ...nextRet, b: 'b' }
     },
   },
   {
     name: '3',
     setup(props, ctx) {
-      middlewareArray.push('c start')
-      middlewareArray.push('c end')
+      plugins.push('c start')
+      plugins.push('c end')
       return { c: 'c' }
     },
   },
   {
     name: '4',
     setup(props, ctx) {
-      middlewareArray.push('d start')
-      middlewareArray.push('d end')
+      plugins.push('d start')
+      plugins.push('d end')
       return { d: 'd' }
     },
   },
@@ -44,7 +44,7 @@ describe('middleware', () => {
     const { setup: pageSetup } = loadPlugin(
       {
         setup() {
-          middlewareArray.push('page')
+          plugins.push('page')
           return {}
         },
       },
@@ -53,22 +53,12 @@ describe('middleware', () => {
     const pageBinding = pageSetup({}, {})
 
     expect(pageBinding).toEqual({ c: 'c', d: 'd', b: 'b', a: 'a' })
-    expect(middlewareArray).toEqual([
-      'a start',
-      'b start',
-      'c start',
-      'c end',
-      'd start',
-      'd end',
-      'page',
-      'b end',
-      'a end',
-    ])
+    expect(plugins).toEqual(['a start', 'b start', 'c start', 'c end', 'd start', 'd end', 'page', 'b end', 'a end'])
 
     const { setup: componentSetup } = loadPlugin(
       {
         setup() {
-          middlewareArray.push('Component')
+          plugins.push('Component')
         },
       },
       'Component'

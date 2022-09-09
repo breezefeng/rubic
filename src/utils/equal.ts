@@ -1,3 +1,5 @@
+import { toRaw, unref } from '@vue/reactivity'
+
 export function isEqual(
   a: any,
   b: any,
@@ -6,22 +8,25 @@ export function isEqual(
   } = {}
 ) {
   const { match } = options
+
   if (a === b) return true
   if (a == null || b == null) return false
+  const source = toRaw(unref(a))
+  const target = toRaw(unref(b))
 
-  if (Array.isArray(a)) {
+  if (Array.isArray(source)) {
     return (
-      Array.isArray(b) &&
-      a.length === b.length &&
-      a.every(function (item, index) {
-        return isEqual(item, b[index], options)
+      Array.isArray(target) &&
+      source.length === target.length &&
+      source.every(function (item, index) {
+        return isEqual(item, target[index], options)
       })
     )
   }
 
-  if (typeof a === 'object' || typeof b === 'object') {
-    return Object.keys(match ? a : Object.assign({}, a, b)).every(function (key) {
-      return isEqual(a[key], b[key], options)
+  if (typeof source === 'object' || typeof target === 'object') {
+    return Object.keys(match ? source : Object.assign({}, source, target)).every(function (key) {
+      return isEqual(source[key], target[key], options)
     })
   }
 

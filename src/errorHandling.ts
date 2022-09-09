@@ -91,7 +91,7 @@ export function handleError(err: unknown, instance: Instance | null, type: Error
   if (instance) {
     const errorInfo = ErrorTypeStrings[type]
     // @ts-ignore
-    const appErrorHandler = app.errorHandler
+    const appErrorHandler = null
     if (appErrorHandler) {
       callWithErrorHandling(appErrorHandler, null, ErrorCodes.APP_ERROR_HANDLER, [err, instance.is, errorInfo])
       return

@@ -4,7 +4,7 @@ import { CORE_KEY } from './constants'
 import type { Data } from './types'
 import { isEqual, isFunction, isObject } from './utils'
 import { error, warn } from './errorHandling'
-import { bindingToData } from './bindings'
+import { bindingToData, toDataRaw } from './bindings'
 import { watch } from './watch'
 
 type CoreSetupOptions = {
@@ -68,36 +68,34 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
 
       if (bindings) {
         const bindingData = reactive({})
-        Object.keys(bindings).forEach((key: string) => {
+        for (const key of Object.keys(bindings)) {
           const value = bindings[key]
           if (isFunction(value)) {
             // @ts-ignore
             ctx[key] = value
-            return
           } else {
             bindingData[key] = value
           }
-          try {
-            ctx.setData({ [key]: bindingToData(value, key) })
-          } catch (err) {
-            error(err as Error, ctx)
-          }
-          // watchBinding.call(ctx, key, value)
-        })
+        }
+        ctx.setData(toDataRaw(bindingData, ''))
         watch(
           bindingData,
           // @ts-ignore
-          (val, _, onCleanup, oldVal) => {
+          (val, oldVal) => {
+            console.log('data diff', val, oldVal)
+
             const patchObj = {}
             for (const key of Object.keys(oldVal)) {
               if (!isEqual(oldVal[key], val[key])) {
-                patchObj[key] = bindingToData(val[key], key)
+                patchObj[key] = toDataRaw(val[key], key)
               }
             }
+            console.log('data patch', patchObj)
             ctx.setData(patchObj)
           },
           {
             deep: true,
+            raw: true,
           }
         )
       }

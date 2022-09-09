@@ -2,23 +2,23 @@ import { isProxy, isRef, toRaw, type Ref } from '@vue/reactivity'
 import { error } from './errorHandling'
 import { isArray, isFunction, isBaseType, isPlainObject, getType } from './utils'
 
-export function bindingToData(x: any, key: string): any {
+export function toDataRaw(x: any, key?: string): any {
   if (isBaseType(x) || isFunction(x)) {
     return x
   }
   if (isRef(x)) {
-    return bindingToData((x as Ref<any>).value, key)
+    return toDataRaw((x as Ref<any>).value, key)
   }
   if (isProxy(x)) {
-    return bindingToData(toRaw(x), key)
+    return toDataRaw(toRaw(x), key)
   }
   if (isArray(x)) {
-    return (x as any[]).map(item => bindingToData(item, key))
+    return (x as any[]).map((item, i) => toDataRaw(item, `${key}[${i}]`))
   }
   if (isPlainObject(x)) {
     const obj: Record<string, any> = {}
-    Object.keys(x).forEach(key => {
-      obj[key] = bindingToData(x[key], key)
+    Object.keys(x).forEach(k => {
+      obj[k] = toDataRaw(x[k], `${key}.${k}`)
     })
     return obj
   }
