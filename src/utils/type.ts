@@ -7,7 +7,9 @@ export const { isArray } = Array
 export const isFunction = (val: unknown): val is Method => typeof val === 'function'
 export const isMap = (val: unknown): val is Map<any, any> => getType(val) === '[object Map]'
 export const isSet = (val: unknown): val is Set<any> => getType(val) === '[object Set]'
-export const isPlainObject = (val: unknown): val is Record<string, unknown> => getType(val) === '[object Object]'
+export const isPlainObject = (val: unknown): val is Record<string, unknown> => {
+  return (val && typeof val === 'object' && getType(val) === '[object Object]') as boolean
+}
 export const isObject = (val: unknown): val is Record<any, any> => val !== null && typeof val === 'object'
 export const isPromise = <T = any>(val: unknown): val is Promise<T> =>
   isObject(val) && isFunction(val.then) && isFunction(val.catch)

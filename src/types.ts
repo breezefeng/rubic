@@ -14,6 +14,14 @@ export type Flat<T> = T extends Method ? T : T extends object ? { [K in keyof T]
 
 export type FlatDeep<T> = T extends Method ? T : T extends object ? { [K in keyof T]: FlatDeep<T[K]> } : T
 
+export type PickByType<T, U> = {
+  [K in keyof T as T[K] extends U ? K : never]: T[K]
+}
+
+export type PickKeysByType<T, U> = keyof {
+  [K in keyof T as T[K] extends U ? K : never]: any
+}
+
 export type ObjectKeyPaths<T extends object> = T extends Record<string, any>
   ? {
       [P in keyof T]: T[P] extends Record<string, any>

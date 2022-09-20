@@ -9,8 +9,6 @@
 import { createApp } from 'rubic'
 
 createApp({
-  setup() {
-    
-  },
+  setup() {},
 })
 ```
