@@ -101,10 +101,10 @@ function createHook<T extends Method>(
 type IAppLt = Required<WechatMiniprogram.App.Option>
 export const onAppShow = createHook<IAppLt['onShow']>({ App: 'onShow' })
 export const onAppHide = createHook<IAppLt['onHide']>({ App: 'onHide' })
+export const onError = createHook<IAppLt['onError']>({ App: 'onError', Component: 'error' })
 export const onPageNotFound = createHook<IAppLt['onPageNotFound']>({ App: 'onPageNotFound' })
 export const onUnhandledRejection = createHook<IAppLt['onUnhandledRejection']>({ App: 'onUnhandledRejection' })
 export const onThemeChange = createHook<IAppLt['onThemeChange']>({ App: 'onThemeChange' })
-export const onError = createHook<IAppLt['onError']>({ App: 'onError', Component: 'error' })
 
 /**
  * ====== Page Lifetime  ====

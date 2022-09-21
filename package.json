@@ -21,7 +21,7 @@
     "url": "https://github.com/JasKang/rubic/issues"
   },
   "scripts": {
-    "start": "pnpm docs:dev",
+    "dev": "pnpm docs:dev",
     "build": "tsup && npm run build:miniprogram",
     "build:miniprogram": "node scripts/mpBuild.js",
     "docs:dev": "vitepress dev docs",
