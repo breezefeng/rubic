@@ -1,5 +1,6 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest'
-import { computed, defineStore, nextTick, ref, resetRootStore, watch } from '../../src'
+import { computed, defineStore, nextTick, ref, watch } from '../../src'
+import { resetRootStore } from '../../src/store'
 
 function expectType<T>(_value: T): void {}
 

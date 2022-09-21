@@ -7,14 +7,6 @@ describe('storeToRefs', () => {
     resetRootStore()
   })
 
-  function objectOfRefs<O extends Record<any, any>>(o: O): ToRefs<O> {
-    return Object.keys(o).reduce((newO, key) => {
-      // @ts-expect-error: we only need to match
-      newO[key] = expect.objectContaining({ value: o[key] })
-      return newO
-    }, {} as ToRefs<O>)
-  }
-
   it('empty state', () => {
     expect(storeToRefs(defineStore('a', () => {})())).toEqual({})
   })

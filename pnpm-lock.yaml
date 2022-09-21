@@ -18,6 +18,7 @@ specifiers:
   release-it: ^15.4.1
   tsup: ^6.2.3
   typescript: ^4.8.2
+  vite: ^3.1.3
   vitepress: 1.0.0-alpha.13
   vitest: ^0.23.0
   vue: ^3.2.38
@@ -40,6 +41,7 @@ devDependencies:
   release-it: 15.4.1
   tsup: 6.2.3_typescript@4.8.2
   typescript: 4.8.2
+  vite: 3.1.3
   vitepress: 1.0.0-alpha.13
   vitest: 0.23.1_happy-dom@6.0.4
   vue: 3.2.38
@@ -730,14 +732,14 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vitejs/plugin-vue/3.1.0_vite@3.1.0+vue@3.2.38:
+  /@vitejs/plugin-vue/3.1.0_vite@3.1.3+vue@3.2.38:
     resolution: {integrity: sha512-fmxtHPjSOEIRg6vHYDaem+97iwCUg/uSIaTzp98lhELt2ISOQuDo2hbkBdXod0g15IhfPMQmAxh4heUks2zvDA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^3.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 3.1.0
+      vite: 3.1.3
       vue: 3.2.38
     dev: true
 
@@ -1561,8 +1563,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      is-text-path: 1.0.1
       JSONStream: 1.3.5
+      is-text-path: 1.0.1
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2
@@ -5352,8 +5354,8 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite/3.1.0:
-    resolution: {integrity: sha512-YBg3dUicDpDWFCGttmvMbVyS9ydjntwEjwXRj2KBFwSB8SxmGcudo1yb8FW5+M/G86aS8x828ujnzUVdsLjs9g==}
+  /vite/3.1.3:
+    resolution: {integrity: sha512-/3XWiktaopByM5bd8dqvHxRt5EEgRikevnnrpND0gRfNkrMrPaGGexhtLCzv15RcCMtV2CLw+BPas8YFeSG0KA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -5385,12 +5387,12 @@ packages:
     dependencies:
       '@docsearch/css': 3.2.1
       '@docsearch/js': 3.2.1
-      '@vitejs/plugin-vue': 3.1.0_vite@3.1.0+vue@3.2.38
+      '@vitejs/plugin-vue': 3.1.0_vite@3.1.3+vue@3.2.38
       '@vue/devtools-api': 6.2.1
       '@vueuse/core': 9.2.0_vue@3.2.38
       body-scroll-lock: 4.0.0-beta.0
       shiki: 0.11.1
-      vite: 3.1.0
+      vite: 3.1.3
       vue: 3.2.38
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -5437,7 +5439,7 @@ packages:
       tinybench: 2.1.4
       tinypool: 0.2.4
       tinyspy: 1.0.2
-      vite: 3.1.0
+      vite: 3.1.3
     transitivePeerDependencies:
       - less
       - sass
