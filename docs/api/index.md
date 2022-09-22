@@ -240,7 +240,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onAppShow(listener: Listener): void
+  function onAppShow(callback: Listener): void
 
   type Listener = (options: App.LaunchShowOption) => void
   ```
@@ -286,7 +286,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onAppHide(listener: Listener): void
+  function onAppHide(callback: Listener): void
 
   type Listener = () => void
   ```
@@ -316,7 +316,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onError(listener: Listener): void
+  function onError(callback: Listener): void
 
   type Listener = (error) => void
   ```
@@ -346,7 +346,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onPageNotFound(listener: Listener): void
+  function onPageNotFound(callback: Listener): void
 
   type Listener = (res: App.PageNotFoundOption) => void
   ```
@@ -386,7 +386,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onUnhandledRejection(listener: Listener): void
+  function onUnhandledRejection(callback: Listener): void
 
   type Listener = (res: OnUnhandledRejectionCallback) => void
   ```
@@ -425,7 +425,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onThemeChange(listener: Listener): void
+  function onThemeChange(callback: Listener): void
 
   type Listener = (res: { theme: 'dark' | 'light' }) => void
   ```
@@ -463,7 +463,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onLoad(listener: Listener): void
+  function onLoad(callback: Listener): void
 
   type Listener = (query: Object) => void
   ```
@@ -484,6 +484,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onShow
 
 注册一个回调函数，页面显示/切入前台时触发。对应原生小程序 `Page` -> `onShow`。
@@ -491,7 +493,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onShow(listener: Listener): void
+  function onShow(callback: Listener): void
 
   type Listener = () => void
   ```
@@ -508,6 +510,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onReady
 
 注册一个回调函数，页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。对应原生小程序 `Page` -> `onReady`。
@@ -515,7 +519,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onReady(listener: Listener): void
+  function onReady(callback: Listener): void
 
   type Listener = () => void
   ```
@@ -532,6 +536,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onHide
 
 注册一个回调函数，页面隐藏/切入后台时触发。 如 wx.navigateTo 或底部 tab 切换到其他页面，小程序切入后台等。对应原生小程序 `Page` -> `onHide`。
@@ -539,7 +545,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onHide(listener: Listener): void
+  function onHide(callback: Listener): void
 
   type Listener = () => void
   ```
@@ -556,6 +562,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onUnload
 
 注册一个回调函数，页面卸载时触发。如 wx.redirectTo 或 wx.navigateBack 到其他页面时。对应原生小程序 `Page` -> `onUnload`。
@@ -563,7 +571,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onUnload(listener: Listener): void
+  function onUnload(callback: Listener): void
 
   type Listener = () => void
   ```
@@ -589,7 +597,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onPullDownRefresh(listener: Listener): void
+  function onPullDownRefresh(callback: Listener): void
 
   type Listener = () => void
   ```
@@ -606,6 +614,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onReachBottom
 
 注册一个回调函数，用户上拉触底时触发。对应原生小程序 `Page` -> `onReachBottom`。
@@ -613,7 +623,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onReachBottom(listener: Listener): void
+  function onReachBottom(callback: Listener): void
 
   type Listener = () => void
   ```
@@ -630,6 +640,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onPageScroll
 
 注册一个回调函数，用户滑动页面时触发。对应原生小程序 `Page` -> `onPageScroll`。
@@ -637,7 +649,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onPageScroll(listener: Listener): void
+  function onPageScroll(callback: Listener): void
 
   type Listener = ({ scrollTop }) => void
   ```
@@ -660,6 +672,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onAddToFavorites
 
 注册一个回调函数，用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容时触发。对应原生小程序 `Page` -> `onAddToFavorites`。
@@ -669,7 +683,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onAddToFavorites(listener: Listener): void
+  function onAddToFavorites(callback: Listener): void
 
   type Listener = ({ webViewUrl: string }) => {
     title: string //	自定义标题	页面标题或账号名称
@@ -696,6 +710,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onShareAppMessage
 
 注册一个回调函数，用户点击页面内转发按钮（button 组件 open-type="share"）或右上角菜单“转发”按钮的行为，并自定义转发内容时触发。对应原生小程序 `Page` -> `onShareAppMessage`。
@@ -703,7 +719,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onShareAppMessage(listener: Listener): void
+  function onShareAppMessage(callback: Listener): void
 
   type Listener = (options: Page.IShareAppMessageOption) => Page.ICustomShareContent
   ```
@@ -743,6 +759,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onShareTimeline
 
 注册一个回调函数，点击右上角菜单“分享到朋友圈”按钮触发。对应原生小程序 `Page` -> `onShareTimeline`。
@@ -750,7 +768,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onShareTimeline(listener: Listener): void
+  function onShareTimeline(callback: Listener): void
 
   type Listener = () => Page.ICustomShareContent
   ```
@@ -781,6 +799,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onResize
 
 注册一个回调函数，小程序屏幕旋转时触发。对应原生小程序 `Page` -> `onResize`。
@@ -788,14 +808,14 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onResize(listener: Listener): void
+  function onResize(callback: Listener): void
 
-  type Listener = (size: Page.IResizeOption) => void
+  type Listener = (res: Page.IResizeOption) => void
   ```
 
 - **详细信息:**
 
-  `size` 参数与 `wx.onResize` 一致，详情参考 -> [onResize](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onResize-Object-object)
+  `res` 参数与 `wx.onResize` 一致，详情参考 -> [onResize](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html#%E5%B1%8F%E5%B9%95%E6%97%8B%E8%BD%AC%E4%BA%8B%E4%BB%B6)
 
   | 属性         | 类型   | 说明                      |
   | ------------ | ------ | ------------------------- |
@@ -815,6 +835,8 @@ defineComponent({
   })
   ```
 
+---
+
 ### onTabItemTap
 
 注册一个回调函数，点击 tab 时触发。对应原生小程序 `Page` -> `onTabItemTap`。
@@ -822,7 +844,7 @@ defineComponent({
 - **类型:**
 
   ```ts
-  function onTabItemTap(listener: Listener): void
+  function onTabItemTap(callback: Listener): void
 
   type Listener = (item: Page.ITabItemTapOption) => void
   ```
@@ -851,16 +873,18 @@ defineComponent({
   })
   ```
 
+---
+
 ### onSaveExitState
 
 注册一个回调函数，每当小程序可能被销毁之前，页面回调函数 onSaveExitState 会被调用。如果想保留页面中的状态，可以在这个回调函数中“保存”一些数据，下次启动时可以通过 exitState 获得这些已保存数据。
 
-对应原生小程序 `Page` -> `onSaveExitState`。
+对应原生小程序 `Page` -> [`onSaveExitState`](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/operating-mechanism.html#_4-%E9%80%80%E5%87%BA%E7%8A%B6%E6%80%81)。
 
 - **类型:**
 
   ```ts
-  function onSaveExitState(listener: Listener): void
+  function onSaveExitState(callback: () => void): void
 
   type Listener = () => void
   ```
@@ -879,7 +903,8 @@ defineComponent({
   ```ts
   definePage({
     setup(query, ctx) {
-      var prevExitState = this.exitState // 尝试获得上一次退出前 onSaveExitState 保存的数据
+      // 尝试获得上一次退出前 onSaveExitState 保存的数据
+      var prevExitState = this.exitState
       if (prevExitState !== undefined) {
         // 如果是根据 restartStrategy 配置进行的冷启动，就可以获取到
         prevExitState.myDataField === 'myData'
@@ -896,6 +921,194 @@ defineComponent({
   })
   ```
 
+---
+
 ## Component 生命周期
 
-小程序 `Component` 相关生命周期注册函数
+小程序 `Component` -> `lifetimes` 相关生命周期注册函数
+
+### onReady
+
+注册一个回调函数，在组件布局完成后触发。对应原生小程序 `Component.lifetimes` -> `ready`。
+
+- **类型:**
+
+  ```ts
+  function onReady(callback: () => void): void
+  ```
+
+- **示例:**
+
+  ```ts
+  defineComponent({
+    setup() {
+      onReady(() => {
+        console.log('组件布局完成')
+      })
+    },
+  })
+  ```
+
+---
+
+### onMoved
+
+注册一个回调函数，在组件实例被移动到节点树另一个位置时触发。对应原生小程序 `Component.lifetimes` -> `moved`。
+
+- **类型:**
+
+  ```ts
+  function onMoved(callback: () => void): void
+  ```
+
+- **示例:**
+
+  ```ts
+  defineComponent({
+    setup() {
+      onMoved(() => {
+        console.log('页面显示/切入前台')
+      })
+    },
+  })
+  ```
+
+---
+
+### onDetached
+
+注册一个回调函数，组件实例被从页面节点树移除时触发。对应原生小程序 `Component.lifetimes` -> `detached`。
+
+- **类型:**
+
+  ```ts
+  function onDetached(callback: () => void): void
+  ```
+
+- **示例:**
+
+  ```ts
+  defineComponent({
+    setup() {
+      onDetached(() => {
+        console.log('组件实例被从页面节点树移除')
+      })
+    },
+  })
+  ```
+
+---
+
+### onError
+
+注册一个回调函数，每当组件方法抛出错误时触发。对应原生小程序 `Component.lifetimes` -> `error`。
+
+- **类型:**
+
+  ```ts
+  function onError(callback: (err: Error) => void): void
+  ```
+
+- **示例:**
+
+  ```ts
+  defineComponent({
+    setup() {
+      onError(err => {
+        console.log('组件方法抛出错误', err)
+      })
+    },
+  })
+  ```
+
+---
+
+## Component 所在页面的生命周期
+
+小程序 `Component` -> `pageLifetimes` 相关生命周期注册函数
+
+### onShow
+
+注册一个回调函数，组件所在的页面被展示时触发。对应原生小程序 `Component.pageLifetimes` -> `show`。
+
+- **类型:**
+
+  ```ts
+  function onShow(callback: () => void): void
+  ```
+
+- **示例:**
+
+  ```ts
+  defineComponent({
+    setup() {
+      onShow(() => {
+        console.log('组件所在的页面被展示')
+      })
+    },
+  })
+  ```
+
+::: tip 注意
+在异步挂载的组件中 `onShow` 并不会触发，因为组件加载时已经错过所在页面 `onShow`
+:::
+
+---
+
+### onHide
+
+注册一个回调函数，组件所在的页面被隐藏时触发。对应原生小程序 `Component.pageLifetimes` -> `hide`。
+
+- **类型:**
+
+  ```ts
+  function onHide(callback: () => void): void
+  ```
+
+- **示例:**
+
+  ```ts
+  defineComponent({
+    setup() {
+      onHide(() => {
+        console.log('组件所在的页面被隐藏')
+      })
+    },
+  })
+  ```
+
+---
+
+### onResize
+
+注册一个回调函数，组件所在的页面尺寸变化时触发。对应原生小程序 `Component.pageLifetimes` -> `resize`。
+
+- **类型:**
+
+  ```ts
+  function onResize(callback: Listener): void
+
+  type Listener = (res: Page.IResizeOption) => void
+  ```
+
+- **详细信息:**
+
+  `res` 参数与 [`wx.onResize`](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html#%E5%B1%8F%E5%B9%95%E6%97%8B%E8%BD%AC%E4%BA%8B%E4%BB%B6) 一致
+
+  | 属性         | 类型   | 说明                      |
+  | ------------ | ------ | ------------------------- |
+  | windowWidth  | number | 变化后的窗口宽度，单位 px |
+  | windowHeight | number | 变化后的窗口高度，单位 px |
+
+- **示例:**
+
+  ```ts
+  defineComponent({
+    setup() {
+      onResize(res => {
+        res.size.windowWidth // 新的显示区域宽度
+        res.size.windowHeight // 新的显示区域高度
+      })
+    },
+  })
+  ```
