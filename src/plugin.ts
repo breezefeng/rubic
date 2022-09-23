@@ -4,8 +4,6 @@ import type { Instance } from './instance'
 import type { PageBaseOptions } from './page'
 import { warn } from './errorHandling'
 
-export type PluginConfig = (options: ComponentBaseOptions) => void
-
 export type PluginOptions = (options: ComponentBaseOptions) => void
 
 export type NormalSetup = (props: Record<string, any>, ctx: Instance) => void | Bindings
