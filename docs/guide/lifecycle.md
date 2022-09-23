@@ -30,12 +30,14 @@ setTimeout(() => {
 
 注意这并不意味着对 `onUnload` 的调用必须放在 setup() 内的词法上下文中。`onUnload()` 也可以在一个外部函数中调用，只要调用栈是同步的，且最终起源自 `setup()` 就可以。
 
-## 生命周期钩子对应关系
+## 对应关系
+
+在 `createApp`、`definePage` 和 `defineComponent` 中可以用的生命周期注册函数以及对应关系如下：
 
 ### App 生命周期对应关系
 
-- **`Rubic`** -> **`原生`**
-- `onLaunch` -> `onLaunch`
+- **`Rubic`** -> **`原生 App`**
+- `setup` -> `onLaunch`
 - `onAppShow` -> `onShow`
 - `onAppHide` -> `onHide`
 - `onError` -> `onError`
@@ -45,22 +47,30 @@ setTimeout(() => {
 
 ### Page 生命周期对应关系
 
-- **`Rubic`** -> **`原生`**
-- `onLaunch` -> `onLaunch`
-- `onAppShow` -> `onShow`
-- `onAppHide` -> `onHide`
-- `onError` -> `onError`
-- `onPageNotFound` -> `onPageNotFound`
-- `onUnhandledRejection` -> `onUnhandledRejection`
-- `onThemeChange` -> `onThemeChange`
+- **`Rubic`** -> **`原生 Page`**
+- `onLoad` -> `attached`
+- `onUnload` -> `onUnload`
+- `onShow` -> `onShow`
+- `onHide` -> `onHide`
+- `onReady` -> `onReady`
+- `onResize` -> `onResize`
+- `onPullDownRefresh` -> `onPullDownRefresh`
+- `onReachBottom` -> `onReachBottom`
+- `onAddToFavorites` -> `onAddToFavorites`
+- `onTabItemTap` -> `onTabItemTap`
+- `onSaveExitState` -> `onSaveExitState`
+- `onShareAppMessage` -> `onShareAppMessage`
+- `onShareTimeline` -> `onShareTimeline`
+- `onPageScroll` -> `onPageScroll`
 
 ### Component 生命周期对应关系
 
-- **`Rubic`** -> **`原生`**
-- `onLaunch` -> `onLaunch`
-- `onAppShow` -> `onShow`
-- `onAppHide` -> `onHide`
-- `onError` -> `onError`
-- `onPageNotFound` -> `onPageNotFound`
-- `onUnhandledRejection` -> `onUnhandledRejection`
-- `onThemeChange` -> `onThemeChange`
+- **`Rubic`** -> **`原生 Component`**
+- `setup` -> `lifetimes -> attached`
+- `onMoved`-> `lifetimes -> moved`
+- `onDetached`-> `lifetimes -> detached`
+- `onReady`-> `lifetimes -> ready`
+- `onError`-> `lifetimes -> error`
+- `onShow`-> `pageLifetimes -> show`
+- `onHide`-> `pageLifetimes -> hide`
+- `onResize`-> `pageLifetimes -> resize`

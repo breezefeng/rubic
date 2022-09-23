@@ -116,7 +116,7 @@ definePage({
 
 ```ts
 definePage({
-  setup(props, { triggerEvent }) {
+  setup(query, { triggerEvent }) {
     ...
   }
 })
@@ -124,7 +124,45 @@ definePage({
 
 `setup()` 中没有 `this`，`ctx` 包含了当前实例所有可用属性和方法。
 
+## 生命周期
+
+`Rubic` 导出了一系列组合式 API 来注册生命周期钩子。它们的命名和 Page 原始生命周期一致。
+
+这些函数接受一个回调，该回调的参数与对应的生命周期一致，当钩子被实例调用时，该回调将被执行。
+
+所有可用生命周期注册函数 参见 -> [生命周期](./lifecycle.md#对应关系)
+
+```ts
+import { definePage, onLoad } from 'Rubic'
+definePage({
+  setup(query, ctx) {
+    onLoad(args => {
+      console.log('onLoad', args)
+    })
+  },
+})
+```
+
+且 `onXXX` 函数都能被多次调用，依赖返回值的将会使用最后一次的返回值。
+
+```ts
+import { definePage, onShareAppMessage } from 'Rubic'
+definePage({
+  setup(query, ctx) {
+    onShareAppMessage(params => {
+      return { title: '标题1', path: '/page/1', imageUrl: 'http://x1.png' }
+    })
+    // 使用最后一次调用的返回值
+    onShareAppMessage(params => {
+      return { title: '标题2', path: '/page/2', imageUrl: 'http://x2.png'
+    })
+  },
+})
+```
+
 ## 其他选项
+
+`definePage` 额外支持原生小程序的一些其他选项，以应对复杂场景。
 
 ### `behaviors`
 
