@@ -1,6 +1,6 @@
-# 页面
+# 组件
 
-通过 `defineComponent` 函数注册小程序页面
+通过 `defineComponent` 函数注册小程序组件
 
 ::: tip 注意
 `defineComponent` 和 `definePage` 的区别在于两者的 `properties` 不同。
@@ -10,7 +10,7 @@
 
 :::
 
-## 定义一个页面
+## 定义一个组件
 
 `setup` 为入口函数，对应小程序的 `attach` 生命周期，`setup()` 返回值将会暴露给小程序模板，可以直接在模板中使用。
 

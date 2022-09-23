@@ -54,6 +54,8 @@ definePage({
 })
 ```
 
+properties 声明格式参见 [](./component.md#properties-%E5%A3%B0%E6%98%8E)
+
 ### 未声明的参数
 
 如果参数未在 `properties` 声明，则无法从 `setup` 中获取。
