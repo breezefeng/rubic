@@ -18,19 +18,19 @@ outline: deep
 defineComponent({
   setup() {
     const count = ref(0)
-    const add = () => {
+    const increment = () => {
       count.value++
     }
     return {
       count,
-      add,
+      increment,
     }
   },
 })
 ```
 
 ```vue-html
-<view bindtap="add">{{count}}</view>
+<view bindtap="increment">{{count}}</view>
 ```
 
 请注意在模板中访问从 `setup` 返回的 `ref` 时，它会自动浅层解包，因此你无须再在模板中为它写 `.value`。
