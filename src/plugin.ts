@@ -4,7 +4,7 @@ import type { Instance } from './instance'
 import type { PageBaseOptions } from './page'
 import { warn } from './errorHandling'
 
-export type PluginOptions = (options: ComponentBaseOptions) => void
+export type PluginConfig = (options: ComponentBaseOptions) => void
 
 export type NormalSetup = (props: Record<string, any>, ctx: Instance) => void | Bindings
 export type ComposeSetup = (props: Record<string, any>, ctx: Instance, next: () => void | Bindings) => void | Bindings
@@ -14,7 +14,7 @@ export type PluginSetup = NormalSetup | ComposeSetup
 export type Plugin = {
   name: string
   type?: 'Page' | 'Component'
-  options?: PluginOptions
+  config?: PluginConfig
   setup?: PluginSetup
 }
 
@@ -80,12 +80,12 @@ export function loadPlugin<T extends ComponentBaseOptions | PageBaseOptions>(
   const installedPlugins = [...globalPlugins].filter(plugin => (plugin.type ? plugin.type === type : true))
 
   for (const plugin of installedPlugins) {
-    const { type: _type, options, setup } = plugin || {}
+    const { type: _type, config, setup } = plugin || {}
     const pluginType = _type ? [_type] : ['Page', 'Component']
 
     if (pluginType.indexOf(type) !== -1) {
-      if (options) {
-        options(originOptions as any)
+      if (config) {
+        config(originOptions as any)
       }
       if (setup) {
         setupGroup.push(setup)

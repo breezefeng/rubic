@@ -3,7 +3,7 @@
 `plugin` 用以处理页面和组件中全局通用共享的特性，类似于 `mixins` 或 `behaviors`。与组合式函数不同之处在于它不再需要在具体的页面和组件中显示调用，能有效的减少与当前业务无关的信息干扰。
 
 ::: tip
-文中统一由 `bindings` 代表 `setup` 返回值，也就是绑定到 wxml 的可用值。
+文中统一由 `bindings` 代表 `setup` 返回值，也就是绑定到 wxml 的数据和方法。
 :::
 
 ```ts
@@ -11,9 +11,6 @@ import { createApp } from 'Rubic'
 
 createApp({
   plugins: [],
-  setup(options, ctx) {
-    return {}
-  },
 })
 ```
 
@@ -23,14 +20,14 @@ createApp({
 export type Plugin = {
   name: string
   type?: 'Page' | 'Component'
-  options?: PluginOptions
-  setup?: PluginSetup
+  config?: (options: PageOptions | ComponentOptions) => void
+  setup?: (props: any, ctx: any, next?: () => Bindings) => Bindings
 }
 ```
 
-## PluginOptions
+## Plugin `config()`
 
-`options` 是对 `definePage` / `defineComponent` 函数参数 options 的一个 `hook` ,改函数允许开发者修改 `options` 值。
+`config()` 是对 `definePage` / `defineComponent` 函数参数的一个 `hook` ,改函数允许开发者修改 `options` 值。
 
 类型定义为: `(options: PageOptions | ComponentOptions) => void`
 
@@ -53,9 +50,6 @@ export type Plugin = {
 
   createApp({
     plugins: [channelPlugin],
-    setup(options, ctx) {
-      return {}
-    },
   })
   ```
 
@@ -86,9 +80,6 @@ export type Plugin = {
 
   createApp({
     plugins: [multipleSlotsPlugin],
-    setup(options, ctx) {
-      return {}
-    },
   })
   ```
 
@@ -102,9 +93,9 @@ export type Plugin = {
   })
   ```
 
-## PluginSetup
+## Plugin `setup()`
 
-插件 `setup` 为中间件能力核心类似 koa, express 中的中间件，它是对组件 `setup` 函数的扩充。
+插件 `setup()` 函数为中间件能力核心，类似 koa, express 中的中间件，它是对组件 `setup` 的扩充。
 
 该函数接收三个参数：`props`、`ctx` 和 `next`。其中 `props`、`ctx` 与组件中 setup 的参数一致，`next` 表示下一个中间件
 
@@ -112,48 +103,49 @@ export type Plugin = {
 
 `(props: Record<string, any>, ctx: any, next?: () => Bindings) => Bindings`
 
-### 串行模型
+### 方式一
 
-当 `setup` 函数没有定义 `next` 参数时当前流程采用`串行模型` ，返回值会自动合并到组件 setup bindings
+当插件 `setup()` 函数没有定义 `next` 参数时，返回值会自动与组件 `bindings` 合并。 即：`{...pluginSetupBindings,...setupBindings}`
 
-如下代码定义 a , b 两个中间件：
+如下代码为组件 `ctx` 添加 `$currentPage` 属性，并将 `$currentPage` 暴露给 `wxml`。
 
-```js
-import { defineConfig, definePage } from 'Rubic'
-
-defineConfig({
-  pageMiddlewares: [
+```ts
+createApp({
+  plugins: [
     {
-      setupProcess(props, ctx) {
-        console.log('c start')
-        return { c: 'c' }
-      },
-    },
-    {
-      setupProcess(props, ctx, next) {
-        console.log('d start')
-        return { d: 'd' }
+      name: 'currentPage',
+      type: 'Component',
+      setup: (props, ctx) => {
+        const pages = getCurrentPages()
+        ctx.$currentPage = pages[pages.length - 1]
+        return {
+          $currentPage,
+        }
       },
     },
   ],
 })
+```
 
-// page.js
-definePage({
+```ts
+defineComponent({
   setup(props, ctx) {
-    console.log('page setup')
-    return { data: 'page data' }
+    console.log(ctx.$currentPage)
   },
 })
+```
+
+```vue-html
+<view>{{$currentPage}}</view>
 ```
 
 示例中的代码执行顺序为： `c start` -> `d start` -> `page setup`
 
 此时 bindings 为: `{ c:'c', d:'d', data:'page data'}`
 
-### 洋葱模型
+### 方式二
 
-当 `setupProcess` 函数定义了 `next` 参数时当前流程采用 `洋葱模型` ，开发者需要自行调用 `next` 函数和处理 bindings。
+当插件 `setup()` 函数定义了 `next` 参数时当前流程采用 `洋葱模型` ，开发者需要自行调用 `next` 函数和处理 bindings。
 
 如下代码定义 a , b 两个中间件：
 
