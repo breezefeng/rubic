@@ -23,7 +23,6 @@ export type PageInnerOptions = {
 
 export type PageBaseOptions<P = {}> = {
   behaviors?: string[]
-  observers?: Record<string, (...args: any[]) => any>
   /**
    * 一些选项
    */
@@ -58,7 +57,7 @@ export function definePage(
   }
 ) {
   const { setup, options } = loadPlugin(pageOptions, 'Page')
-  const { behaviors = [], observers = {}, properties: propsOptions = {}, options: innerOptions, ...others } = options
+  const { behaviors = [], properties: propsOptions = {}, options: innerOptions, ...others } = options
 
   const properties = convertProps(propsOptions)
 
@@ -77,7 +76,7 @@ export function definePage(
         lifetimes: { attached },
       }),
     ],
-    options,
+    options: innerOptions,
     ...others,
     ...lifetimes,
     onUnload(this: Instance) {

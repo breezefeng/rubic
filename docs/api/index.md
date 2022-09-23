@@ -113,13 +113,11 @@ defineComponent({
 
     类似于 mixins 和 traits 的组件间代码复用机制，与小程序 `behaviors` 一致，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
-  - **observers** Object
-
-    组件数据字段监听器，用于监听 properties 和 data 的变化，与小程序 `observers` 一致，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
-
   - **options** Object
 
-    一些选项，同 [`Component` 构造器](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Component.html) 中的 `options`
+    页面的组件选项，同 [`Component` 构造器](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Component.html) 中的 `options`
+
+    - `styleIsolation` 样式隔离选项
 
   - **setup** :pushpin:
 

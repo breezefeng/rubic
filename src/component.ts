@@ -74,9 +74,9 @@ export function defineComponent(
   const { setup, options } = loadPlugin(componentOptions, 'Component')
 
   const {
+    properties: propsOptions = {},
     behaviors = [],
     observers = {},
-    properties: propsOptions = {},
     options: innerOptions,
     externalClasses,
     relations,
