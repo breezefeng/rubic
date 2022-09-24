@@ -1,12 +1,10 @@
 # 简介
 
-`Rubic` 是一个轻量级的小程序开发框架，它继承 Vue3 的设计思路，并提供了与 Vue 一致的编程模型。
-
-它能帮助你高效地开发小程序，无论任务是简单还是复杂。
-
 > `Rubic` 的开发参考了多个社区方案，其中包括 [miniprogram-composition-api](https://github.com/clevok/miniprogram-composition-api)、 [vue-mini](https://github.com/vue-mini/vue-mini)、[miniprogram-computed](https://github.com/wechat-miniprogram/computed) 、[mobx-miniprogram](https://github.com/wechat-miniprogram/mobx-miniprogram-bindings) 等
 
-## 核心能力
+## 什么是 `Rubic`
+
+`Rubic` 是一个轻量级的小程序运行时框架，它继承 Vue3 的设计思路，并提供了与 Vue 一致的编程模型。它专注于 `javascript` 逻辑部分，为小程序提供**更好的逻辑复用**以及**更灵活的代码**组织能力。
 
 组合式：通过组合式 API，我们可以使用导入的 API 函数来描述组件逻辑。
 
