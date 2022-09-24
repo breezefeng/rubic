@@ -68,7 +68,7 @@ defineComponent({
 
   - **setup** :pushpin:
 
-    组合式 API 入口，对应 `onLaunch` 生命周期，参数与 [App -> onLaunch](https://developers.weixin.qq.com/miniprogram/dev/reference/api/App.html#onLaunch-Object-object) 一致。返回的数据将会被绑定到 `app` 实例
+    组合式 API 入口，对应 `onLaunch` 生命周期，参数与 [:link: App -> onLaunch](https://developers.weixin.qq.com/miniprogram/dev/reference/api/App.html#onLaunch-Object-object) 一致。返回的数据将会被绑定到 `app` 实例
 
 - **示例:**
 
@@ -111,11 +111,11 @@ defineComponent({
 
   - **behaviors** string[]
 
-    类似于 mixins 和 traits 的组件间代码复用机制，与小程序 `behaviors` 一致，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
+    类似于 mixins 和 traits 的组件间代码复用机制，与小程序 `behaviors` 一致，参见 [:link: behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
   - **options** Object
 
-    页面的组件选项，同 [`Component` 构造器](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Component.html) 中的 `options`
+    页面的组件选项，同 [:link: `Component` 构造器](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Component.html) 中的 `options`
 
     - `styleIsolation` 样式隔离选项
 
@@ -176,23 +176,23 @@ defineComponent({
 
   - **behaviors** string[]
 
-    类似于 mixins 和 traits 的组件间代码复用机制，与小程序 `behaviors` 一致，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
+    类似于 mixins 和 traits 的组件间代码复用机制，与小程序 `behaviors` 一致，参见 [:link: behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
   - **observers** Object
 
-    组件数据字段监听器，用于监听 properties 和 data 的变化，与小程序 `observers` 一致，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
+    组件数据字段监听器，用于监听 properties 和 data 的变化，与小程序 `observers` 一致，参见 [:link: 数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
 
   - **externalClasses** string[]
 
-    组件接受的外部样式类，与小程序组件 `externalClasses` 一致，参见 [外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E5%A4%96%E9%83%A8%E6%A0%B7%E5%BC%8F%E7%B1%BB)
+    组件接受的外部样式类，与小程序组件 `externalClasses` 一致，参见 [:link: 外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E5%A4%96%E9%83%A8%E6%A0%B7%E5%BC%8F%E7%B1%BB)
 
   - **relations** Object
 
-    组件间关系定义，与小程序组件 `relations` 一致，参见 [组件间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html)
+    组件间关系定义，与小程序组件 `relations` 一致，参见 [:link: 组件间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html)
 
   - **options** Object
 
-    一些选项，同 [`Component` 构造器](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Component.html) 中的 `options`
+    一些选项，同 [:link: Component 构造器](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Component.html) 中的 `options`
 
   - **setup** :pushpin:
 
@@ -225,6 +225,69 @@ defineComponent({
 
 ---
 
+## 工具 API
+
+### getCurrentInstance
+
+支持访问当前组件实例。
+
+`getCurrentInstance` 只能在 `setup` 或`生命周期钩子`中调用，如需在 `setup` 外使用，请先在 `setup` 中调用 `getCurrentInstance()` 获取该实例然后再使用。
+
+- **类型:**
+
+  ```ts
+  function getCurrentInstance(): ComponentInstance
+  ```
+
+- **示例:**
+
+  ```ts
+  function useEmit() {
+    const { triggerEvent } = getCurrentInstance()
+    return triggerEvent
+  }
+  ```
+
+  ```ts
+  function useReadyEmit() {
+    const emit = useEmit()
+    onReady(() => {
+      emit('ready')
+    })
+  }
+  ```
+
+---
+
+## 响应式 API
+
+响应式 API 从 `@vue/reactivity` 原样导出，详细信息请直接阅读 -> [:link: Vue 响应式 API 文档](https://cn.vuejs.org/api/reactivity-core.html)
+
+包含下列 API:
+
+- `ref()`
+- `computed ()`
+- `reactive()`
+- `readonly()`
+- `watchEffect()`
+- `watch()`
+- `isRef()`
+- `unref()`
+- `toRef()`
+- `toRefs()`
+- `isProxy()`
+- `isReactive()`
+- `isReadonly()`
+- `shallowRef()`
+- `triggerRef()`
+- `customRef()`
+- `shallowReactive()`
+- `shallowReadonly()`
+- `toRaw()`
+- `markRaw()`
+
+---
+
 ## App 生命周期
 
 小程序 `App` 相关生命周期注册函数
@@ -245,7 +308,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `options` 启动参数与 `wx.onAppShow` 一致，详情参考 -> [小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onAppShow.html)
+  `options` 启动参数与 [:link: wx.onAppShow](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onAppShow.html) 一致。
 
   | 属性             | 类型            | 说明                                                                                 |
   | ---------------- | --------------- | ------------------------------------------------------------------------------------ |
@@ -291,7 +354,7 @@ defineComponent({
 
 - **详细信息:**
 
-  与 `wx.onAppHide` 一致，详情参考 -> [小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onAppHide.html)
+  与 `wx.onAppHide` 一致，详情参考 -> [:link: wx.onAppHide](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onAppHide.html)
 
 - **示例:**
 
@@ -321,7 +384,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `error` 错误信息，包含堆栈。详情参考 -> [小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onError.html)
+  `error` 错误信息，包含堆栈。详情参考 -> [:link: wx.onError](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onError.html)
 
 - **示例:**
 
@@ -353,7 +416,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `res` 参数与 `wx.onPageNotFound` 一致，详情参考 -> [小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onPageNotFound.html#%E5%8F%82%E6%95%B0)
+  `res` 参数与 `wx.onPageNotFound` 一致，详情参考 -> [:link: wx.onPageNotFound](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onPageNotFound.html#%E5%8F%82%E6%95%B0)
 
   | 属性        | 类型    | 说明                                                                           |
   | ----------- | ------- | ------------------------------------------------------------------------------ |
@@ -391,7 +454,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `res` 参数与 `wx.onUnhandledRejection` 一致，详情参考 -> [小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onUnhandledRejection.html)
+  `res` 参数与 [:link: wx.onUnhandledRejection](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onUnhandledRejection.html) 一致。
 
   | 属性    | 类型            | 说明                            |
   | ------- | --------------- | ------------------------------- |
@@ -430,7 +493,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `res` 参数与 `wx.onThemeChange` 一致，详情参考 -> [小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onThemeChange.html)
+  `res` 参数与 [:link: wx.onThemeChange](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onThemeChange.html) 一致。
 
   | 属性  | 类型              | 说明                                 |
   | ----- | ----------------- | ------------------------------------ |
@@ -724,7 +787,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `options` 参数与 `onShareAppMessage` 一致，详情参考 -> [onShareAppMessage](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onShareAppMessage-Object-object)
+  `options` 参数与 [:link: onShareAppMessage](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onShareAppMessage-Object-object) 一致。
 
   | 参数       | 类型   | 说明                                                                           |
   | ---------- | ------ | ------------------------------------------------------------------------------ |
@@ -813,7 +876,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `res` 参数与 `wx.onResize` 一致，详情参考 -> [onResize](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html#%E5%B1%8F%E5%B9%95%E6%97%8B%E8%BD%AC%E4%BA%8B%E4%BB%B6)
+  `res` 参数与 [:link: wx.onResize](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html#%E5%B1%8F%E5%B9%95%E6%97%8B%E8%BD%AC%E4%BA%8B%E4%BB%B6) 一致。
 
   | 属性         | 类型   | 说明                      |
   | ------------ | ------ | ------------------------- |
@@ -849,7 +912,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `item` 参数与 `onTabItemTap` 一致，详情参考 -> [onTabItemTap](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onTabItemTap-Object-object)
+  `item` 参数与 [:link: onTabItemTap](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html#onTabItemTap-Object-object) 一致。
 
   | 属性     | 类型   | 说明                             |
   | -------- | ------ | -------------------------------- |
@@ -1091,7 +1154,7 @@ defineComponent({
 
 - **详细信息:**
 
-  `res` 参数与 [`wx.onResize`](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html#%E5%B1%8F%E5%B9%95%E6%97%8B%E8%BD%AC%E4%BA%8B%E4%BB%B6) 一致
+  `res` 参数与 [:link: wx.onResize](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html#%E5%B1%8F%E5%B9%95%E6%97%8B%E8%BD%AC%E4%BA%8B%E4%BB%B6) 一致
 
   | 属性         | 类型   | 说明                      |
   | ------------ | ------ | ------------------------- |

@@ -149,8 +149,6 @@ defineComponent({
 
 这些函数接受一个回调，该回调的参数与对应的生命周期一致，当钩子被实例调用时，该回调将被执行。
 
-所有可用生命周期注册函数 参见 -> [生命周期](./lifecycle.md#component-生命周期对应关系)
-
 ```ts
 import { defineComponent, onDetached } from 'Rubic'
 defineComponent({
@@ -178,6 +176,20 @@ defineComponent({
   },
 })
 ```
+
+### Component 生命周期对应关系
+
+`defineComponent` 中可以用的生命周期注册函数以及对应关系如下：
+
+- **`Rubic`** -> **`原生 Component`**
+- `setup` -> `lifetimes -> attached`
+- `onMoved`-> `lifetimes -> moved`
+- `onDetached`-> `lifetimes -> detached`
+- `onReady`-> `lifetimes -> ready`
+- `onError`-> `lifetimes -> error`
+- `onShow`-> `pageLifetimes -> show`
+- `onHide`-> `pageLifetimes -> hide`
+- `onResize`-> `pageLifetimes -> resize`
 
 ## 其他选项
 

@@ -7,7 +7,7 @@ titleTemplate: 由 Vite 提供支持的极速单元测试框架
 
 hero:
   name: Rubic
-  text: 响应式小程序开发框架
+  text: 响应式小程序框架
   tagline: 与 Vue3 一样的开发体验!
   image:
     src: /logo.svg
@@ -39,3 +39,7 @@ features:
 ---
 
 <!-- 🚀📦⚙️🎛🗜🗂🖇🗞🧱🧰🧬 -->
+
+<style lang="scss">
+
+</style>

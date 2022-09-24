@@ -64,10 +64,10 @@ createApp({
 
 ### 生命周期对应关系
 
-`createApp` 中可用的生命周期注册函数和原生小程序对应关系如下
+`createApp` 中可以用的生命周期注册函数以及对应关系如下：
 
-- **`Rubic`** -> **`原生`**
-- `onLaunch` -> `onLaunch`
+- **`Rubic`** -> **`原生 App`**
+- `setup` -> `onLaunch`
 - `onAppShow` -> `onShow`
 - `onAppHide` -> `onHide`
 - `onError` -> `onError`

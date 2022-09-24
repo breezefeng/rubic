@@ -130,8 +130,6 @@ definePage({
 
 这些函数接受一个回调，该回调的参数与对应的生命周期一致，当钩子被实例调用时，该回调将被执行。
 
-所有可用生命周期注册函数 参见 -> [生命周期](./lifecycle.md#对应关系)
-
 ```ts
 import { definePage, onLoad } from 'Rubic'
 definePage({
@@ -159,6 +157,26 @@ definePage({
   },
 })
 ```
+
+### Page 生命周期对应关系
+
+`definePage` 中可以用的生命周期注册函数以及对应关系如下：
+
+- **`Rubic`** -> **`原生 Page`**
+- `onLoad` -> `attached`
+- `onUnload` -> `onUnload`
+- `onShow` -> `onShow`
+- `onHide` -> `onHide`
+- `onReady` -> `onReady`
+- `onResize` -> `onResize`
+- `onPullDownRefresh` -> `onPullDownRefresh`
+- `onReachBottom` -> `onReachBottom`
+- `onAddToFavorites` -> `onAddToFavorites`
+- `onTabItemTap` -> `onTabItemTap`
+- `onSaveExitState` -> `onSaveExitState`
+- `onShareAppMessage` -> `onShareAppMessage`
+- `onShareTimeline` -> `onShareTimeline`
+- `onPageScroll` -> `onPageScroll`
 
 ## 其他选项
 

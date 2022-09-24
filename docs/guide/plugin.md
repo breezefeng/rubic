@@ -25,6 +25,22 @@ export type Plugin = {
 }
 ```
 
+- **name**
+
+  插件标识
+
+- **type**
+
+  插件作用范围，值为 `Page` 时该插件仅对 `definePage` 生效，为 `Component` 时该插件仅对 `defineComponent` 生效，空值对 `definePage` 和 `defineComponent` 同时生效。
+
+- **config()**
+
+  配置钩子，组件构造器(`definePage` 和 `defineComponent`)函数钩子，可用于修改构造器 `options` 参数。 详情见下文 [config](./plugin.md#)
+
+- **setup()**
+
+  中间逻辑入口，详情见下文
+
 ## Plugin `config()`
 
 `config()` 是对 `definePage` / `defineComponent` 函数参数的一个 `hook` ,改函数允许开发者修改 `options` 值。
@@ -39,9 +55,11 @@ export type Plugin = {
   const channelPlugin: Plugin = {
     name: '全局通用参数 channel',
     type: 'Page', // 指定类型为 Page
-    options(options) {
+    config(options) {
       // 所有页面的 properties 添加 channel 声明
-      options.properties = Object.assign(options.properties, { channel: String })
+      options.properties = Object.assign(options.properties, {
+        channel: String,
+      })
     },
     setup(query, ctx) {
       console.log(query.channel)
@@ -71,9 +89,14 @@ export type Plugin = {
   export const multipleSlotsPlugin: Plugin = {
     name: '全局通用参数 channel',
     type: 'Component', // 指定类型为 Component
-    options(options) {
+    config(options) {
       // 所有组件的 multipleSlots 默认为 true
-      options.options = Object.assign({ multipleSlots: true }, options.options)
+      options.options = Object.assign(
+        {
+          multipleSlots: true,
+        },
+        options.options
+      )
     },
     setup(props, ctx) {},
   }
@@ -103,9 +126,9 @@ export type Plugin = {
 
 `(props: Record<string, any>, ctx: any, next?: () => Bindings) => Bindings`
 
-### 方式一
+### 基本用法
 
-当插件 `setup()` 函数没有定义 `next` 参数时，返回值会自动与组件 `bindings` 合并。 即：`{...pluginSetupBindings,...setupBindings}`
+当插件 `setup()` 函数没有定义 `next` 参数时，返回值会自动与组件 `bindings` 合并。
 
 如下代码为组件 `ctx` 添加 `$currentPage` 属性，并将 `$currentPage` 暴露给 `wxml`。
 
@@ -131,19 +154,22 @@ createApp({
 defineComponent({
   setup(props, ctx) {
     console.log(ctx.$currentPage)
+    return {
+      text: 'hello',
+    }
   },
 })
 ```
 
 ```vue-html
-<view>{{$currentPage}}</view>
+<view>{{ text }} {{$currentPage}}</view>
 ```
 
 示例中的代码执行顺序为： `c start` -> `d start` -> `page setup`
 
 此时 bindings 为: `{ c:'c', d:'d', data:'page data'}`
 
-### 方式二
+### 高阶用法
 
 当插件 `setup()` 函数定义了 `next` 参数时当前流程采用 `洋葱模型` ，开发者需要自行调用 `next` 函数和处理 bindings。
 
@@ -152,10 +178,11 @@ defineComponent({
 ```js
 import { defineConfig, definePage } from 'Rubic'
 
-defineConfig({
-  pageMiddlewares: [
+createApp({
+  plugins: [
     {
-      setupProcess(props, ctx, next) {
+      name: 'pluginA',
+      setup(props, ctx, next) {
         console.log('a start')
         const bindings = next()
         console.log('a end')
@@ -163,7 +190,8 @@ defineConfig({
       },
     },
     {
-      setupProcess(props, ctx, next) {
+      name: 'pluginB',
+      setup(props, ctx, next) {
         console.log('b start')
         const bindings = next()
         console.log('b end')
@@ -172,7 +200,9 @@ defineConfig({
     },
   ],
 })
+```
 
+```ts
 // page.js
 definePage({
   setup(props, ctx) {
@@ -184,7 +214,7 @@ definePage({
 
 示例中的代码执行顺序为： `a start` -> `b start` -> `page setup` -> `b end` -> `a end`
 
-此时 bindings 为: `{data:'page data', b:'b', a:'a' }`, data 为当前 Page/Component 的绑定值
+此时 `bindings` 为: `{data:'page data', b:'b', a:'a' }`。
 
 ::: warning
 使用`洋葱模型`时，开发者需要谨慎处理 bindings 并避免定义了 next 而忘记调用，这将会导致下游 `setup` 未执行或 `bindings` 丢失。
