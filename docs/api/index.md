@@ -225,6 +225,35 @@ defineComponent({
 
 ---
 
+## 响应式 API
+
+响应式 API 从 `@vue/reactivity` 原样导出，详细信息请直接阅读 -> [:link: Vue 响应式 API 文档](https://cn.vuejs.org/api/reactivity-core.html)
+
+包含下列 API:
+
+- `ref()`
+- `computed ()`
+- `reactive()`
+- `readonly()`
+- `watchEffect()`
+- `watch()`
+- `isRef()`
+- `unref()`
+- `toRef()`
+- `toRefs()`
+- `isProxy()`
+- `isReactive()`
+- `isReadonly()`
+- `shallowRef()`
+- `triggerRef()`
+- `customRef()`
+- `shallowReactive()`
+- `shallowReadonly()`
+- `toRaw()`
+- `markRaw()`
+
+---
+
 ## 工具 API
 
 ### getCurrentInstance
@@ -256,35 +285,6 @@ defineComponent({
     })
   }
   ```
-
----
-
-## 响应式 API
-
-响应式 API 从 `@vue/reactivity` 原样导出，详细信息请直接阅读 -> [:link: Vue 响应式 API 文档](https://cn.vuejs.org/api/reactivity-core.html)
-
-包含下列 API:
-
-- `ref()`
-- `computed ()`
-- `reactive()`
-- `readonly()`
-- `watchEffect()`
-- `watch()`
-- `isRef()`
-- `unref()`
-- `toRef()`
-- `toRefs()`
-- `isProxy()`
-- `isReactive()`
-- `isReadonly()`
-- `shallowRef()`
-- `triggerRef()`
-- `customRef()`
-- `shallowReactive()`
-- `shallowReadonly()`
-- `toRaw()`
-- `markRaw()`
 
 ---
 

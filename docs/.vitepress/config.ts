@@ -68,7 +68,7 @@ export default defineConfig({
             { text: '响应式', link: '/guide/reactive' },
             { text: '状态管理', link: '/guide/store' },
             { text: '插件', link: '/guide/plugin' },
-            { text: 'TS 工具类型', link: '/guide/ts' },
+            { text: 'TS 工具类型', link: '/guide/typescript' },
           ],
         },
       ],

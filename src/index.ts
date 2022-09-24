@@ -8,7 +8,7 @@ export type { WatchEffect, WatchSource, WatchCallback } from './watch'
 export { nextTick } from './scheduler'
 
 export { getCurrentInstance } from './instance'
-export type { Instance, AppCustomContext, PageCustomContext, ComponentCustomContext } from './instance'
+export type { Instance, AppCustomProperties, PageCustomProperties, ComponentCustomProperties } from './instance'
 
 export { createApp } from './app'
 export type { AppOptions } from './app'

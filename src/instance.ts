@@ -46,15 +46,15 @@ type BaseInstance<D extends Record<string, any>, C, P extends boolean = false> =
   >
 >
 
-export interface AppCustomContext {}
-export interface PageCustomContext {}
-export interface ComponentCustomContext {}
+export interface AppCustomProperties {}
+export interface PageCustomProperties {}
+export interface ComponentCustomProperties {}
 
-export type AppInstance = WechatMiniprogram.App.Instance<InstanceCore & AppCustomContext>
+export type AppInstance = WechatMiniprogram.App.Instance<InstanceCore & AppCustomProperties>
 
-export type PageInstance = BaseInstance<Data, PageCustomContext, true>
+export type PageInstance = BaseInstance<Data, PageCustomProperties, true>
 
-export type ComponentInstance = BaseInstance<Data, ComponentCustomContext, false>
+export type ComponentInstance = BaseInstance<Data, ComponentCustomProperties, false>
 
 let currentInstance: PageInstance | ComponentInstance | null = null
 
