@@ -13,7 +13,7 @@
 ```ts
 export {}
 
-declare module 'vue' {
+declare module 'rubic' {
   interface PageCustomProperties {
     $http: typeof MyFetch
     $translate: (key: string) => string
@@ -30,7 +30,7 @@ declare module 'vue' {
 ```ts
 export {}
 
-declare module 'Rubic' {
+declare module 'rubic' {
   interface ComponentCustomProperties {
     $http: typeof MyFetch
     $translate: (key: string) => string
