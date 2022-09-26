@@ -1,5 +1,17 @@
 
 
+# [0.1.0](https://github.com/JasKang/rubic/compare/0.0.8...0.1.0) (2022-09-26)
+
+
+### Bug Fixes
+
+* mergeReactiveObjects ts check ([f3cd273](https://github.com/JasKang/rubic/commit/f3cd273330a13f0a3fbe8ddd9f2ddd5b26bb7f32))
+
+
+### Features
+
+* 新增 store ([b6a7905](https://github.com/JasKang/rubic/commit/b6a79050fb9d6dfbaeb6d8a590be44893b3082b5))
+
 ## [0.0.8](https://github.com/JasKang/rubic/compare/0.0.7...0.0.8) (2022-09-09)
 
 
