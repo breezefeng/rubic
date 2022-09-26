@@ -93,6 +93,7 @@ function mergeReactiveObjects<T extends StateTree>(target: T, patchToApply: _Dee
       // to `undefined`. When trying to hydrate, we want to override the Map with `undefined`.
       target[key] = mergeReactiveObjects(targetValue, subPatch)
     } else {
+      // @ts-ignore
       target[key] = subPatch
     }
   }
