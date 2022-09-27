@@ -1,6 +1,6 @@
 {
   "index_name": "rubic",
-  "start_urls": ["https://rubic.vercel.app"],
+  "start_urls": ["https://rubic.jaskang.vip"],
   "selectors": {
     "lvl0": ".VPDoc .content h1",
     "lvl1": ".VPDoc .content h2",

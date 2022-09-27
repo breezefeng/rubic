@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://rubic.vercel.app" target="_blank" rel="noopener noreferrer">
-    <img width="180" src="https://rubic.vercel.app/logo.svg" alt="Rubic logo">
+  <a href="https://rubic.jaskang.vip" target="_blank" rel="noopener noreferrer">
+    <img width="180" src="https://rubic.jaskang.vip/logo.svg" alt="Rubic logo">
   </a>
 </p>
 
@@ -14,7 +14,7 @@
 
 `Rubic` 是一个轻量级的小程序运行时框架，它继承 Vue3 的设计思路，并提供了与 Vue 一致的编程模型(组合式 API + 响应式 API)。它专注于 javascript 逻辑部分，为小程序提供更好的逻辑复用以及更灵活的代码组织能力。
 
-[官方文档](https://rubic.vercel.app)
+[官方文档](https://rubic.jaskang.vip)
 
 ## 特性
 
