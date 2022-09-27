@@ -17,8 +17,8 @@ hero:
       text: 快速开始
       link: /guide/
     - theme: alt
-      text: 特点
-      link: /guide/features
+      text: 简介
+      link: /guide/why
     - theme: alt
       text: GitHub
       link: https://github.com/jaskang/rubic
