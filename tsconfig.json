@@ -1,33 +1,11 @@
 {
+  "extends": "@jaskang/config/tsconfig.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "noImplicitThis": true,
-    "isolatedModules": true,
-    "preserveValueImports": true,
-    "importsNotUsedAsValues": "error",
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "noUnusedLocals": true,
-    "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "strict": false,
-    "jsx": "preserve",
-    "sourceMap": true,
     "lib": ["ESNext", "DOM"],
+    "types": ["node", "miniprogram-api-typings"],
     "paths": {
       "rubic": ["./scr/index.ts"]
     },
-    "types": ["node", "miniprogram-api-typings"],
-    "rootDir": ".",
-    "outDir": "./dist",
-    "baseUrl": "."
   },
   "include": ["env.d.ts", "src/**/*", "tests/**/*"]
 }

@@ -18,6 +18,7 @@ export type PageHooks = { [key in PageLifetimeKey]?: Method[] }
 export type ComponentHooks = { [key in ComponentLifetimeKey]?: Method[] }
 
 export type Core = {
+  uid: number
   type: InstanceType
   props: ShallowReactive<Record<string, any>>
   hooks: AppHooks & PageHooks & ComponentHooks
@@ -25,12 +26,14 @@ export type Core = {
   scope: EffectScope
   bindings: Record<string, any>
   renderCbs: Array<() => void>
+  patchKeys: Array<string>
   initHooks(): Core
   toJSON(): string
 }
 
 type InstanceCore = {
   [CORE_KEY]: Core
+  $nextTick: (fn: () => void) => void
 }
 
 type BaseInstance<D extends Record<string, any>, C, P extends boolean = false> = Flat<
@@ -39,7 +42,6 @@ type BaseInstance<D extends Record<string, any>, C, P extends boolean = false> =
     {},
     {},
     InstanceCore & {
-      $nextTick: (fn: () => void) => void
       route?: string
     } & C,
     P
@@ -79,8 +81,10 @@ export function getCurrentInstance() {
   return currentInstance
 }
 
+let uid = 0
 export function createCore(type: InstanceType): Core {
   const core: Core = {
+    uid: uid++,
     type: type,
     props: shallowReactive<Record<string, any>>({}),
     hooks: {},
@@ -88,6 +92,7 @@ export function createCore(type: InstanceType): Core {
     scope: new EffectScope(),
     bindings: {},
     renderCbs: [],
+    patchKeys: [],
     initHooks() {
       switch (this.type) {
         case 'App':
@@ -97,7 +102,10 @@ export function createCore(type: InstanceType): Core {
           this.hooks = keysToRecord(PAGE_LIFETIMES, () => [])
           break
         default:
-          this.hooks = keysToRecord([...COMPONENT_LIFETIMES.LIFETIMES, ...COMPONENT_LIFETIMES.PAGELIFETIMES], () => [])
+          this.hooks = keysToRecord(
+            [...COMPONENT_LIFETIMES.LIFETIMES, ...COMPONENT_LIFETIMES.PAGELIFETIMES],
+            () => []
+          )
           break
       }
       return this

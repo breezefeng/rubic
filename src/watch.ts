@@ -8,9 +8,14 @@ import {
   ReactiveEffect,
   type Ref,
 } from '@vue/reactivity'
-import { queuePostFlushCb, queuePreFlushCb, type SchedulerJob } from './scheduler'
+import { queueJob, queuePostFlushCb, type SchedulerJob } from './scheduler'
 import { getCurrentInstance } from './instance'
-import { callWithAsyncErrorHandling, callWithErrorHandling, ErrorCodes, warn } from './errorHandling'
+import {
+  callWithAsyncErrorHandling,
+  callWithErrorHandling,
+  ErrorCodes,
+  warn,
+} from './errorHandling'
 import {
   clone,
   EMPTY_OBJ,
@@ -54,7 +59,6 @@ export interface WatchOptionsBase extends DebuggerOptions {
 export interface WatchOptions<Immediate = boolean> extends WatchOptionsBase {
   immediate?: Immediate
   deep?: boolean
-  raw?: boolean
 }
 
 export type WatchStopHandle = () => void
@@ -69,7 +73,7 @@ export function watchPostEffect(effect: WatchEffect, options?: DebuggerOptions) 
 }
 
 export function watchSyncEffect(effect: WatchEffect, options?: DebuggerOptions) {
-  return doWatch(effect, null, { ...options, flush: 'sync' } as WatchOptionsBase)
+  return doWatch(effect, null, { ...options, flush: 'sync' })
 }
 
 // initial value for watchers to trigger on undefined initial values
@@ -87,7 +91,10 @@ export function watch<T extends MultiWatchSources, Immediate extends Readonly<bo
 // overload: multiple sources w/ `as const`
 // watch([foo, bar] as const, () => {})
 // somehow [...T] breaks when the type is readonly
-export function watch<T extends Readonly<MultiWatchSources>, Immediate extends Readonly<boolean> = false>(
+export function watch<
+  T extends Readonly<MultiWatchSources>,
+  Immediate extends Readonly<boolean> = false
+>(
   source: T,
   cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
   options?: WatchOptions<Immediate>
@@ -126,23 +133,27 @@ export function watch<T = any, Immediate extends Readonly<boolean> = false>(
 function doWatch(
   source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
-  { immediate, deep, flush, raw, onTrack, onTrigger }: WatchOptions = EMPTY_OBJ
+  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = EMPTY_OBJ
 ): WatchStopHandle {
   if (!cb) {
     if (immediate !== undefined) {
       warn(
-        `watch() "immediate" option is only respected when using the ` + `watch(source, callback, options?) signature.`
+        `watch() "immediate" option is only respected when using the ` +
+          `watch(source, callback, options?) signature.`
       )
     }
     if (deep !== undefined) {
-      warn(`watch() "deep" option is only respected when using the ` + `watch(source, callback, options?) signature.`)
+      warn(
+        `watch() "deep" option is only respected when using the ` +
+          `watch(source, callback, options?) signature.`
+      )
     }
   }
 
   const warnInvalidSource = (s: unknown) => {
     warn(
       `Invalid watch source: ${s} 
-      A watch source can only be a getter/effect function, a ref, ` + `a reactive object, or an array of these types.`
+      A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types.`
     )
   }
 
@@ -205,23 +216,20 @@ function doWatch(
     }
   }
 
-  let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE
-
+  let oldValue: any = isMultiSource
+    ? new Array((source as []).length).fill(INITIAL_WATCHER_VALUE)
+    : INITIAL_WATCHER_VALUE
   const job: SchedulerJob = () => {
     if (!effect.active) {
       return
     }
     if (cb) {
       // watch(source, cb)
-      const newValue = raw ? clone(effect.run()) : effect.run()
+      const newValue = effect.run()
       if (
         deep ||
         forceTrigger ||
-        (raw
-          ? isMultiSource
-            ? (newValue as any[]).some((v, i) => isEqual(v, (oldValue as any[])[i]))
-            : isEqual(newValue, oldValue)
-          : isMultiSource
+        (isMultiSource
           ? (newValue as any[]).some((v, i) => hasChanged(v, (oldValue as any[])[i]))
           : hasChanged(newValue, oldValue))
       ) {
@@ -232,7 +240,11 @@ function doWatch(
         callWithAsyncErrorHandling(cb, instance, ErrorCodes.WATCH_CALLBACK, [
           newValue,
           // pass undefined as the old value when it's changed for the first time
-          oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
+          oldValue === INITIAL_WATCHER_VALUE
+            ? undefined
+            : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE
+            ? []
+            : oldValue,
           onCleanup,
         ])
         oldValue = newValue
@@ -254,19 +266,24 @@ function doWatch(
     scheduler = () => queuePostFlushCb(job)
   } else {
     // default: 'pre'
-    scheduler = () => queuePreFlushCb(job)
+    job.pre = true
+    if (instance) job.id = instance[CORE_KEY].uid
+    scheduler = () => queueJob(job)
   }
 
   const effect = new ReactiveEffect(getter, scheduler)
+
+  // if (__DEV__) {
   effect.onTrack = onTrack
   effect.onTrigger = onTrigger
+  // }
 
   // initial run
   if (cb) {
     if (immediate) {
       job()
     } else {
-      oldValue = raw ? clone(effect.run()) : effect.run()
+      oldValue = effect.run()
     }
   } else if (flush === 'post') {
     queuePostFlushCb(effect.run.bind(effect))
@@ -274,12 +291,23 @@ function doWatch(
     effect.run()
   }
 
-  return () => {
+  const unwatch = () => {
     effect.stop()
     if (instance && instance[CORE_KEY].scope) {
-      // @ts-ignore
       remove(instance[CORE_KEY].scope.effects!, effect)
     }
+  }
+  return unwatch
+}
+
+export function createPathGetter(ctx: any, path: string) {
+  const segments = path.split('.')
+  return () => {
+    let cur = ctx
+    for (let i = 0; i < segments.length && cur; i++) {
+      cur = cur[segments[i]]
+    }
+    return cur
   }
 }
 

@@ -1,1 +1,3 @@
-module.exports = require('eslint-config-jaskang/prettier')
+const config = require('@jaskang/config')
+
+module.exports = config.prettier
