@@ -26,7 +26,6 @@ export type Core = {
   scope: EffectScope
   bindings: Record<string, any>
   renderCbs: Array<() => void>
-  patchKeys: Array<string>
   initHooks(): Core
   toJSON(): string
 }
@@ -92,7 +91,6 @@ export function createCore(type: InstanceType): Core {
     scope: new EffectScope(),
     bindings: {},
     renderCbs: [],
-    patchKeys: [],
     initHooks() {
       switch (this.type) {
         case 'App':
