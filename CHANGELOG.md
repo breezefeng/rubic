@@ -1,37 +1,36 @@
+# [0.2.0](https://github.com/JasKang/rubic/compare/0.1.0...0.2.0) (2023-01-04)
 
+### Features
+
+- 更精准的 setData ([fddb881](https://github.com/JasKang/rubic/commit/fddb881da07f1258be5a368c9280ebe00d393248))
 
 # [0.1.0](https://github.com/JasKang/rubic/compare/0.0.8...0.1.0) (2022-09-26)
 
-
 ### Bug Fixes
 
-* mergeReactiveObjects ts check ([f3cd273](https://github.com/JasKang/rubic/commit/f3cd273330a13f0a3fbe8ddd9f2ddd5b26bb7f32))
-
+- mergeReactiveObjects ts check ([f3cd273](https://github.com/JasKang/rubic/commit/f3cd273330a13f0a3fbe8ddd9f2ddd5b26bb7f32))
 
 ### Features
 
-* 新增 store ([b6a7905](https://github.com/JasKang/rubic/commit/b6a79050fb9d6dfbaeb6d8a590be44893b3082b5))
+- 新增 store ([b6a7905](https://github.com/JasKang/rubic/commit/b6a79050fb9d6dfbaeb6d8a590be44893b3082b5))
 
 ## [0.0.8](https://github.com/JasKang/rubic/compare/0.0.7...0.0.8) (2022-09-09)
 
-
 ### Features
 
-* xinzeng $nexttick ([aaa07bb](https://github.com/JasKang/rubic/commit/aaa07bb24637600ebff6544c3db026893f3241be))
+- xinzeng $nexttick ([aaa07bb](https://github.com/JasKang/rubic/commit/aaa07bb24637600ebff6544c3db026893f3241be))
 
 ## [0.0.7](https://github.com/JasKang/rubic/compare/0.0.6...0.0.7) (2022-09-09)
 
-
 ### Bug Fixes
 
-* setData bindingData ([2a56f8f](https://github.com/JasKang/rubic/commit/2a56f8fa8aee97b21f9ecef54fad866de631f83d))
-* 为 watch 添加 raw 模式 ([a08bc66](https://github.com/JasKang/rubic/commit/a08bc660d211767ff0d86d2f181ee256ac99e13d))
-
+- setData bindingData ([2a56f8f](https://github.com/JasKang/rubic/commit/2a56f8fa8aee97b21f9ecef54fad866de631f83d))
+- 为 watch 添加 raw 模式 ([a08bc66](https://github.com/JasKang/rubic/commit/a08bc660d211767ff0d86d2f181ee256ac99e13d))
 
 ### Features
 
-* 合并 setData ([9bd9044](https://github.com/JasKang/rubic/commit/9bd90440c308d0f762150afb6b06f86de415dde5))
-* 文档 ([9a0307e](https://github.com/JasKang/rubic/commit/9a0307e91a6352abf9bee8688d3c1be5552793cb))
+- 合并 setData ([9bd9044](https://github.com/JasKang/rubic/commit/9bd90440c308d0f762150afb6b06f86de415dde5))
+- 文档 ([9a0307e](https://github.com/JasKang/rubic/commit/9a0307e91a6352abf9bee8688d3c1be5552793cb))
 
 ## [0.0.6](https://github.com/JasKang/rubic/compare/0.0.5...0.0.6) (2022-09-07)
 
