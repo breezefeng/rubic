@@ -783,6 +783,7 @@ describe('api: watch', () => {
     )
     // should not record watcher in detached scope and only the instance's
     // own update effect
+    // @ts-ignore
     expect(instance![CORE_KEY].scope.effects.length).toBe(2)
   })
 })

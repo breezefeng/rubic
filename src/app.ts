@@ -25,6 +25,7 @@ export function createApp(options: AppOptions) {
       const bindings = setup(...args, this) || {}
       unsetCurrentInstance()
       for (const key of Object.keys(bindings)) {
+        // @ts-ignore
         this[key] = bindings[key]
       }
     },

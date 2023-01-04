@@ -17,7 +17,6 @@ import {
   warn,
 } from './errorHandling'
 import {
-  clone,
   EMPTY_OBJ,
   hasChanged,
   isArray,
@@ -293,6 +292,7 @@ function doWatch(
   const unwatch = () => {
     effect.stop()
     if (instance && instance[CORE_KEY].scope) {
+      // @ts-ignore
       remove(instance[CORE_KEY].scope.effects!, effect)
     }
   }
