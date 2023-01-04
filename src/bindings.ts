@@ -1,9 +1,10 @@
 import { isReactive, isRef, reactive, toRaw, unref, type Ref } from '@vue/reactivity'
 import { CORE_KEY } from './constants'
+import { diff } from './diff'
 import { error } from './errorHandling'
 import type { Instance } from './instance'
 import type { Method } from './types'
-import { isArray, isFunction, isJsonBaseType, isPlainObject, getType, diff } from './utils'
+import { isArray, isFunction, isJsonBaseType, isPlainObject, getType } from './utils'
 import { watch } from './watch'
 
 export function watchData<T extends object = Record<string, any>>(
@@ -25,31 +26,31 @@ export function watchData<T extends object = Record<string, any>>(
 }
 
 export function toDataRaw(x: any, key?: string): any {
-  if (isJsonBaseType(x) || isFunction(x)) {
-    return x
-  }
-  if (isRef(x)) {
-    return toDataRaw((x as Ref<any>).value, key)
-  }
-  if (isReactive(x)) {
-    return toDataRaw(toRaw(x), key)
-  }
-  if (isArray(x)) {
-    return (x as any[]).map((item, i) => toDataRaw(item, `${key}[${i}]`))
-  }
-  if (isPlainObject(x)) {
+  if (typeof x === 'object') {
+    if (x === null) {
+      return null
+    } else if (isReactive(x)) {
+      return toDataRaw(toRaw(x), key)
+    } else if (isRef(x)) {
+      return toDataRaw((x as Ref<any>).value, key)
+    } else if (Array.isArray(x)) {
+      return (x as any[]).map((item, i) => toDataRaw(item, `${key}[${i}]`))
+    }
     const obj: Record<string, any> = {}
     Object.keys(x).forEach(k => {
       obj[k] = toDataRaw(x[k], `${key}.${k}`)
     })
     return obj
-  }
-  error(
-    new Error(
-      `错误的数据类型 ${key}:${getType(
-        x
-      )}, 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array)`
+  } else if (isJsonBaseType(x)) {
+    return x
+  } else {
+    error(
+      new Error(
+        `错误的数据类型 ${key}:${getType(
+          x
+        )}, 小程序 data 仅支持可以转成 JSON 的类型(string | number | boolean | object | array)`
+      )
     )
-  )
-  return undefined
+    return undefined
+  }
 }

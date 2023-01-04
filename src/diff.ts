@@ -1,4 +1,4 @@
-import { isObject } from './type'
+import { isArray } from './utils'
 
 const ArrayWrapper = ['[', ']']
 const ObjectWrapper = ['.', '']
@@ -7,6 +7,10 @@ function type(val: any) {
   if (val === null) return 'null'
   if (Array.isArray(val)) return 'array'
   return typeof val
+}
+
+function isObject(val: any) {
+  return type(val) === 'object'
 }
 
 export function diff(before: any, after: any) {
@@ -35,7 +39,8 @@ export function diff(before: any, after: any) {
           else res[targetPath] = afterData[i]
           break
         case 'array':
-          if (beforeData[i].length === 0 && afterData[i].length > 0) res[targetPath] = afterData[i]
+          // 数组长度变化了 直接替换
+          if (beforeData[i].length !== afterData[i].length) res[targetPath] = afterData[i]
           else iter(beforeData[i], afterData[i], targetPath, ArrayWrapper)
           break
         case 'object':
