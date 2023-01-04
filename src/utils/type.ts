@@ -10,12 +10,13 @@ export const isSet = (val: unknown): val is Set<any> => getType(val) === '[objec
 export const isPlainObject = (val: unknown): val is Record<string, unknown> => {
   return (val && typeof val === 'object' && getType(val) === '[object Object]') as boolean
 }
-export const isObject = (val: unknown): val is Record<any, any> => val !== null && typeof val === 'object'
+export const isObject = (val: unknown): val is Record<any, any> =>
+  val !== null && typeof val === 'object'
 export const isPromise = <T = any>(val: unknown): val is Promise<T> =>
   isObject(val) && isFunction(val.then) && isFunction(val.catch)
 
-export function isBaseType(x: any): boolean {
-  const simpleTypes = new Set(['undefined', 'boolean', 'number', 'string'])
+export function isJsonBaseType(x: any): boolean {
+  const simpleTypes = new Set(['boolean', 'number', 'string'])
   return x === null || simpleTypes.has(typeof x)
 }
 

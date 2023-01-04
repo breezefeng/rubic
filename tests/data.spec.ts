@@ -1,6 +1,6 @@
 import { render, sleep } from 'miniprogram-test-util'
 import { afterEach, describe, expect, test, vi } from 'vitest'
-import { CORE_KEY, defineComponent, reactive, ref } from '../src'
+import { computed, CORE_KEY, defineComponent, reactive, ref } from '../src'
 
 describe('setData', () => {
   afterEach(() => {

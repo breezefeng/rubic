@@ -21,7 +21,6 @@ import {
   EMPTY_OBJ,
   hasChanged,
   isArray,
-  isEqual,
   isFunction,
   isMap,
   isObject,

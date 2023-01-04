@@ -70,6 +70,7 @@
   "packageManager": "pnpm@6.24.4",
   "dependencies": {
     "@jaskang/config": "^0.0.7",
-    "@jaskang/eslint-config": "^0.0.7"
+    "@jaskang/eslint-config": "^0.0.7",
+    "deep-diff": "^1.0.2"
   }
 }

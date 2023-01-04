@@ -1,5 +1,6 @@
 export * from './object'
 export * from './type'
+export * from './diff'
 
 export const EMPTY_OBJ = {}
 export const NOOP = () => {}

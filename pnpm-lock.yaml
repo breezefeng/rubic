@@ -9,6 +9,7 @@ specifiers:
   '@vitest/coverage-c8': ^0.25.7
   '@vue/reactivity': ^3.2.45
   c8: ^7.12.0
+  deep-diff: ^1.0.2
   eslint: ^8.29.0
   fs-extra: ^10.1.0
   happy-dom: ^8.1.0
@@ -27,6 +28,7 @@ specifiers:
 dependencies:
   '@jaskang/config': 0.0.7
   '@jaskang/eslint-config': 0.0.7_lqwc2zjgrlxsq4ydjmen4lphum
+  deep-diff: 1.0.2
 
 devDependencies:
   '@release-it/conventional-changelog': 5.1.1_release-it@15.5.1
@@ -1845,6 +1847,10 @@ packages:
     dependencies:
       mimic-response: 3.1.0
     dev: true
+
+  /deep-diff/1.0.2:
+    resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
+    dev: false
 
   /deep-eql/3.0.1:
     resolution: {integrity: sha512-+QeIQyN5ZuO+3Uk5DYh6/1eKO0m0YmJFGNmFHGACpf1ClL1nmlV/p4gNgbl2pJGxgXb4faqo6UE+M5ACEMyVcw==}

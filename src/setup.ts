@@ -2,10 +2,9 @@ import { reactive, shallowReactive, shallowReadonly } from '@vue/reactivity'
 import { createCore, type Instance, setCurrentInstance, unsetCurrentInstance } from './instance'
 import { CORE_KEY } from './constants'
 import type { Data } from './types'
-import { isEqual, isFunction } from './utils'
+import { isFunction } from './utils'
 import { error, ErrorCodes, warn } from './errorHandling'
-import { toDataRaw } from './bindings'
-import { watch } from './watch'
+import { toDataRaw, watchData } from './bindings'
 
 type CoreSetupOptions = {
   type: 'Page' | 'Component'
@@ -57,7 +56,7 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
       core.bindings = bindings
 
       if (bindings) {
-        const bindingData = reactive({})
+        const bindingData: any = reactive({})
         for (const key of Object.keys(bindings)) {
           const value = bindings[key]
           if (isFunction(value)) {
@@ -68,33 +67,15 @@ export const createSetupHook = ({ type, setup, properties = {} }: CoreSetupOptio
           }
         }
         ctx.setData(toDataRaw(bindingData, 'data'))
-        watch(
-          bindingData,
-          (val, oldVal) => {
-            // console.log('data diff', val, oldVal)
-            const patchObj = {}
-            for (const key of Object.keys(oldVal)) {
-              if (!isEqual(oldVal[key], val[key])) {
-                // 注意：这里需要使用 bindingData ，因为 raw 模式下 val 和 oldVal 已经转化为普通对象了
-                patchObj[key] = toDataRaw(bindingData[key], key)
-              }
-            }
-            // console.log('data patch', patchObj)
-            ctx.setData(patchObj, () => {
-              try {
-                const ticks = [...ctx[CORE_KEY].renderCbs]
-                ctx[CORE_KEY].renderCbs = []
-                ticks.forEach(fn => fn())
-              } catch (err) {
-                error(err, ctx, ErrorCodes.NEXT_TICK_FUNCTION)
-              }
-            })
-          },
-          {
-            deep: true,
-            raw: true,
+        watchData(bindingData, ctx, () => {
+          try {
+            const ticks = [...ctx[CORE_KEY].renderCbs]
+            ctx[CORE_KEY].renderCbs = []
+            ticks.forEach(fn => fn())
+          } catch (err) {
+            error(err, ctx, ErrorCodes.NEXT_TICK_FUNCTION)
           }
-        )
+        })
       }
       unsetCurrentInstance()
     },
