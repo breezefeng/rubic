@@ -1,3 +1,9 @@
+# [0.2.1](https://github.com/JasKang/rubic/compare/0.1.0...0.3.0) (2023-01-10)
+
+### Bug Fixes
+
+- 修复 diff 算法的一些问题 ([8b19476](https://github.com/JasKang/rubic/commit/8b19476e7953f77668b5591fde353dce3ca6207e))
+
 # [0.2.0](https://github.com/JasKang/rubic/compare/0.1.0...0.2.0) (2023-01-04)
 
 ### Features
