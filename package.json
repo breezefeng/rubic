@@ -6,6 +6,9 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "miniprogram": "dist/miniprogram",
+  "files": [
+    "dist"
+  ],
   "author": "jaskang",
   "license": "MIT",
   "homepage": "https://github.com/JasKang/rubic#readme",
