@@ -9,15 +9,19 @@ import { watch } from './watch'
 
 export function watchData<T extends object = Record<string, any>>(
   bindings: T,
-  instance: Instance,
+  ctx: Instance,
   cb?: Method
 ) {
-  const prevData = toDataRaw(bindings, 'data')
+  let prevData = toDataRaw(bindings, 'data')
   return watch(
     bindings,
     () => {
-      const data = toDataRaw(bindings, 'data')
-      instance.setData(diff(prevData, data), cb)
+      const currData = toDataRaw(bindings, 'data')
+      const patchData = diff(prevData, currData)
+      if (Object.keys(patchData).length > 0) {
+        ctx.setData(patchData, cb)
+        prevData = currData
+      }
     },
     {
       deep: true,

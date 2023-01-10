@@ -1,64 +1,111 @@
-import { isArray } from './utils'
-
-const ArrayWrapper = ['[', ']']
-const ObjectWrapper = ['.', '']
-
-function type(val: any) {
-  if (val === null) return 'null'
-  if (Array.isArray(val)) return 'array'
-  return typeof val
-}
-
-function isObject(val: any) {
-  return type(val) === 'object'
-}
-
-export function diff(before: any, after: any) {
-  if (!isObject(before)) return after
-  if (!isObject(after)) return {}
-  const res: any = {}
-  const iter = function (beforeData: any, afterData: any, path: string, wrapper = ['', '']) {
-    for (const i in afterData) {
-      const targetPath = path + wrapper[0] + i + wrapper[1]
-      if (beforeData[i] === undefined || beforeData[i] === null) {
-        res[targetPath] = afterData[i]
-        continue
-      }
-      const beforeType = type(beforeData[i])
-      const afterType = type(afterData[i])
-      if (beforeType !== afterType) {
-        res[targetPath] = afterData[i]
-        continue
-      }
-
-      switch (afterType) {
-        case 'number':
-        case 'string':
-        case 'boolean':
-          if (beforeData[i] === afterData[i]) continue
-          else res[targetPath] = afterData[i]
-          break
-        case 'array':
-          // 数组长度变化了 直接替换
-          if (beforeData[i].length !== afterData[i].length) res[targetPath] = afterData[i]
-          else iter(beforeData[i], afterData[i], targetPath, ArrayWrapper)
-          break
-        case 'object':
-          iter(beforeData[i], afterData[i], targetPath, ObjectWrapper)
-          break
-        case 'undefined':
-        case 'null':
-          break
-        default:
-          console.warn('undefined type')
-          if (beforeData[i] === afterData[i]) continue
-          else res[targetPath] = afterData[i]
-          break
+const diffArrToPath = (from: any[], to: any[], res: any = {}, keyPrev = '') => {
+  const len = to.length
+  for (let i = 0; i < len; i++) {
+    const toItem = to[i]
+    const fromItem = from[i]
+    const targetKey = `${keyPrev}[${i}]`
+    if (toItem === fromItem) {
+      continue
+    } else if (typeof toItem !== typeof fromItem) {
+      res[targetKey] = toItem
+    } else {
+      if (typeof toItem !== 'object') {
+        res[targetKey] = toItem
+      } else {
+        const arrTo = Array.isArray(toItem)
+        const arrFrom = Array.isArray(fromItem)
+        if (arrTo !== arrFrom) {
+          res[targetKey] = toItem
+        } else if (arrTo && arrFrom) {
+          if (toItem.length < fromItem.length) {
+            res[targetKey] = toItem
+          } else {
+            // 数组
+            diffArrToPath(fromItem, toItem, res, `${targetKey}`)
+          }
+        } else {
+          if (!toItem || !fromItem || Object.keys(toItem).length < Object.keys(fromItem).length) {
+            res[targetKey] = toItem
+          } else {
+            // 对象
+            let shouldDiffObject = true
+            Object.keys(fromItem).some(key => {
+              if (typeof toItem[key] === 'undefined') {
+                shouldDiffObject = false
+                return true
+              }
+            })
+            if (shouldDiffObject) {
+              diffObjToPath(fromItem, toItem, res, `${targetKey}.`)
+            } else {
+              res[targetKey] = toItem
+            }
+          }
+        }
       }
     }
   }
-
-  iter(before, after, '', ['', ''])
-
   return res
+}
+
+const diffObjToPath = (from: any, to: any, res: any = {}, keyPrev = '') => {
+  const keys = Object.keys(to)
+  const len = keys.length
+
+  for (let i = 0; i < len; i++) {
+    const key = keys[i]
+    const toItem = to[key]
+    const fromItem = from[key]
+    const targetKey = `${keyPrev}${key}`
+    if (toItem === fromItem) {
+      continue
+    } else if (!Object.prototype.hasOwnProperty.call(from, key)) {
+      res[targetKey] = toItem
+    } else if (typeof toItem !== typeof fromItem) {
+      res[targetKey] = toItem
+    } else {
+      if (typeof toItem !== 'object') {
+        res[targetKey] = toItem
+      } else {
+        const arrTo = Array.isArray(toItem)
+        const arrFrom = Array.isArray(fromItem)
+        if (arrTo !== arrFrom) {
+          res[targetKey] = toItem
+        } else if (arrTo && arrFrom) {
+          if (toItem.length < fromItem.length) {
+            res[targetKey] = toItem
+          } else {
+            // 数组
+            diffArrToPath(fromItem, toItem, res, `${targetKey}`)
+          }
+        } else {
+          // null
+          if (!toItem || !fromItem) {
+            res[targetKey] = toItem
+          } else {
+            // 对象
+            let shouldDiffObject = true
+            Object.keys(fromItem).some(key => {
+              if (typeof toItem[key] === 'undefined') {
+                shouldDiffObject = false
+                return true
+              }
+            })
+            if (shouldDiffObject) {
+              diffObjToPath(fromItem, toItem, res, `${targetKey}.`)
+            } else {
+              res[targetKey] = toItem
+            }
+          }
+        }
+      }
+    }
+  }
+  return res
+}
+
+export const diff = function (oldData: any, newData: any) {
+  const target = {}
+  diffObjToPath(oldData, newData, target, '')
+  return target
 }
