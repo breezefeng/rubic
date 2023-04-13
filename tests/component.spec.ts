@@ -19,6 +19,13 @@ describe('component', () => {
   afterEach(() => {
     vi.restoreAllMocks()
   })
+  test('defineComponent basic', async () => {
+    const comp = render(defineComponent({}), {
+      template: '<div>123</div>',
+    })
+    await sleep(10)
+    expect(comp.dom!.innerHTML).toBe('<div>123</div>')
+  })
   test('lifetimes', async () => {
     const calledKeys: string[] = []
     const comp = render(

@@ -12,7 +12,11 @@ import { loadPlugin } from './plugin'
 import type { StyleIsolation } from './component'
 import { PAGE_LIFETIMES, CORE_KEY } from './constants'
 
-export type PageStyleIsolation = StyleIsolation | 'page-isolated' | 'page-apply-shared' | 'page-shared'
+export type PageStyleIsolation =
+  | StyleIsolation
+  | 'page-isolated'
+  | 'page-apply-shared'
+  | 'page-shared'
 
 export type PageInnerOptions = {
   /**
@@ -27,7 +31,7 @@ export type PageBaseOptions<P = {}> = {
    * 一些选项
    */
   options?: PageInnerOptions
-  setup: (props: P, ctx: PageInstance) => AnyObject | void
+  setup?: (props: P, ctx: PageInstance) => AnyObject | void
 }
 
 type PageOptionsWithoutProps<P = {}> = PageBaseOptions<P> & {
@@ -50,14 +54,21 @@ type PageOptionsWithObjectProps<
 
 export function definePage<P = {}>(options: PageOptionsWithoutProps<P>): string
 export function definePage<P extends string>(options: PageOptionsWithArrayProps<P>): string
-export function definePage<P extends Readonly<ComponentPropsOptions>>(options: PageOptionsWithObjectProps<P>): string
+export function definePage<P extends Readonly<ComponentPropsOptions>>(
+  options: PageOptionsWithObjectProps<P>
+): string
 export function definePage(
   pageOptions: PageBaseOptions<any> & {
     properties?: ComponentPropsOptions
   }
 ) {
   const { setup, options } = loadPlugin(pageOptions, 'Page')
-  const { behaviors = [], properties: propsOptions = {}, options: innerOptions, ...others } = options
+  const {
+    behaviors = [],
+    properties: propsOptions = {},
+    options: innerOptions,
+    ...others
+  } = options
 
   const properties = convertProps(propsOptions)
 

@@ -7,7 +7,11 @@ import { warn } from './errorHandling'
 export type PluginConfig = (options: ComponentBaseOptions) => void
 
 export type NormalSetup = (props: Record<string, any>, ctx: Instance) => void | Bindings
-export type ComposeSetup = (props: Record<string, any>, ctx: Instance, next: () => void | Bindings) => void | Bindings
+export type ComposeSetup = (
+  props: Record<string, any>,
+  ctx: Instance,
+  next: () => void | Bindings
+) => void | Bindings
 
 export type PluginSetup = NormalSetup | ComposeSetup
 
@@ -73,11 +77,13 @@ export function loadPlugin<T extends ComponentBaseOptions | PageBaseOptions>(
   originOptions: T & { properties?: any },
   type: 'Page' | 'Component'
 ) {
-  const { setup: originSetup } = originOptions
+  const { setup: originSetup = () => {} } = originOptions
 
   const setupGroup: PluginSetup[] = []
 
-  const installedPlugins = [...globalPlugins].filter(plugin => (plugin.type ? plugin.type === type : true))
+  const installedPlugins = [...globalPlugins].filter(plugin =>
+    plugin.type ? plugin.type === type : true
+  )
 
   for (const plugin of installedPlugins) {
     const { type: _type, config, setup } = plugin || {}

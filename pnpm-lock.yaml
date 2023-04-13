@@ -3831,7 +3831,7 @@ packages:
     dev: true
 
   /minimist-options/4.1.0:
-    resolution: {integrity: sha1-wGVXE8U6ii69d/+iR9NCxA8BBhk=, tarball: minimist-options/download/minimist-options-4.1.0.tgz}
+    resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
     dependencies:
       arrify: 1.0.1

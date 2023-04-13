@@ -40,7 +40,7 @@ export type ComponentBaseOptions<P = {}> = {
   externalClasses?: string[]
   relations?: { [key: string]: RelationOption }
   options?: ComponentInnerOptions
-  setup: (this: void, props: P, ctx: ComponentInstance) => AnyObject | void
+  setup?: (this: void, props: P, ctx: ComponentInstance) => AnyObject | void
 }
 
 type ComponentOptionsWithoutProps<P = {}> = ComponentBaseOptions<P> & {
@@ -62,7 +62,9 @@ type ComponentOptionsWithObjectProps<
 }
 
 export function defineComponent<P = {}>(options: ComponentOptionsWithoutProps<P>): string
-export function defineComponent<P extends string>(options: ComponentOptionsWithArrayProps<P>): string
+export function defineComponent<P extends string>(
+  options: ComponentOptionsWithArrayProps<P>
+): string
 export function defineComponent<P extends Readonly<ComponentPropsOptions>>(
   options: ComponentOptionsWithObjectProps<P>
 ): string

@@ -33,6 +33,13 @@ describe('page', async () => {
   afterEach(() => {
     vi.restoreAllMocks()
   })
+  test('definePage basic', async () => {
+    const page = render(definePage({}), {
+      template: '<div>123</div>',
+    })
+    await sleep(10)
+    expect(page.dom!.innerHTML).toBe('<div>123</div>')
+  })
   test('reactive binding', async () => {
     const page = render(
       definePage({
