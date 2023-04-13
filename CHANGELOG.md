@@ -1,3 +1,20 @@
+
+
+# [0.3.0](https://github.com/JasKang/rubic/compare/0.1.0...0.3.0) (2023-04-13)
+
+
+### Bug Fixes
+
+* setup not required ([64ff582](https://github.com/JasKang/rubic/commit/64ff5821d57f8ddc01d1dcb9af96edfa313cc11b))
+* 修复 diff 算法的一些问题 ([8b19476](https://github.com/JasKang/rubic/commit/8b19476e7953f77668b5591fde353dce3ca6207e))
+
+
+### Features
+
+* diff setdata ([fddb881](https://github.com/JasKang/rubic/commit/fddb881da07f1258be5a368c9280ebe00d393248))
+* setData diff ([6e4ce14](https://github.com/JasKang/rubic/commit/6e4ce148c32e1bf7e8c92c13eae80a73276bc086))
+* 更精准的 setData ([eddd6f0](https://github.com/JasKang/rubic/commit/eddd6f078988e26d5d81c5b36a50cc311180eed4))
+
 # [0.2.1](https://github.com/JasKang/rubic/compare/0.1.0...0.3.0) (2023-01-10)
 
 ### Bug Fixes
