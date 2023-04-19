@@ -1,3 +1,12 @@
+
+
+# [0.5.0](https://github.com/JasKang/rubic/compare/0.4.0...0.5.0) (2023-04-19)
+
+
+### Features
+
+* 升级 @vue/reactivity ([7ea0a5a](https://github.com/JasKang/rubic/commit/7ea0a5ab537d405bf114d7e69b0ba8615531dea5))
+
 # [0.4.0](https://github.com/JasKang/rubic/compare/0.3.0...0.4.0) (2023-04-19)
 
 ### Bug Fixes
