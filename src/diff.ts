@@ -28,17 +28,16 @@ const diffArrToPath = (from: any[], to: any[], res: any = {}, keyPrev = '') => {
             res[targetKey] = toItem
           } else {
             // 对象
-            let shouldDiffObject = true
-            Object.keys(fromItem).some(key => {
-              if (typeof toItem[key] === 'undefined') {
-                shouldDiffObject = false
+            const shouldReplace = Object.keys(fromItem).some(key => {
+              if (typeof fromItem[key] !== 'undefined' && typeof toItem[key] === 'undefined') {
                 return true
               }
+              return false
             })
-            if (shouldDiffObject) {
-              diffObjToPath(fromItem, toItem, res, `${targetKey}.`)
-            } else {
+            if (shouldReplace) {
               res[targetKey] = toItem
+            } else {
+              diffObjToPath(fromItem, toItem, res, `${targetKey}.`)
             }
           }
         }
@@ -84,17 +83,16 @@ const diffObjToPath = (from: any, to: any, res: any = {}, keyPrev = '') => {
             res[targetKey] = toItem
           } else {
             // 对象
-            let shouldDiffObject = true
-            Object.keys(fromItem).some(key => {
-              if (typeof toItem[key] === 'undefined') {
-                shouldDiffObject = false
+            const shouldReplace = Object.keys(fromItem).some(key => {
+              if (typeof fromItem[key] !== 'undefined' && typeof toItem[key] === 'undefined') {
                 return true
               }
+              return false
             })
-            if (shouldDiffObject) {
-              diffObjToPath(fromItem, toItem, res, `${targetKey}.`)
-            } else {
+            if (shouldReplace) {
               res[targetKey] = toItem
+            } else {
+              diffObjToPath(fromItem, toItem, res, `${targetKey}.`)
             }
           }
         }

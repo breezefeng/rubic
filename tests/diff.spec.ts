@@ -105,7 +105,23 @@ describe('diff data', () => {
       'user.id': '1',
     })
   })
+  test('undefined 处理', () => {
+    expect(
+      diff(
+        { model: { insurant: [{ birth: undefined, gender: 'F' }] } },
+        { model: { insurant: [{ birth: undefined, gender: 'F' }] } }
+      )
+    ).toStrictEqual({})
 
+    expect(
+      diff(
+        { model: { insurant: [{ birth: 1, gender: 'F' }] } },
+        { model: { insurant: [{ birth: undefined, gender: 'F' }] } }
+      )
+    ).toStrictEqual({
+      'model.insurant[0]': { birth: undefined, gender: 'F' },
+    })
+  })
   test('setData 调用次数', async () => {
     const comp = await render(
       defineComponent({
