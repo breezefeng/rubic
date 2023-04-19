@@ -26,14 +26,17 @@ const diffData = (from: any, to: any, data: any = {}, parentKey = '') => {
     const newKeys = Object.keys(to)
 
     const shouldReplace = oldKeys.some(key => {
-      // 因为小程序不支持 undefined , 在新值有 undefined 时，应该直接更新上层对象。
-      return (to[key] === undefined && from[key] !== undefined) || newKeys.indexOf(key) === -1
+      return (
+        // 因为小程序不支持 undefined , 在新值有 undefined 时，应该直接更新上层对象。
+        (to[key] === undefined && from[key] !== undefined) ||
+        // 新对象缺少旧属性
+        newKeys.indexOf(key) === -1 ||
+        // 新属性和比旧属性少
+        oldKeys.length > newKeys.length
+      )
     })
 
-    if (oldKeys.length > newKeys.length) {
-      // 如果新数据的key比旧数据少，直接setData
-      data[parentKey] = to
-    } else if (!shouldReplace) {
+    if (!shouldReplace) {
       newKeys.forEach(key => {
         const itemKey = parentKey ? parentKey + '.' + key : key
         const fromItem = from[key]
@@ -52,7 +55,11 @@ const diffData = (from: any, to: any, data: any = {}, parentKey = '') => {
         }
       })
     } else {
-      data[parentKey] = to
+      if (parentKey) {
+        data[parentKey] = to
+      } else {
+        Object.assign(data, to)
+      }
     }
   } else {
     data[parentKey] = to
