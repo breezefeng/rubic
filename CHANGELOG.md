@@ -1,11 +1,18 @@
-
-
-## [0.3.1](https://github.com/JasKang/rubic/compare/0.3.0...0.3.1) (2023-04-19)
-
+# [0.4.0](https://github.com/JasKang/rubic/compare/0.3.0...0.4.0) (2023-04-19)
 
 ### Bug Fixes
 
-* diff 处理 undefined 的问题 ([79f176b](https://github.com/JasKang/rubic/commit/79f176ba821051a058d02c8ba7d55dccab152747))
+- diff 边界处理问题 ([a635dd5](https://github.com/JasKang/rubic/commit/a635dd5bf1fab6891b06742e50e61c79367f0532))
+
+### Features
+
+- new diff ([03a1c03](https://github.com/JasKang/rubic/commit/03a1c0308dac12111d3184970bf858e95372df47))
+
+## [0.3.1](https://github.com/JasKang/rubic/compare/0.3.0...0.3.1) (2023-04-19)
+
+### Bug Fixes
+
+- diff 处理 undefined 的问题 ([79f176b](https://github.com/JasKang/rubic/commit/79f176ba821051a058d02c8ba7d55dccab152747))
 
 # [0.3.0](https://github.com/JasKang/rubic/compare/0.1.0...0.3.0) (2023-04-13)
 
