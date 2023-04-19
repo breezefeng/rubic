@@ -1,4 +1,4 @@
-import { isArray, getType } from './utils'
+import { isArray, getType as toTypeString } from './utils'
 
 const diffData = (from: any, to: any, data: any = {}, parentKey = '') => {
   if (from === to) return
@@ -6,7 +6,7 @@ const diffData = (from: any, to: any, data: any = {}, parentKey = '') => {
   if (from === null || to === null) {
     // 新旧数据如果存在值为null则添加到需要更新的数据中
     data[parentKey] = to
-  } else if (getType(from) !== getType(to)) {
+  } else if (toTypeString(from) !== toTypeString(to)) {
     // 新旧数据如果类型不一样则添加到需要更新的数据中
     data[parentKey] = to
   } else if (isArray(to)) {
@@ -24,14 +24,26 @@ const diffData = (from: any, to: any, data: any = {}, parentKey = '') => {
     // 如果新旧数据均为对象，进行diff
     const oldKeys = Object.keys(from)
     const newKeys = Object.keys(to)
-    // 因为小程序不支持 undefined , 在新值有 undefined 时，应该直接更新上层对象。
-    const shouldReplace = newKeys.some(key => to[key] === undefined && from[key] !== undefined)
-    if (!shouldReplace) {
+
+    const shouldReplace = oldKeys.some(key => {
+      // 因为小程序不支持 undefined , 在新值有 undefined 时，应该直接更新上层对象。
+      return (to[key] === undefined && from[key] !== undefined) || newKeys.indexOf(key) === -1
+    })
+
+    if (oldKeys.length > newKeys.length) {
+      // 如果新数据的key比旧数据少，直接setData
+      data[parentKey] = to
+    } else if (!shouldReplace) {
       newKeys.forEach(key => {
         const itemKey = parentKey ? parentKey + '.' + key : key
         const fromItem = from[key]
         const toItem = to[key]
-        if (fromItem && toItem && typeof toItem === 'object' && getType(from) === getType(to)) {
+        if (
+          fromItem &&
+          toItem &&
+          typeof toItem === 'object' &&
+          toTypeString(from) === toTypeString(to)
+        ) {
           diffData(fromItem, toItem, data, itemKey)
           return
         }
