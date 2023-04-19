@@ -1,3 +1,12 @@
+
+
+## [0.3.1](https://github.com/JasKang/rubic/compare/0.3.0...0.3.1) (2023-04-19)
+
+
+### Bug Fixes
+
+* diff 处理 undefined 的问题 ([79f176b](https://github.com/JasKang/rubic/commit/79f176ba821051a058d02c8ba7d55dccab152747))
+
 # [0.3.0](https://github.com/JasKang/rubic/compare/0.1.0...0.3.0) (2023-04-13)
 
 ### Bug Fixes
