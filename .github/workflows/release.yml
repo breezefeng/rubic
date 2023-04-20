@@ -1,16 +1,12 @@
-name: test
-
+name: Changesets
 on:
   push:
     branches:
       - main
-
-  pull_request:
-    branches:
-      - main
-
+env:
+  CI: true
 jobs:
-  build:
+  version:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -31,9 +27,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Test Coverage
-        run: pnpm run coverage
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
+      - name: Create Release Pull Request or Publish to npm
+        uses: changesets/action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version: pnpm changeset version
+          publish: pnpm release
+          commit: 'chore: update versions'
+          title: 'chore: update versions'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
